@@ -1,0 +1,89 @@
+
+textures.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+ui/help_button
+  rotate: false
+  xy: 1733, 1404
+  size: 126, 131
+  orig: 126, 131
+  offset: 0, 0
+  index: -1
+ui/highscores_button
+  rotate: true
+  xy: 1733, 1537
+  size: 489, 160
+  orig: 489, 160
+  offset: 0, 0
+  index: -1
+ui/host_panel
+  rotate: false
+  xy: 1204, 700
+  size: 421, 126
+  orig: 421, 126
+  offset: 0, 0
+  index: -1
+ui/join_button
+  rotate: false
+  xy: 1204, 828
+  size: 489, 161
+  orig: 489, 161
+  offset: 0, 0
+  index: -1
+ui/settings_button
+  rotate: false
+  xy: 1895, 1898
+  size: 124, 128
+  orig: 124, 128
+  offset: 0, 0
+  index: -1
+ui/settings_slideout
+  rotate: true
+  xy: 2, 2
+  size: 102, 413
+  orig: 102, 413
+  offset: 0, 0
+  index: -1
+ui/title_background
+  rotate: false
+  xy: 2, 106
+  size: 1200, 1920
+  orig: 1200, 1920
+  offset: 0, 0
+  index: -1
+ui/title_logo
+  rotate: true
+  xy: 1204, 991
+  size: 1035, 527
+  orig: 1035, 527
+  offset: 0, 0
+  index: -1
+ui/toggle_green
+  rotate: false
+  xy: 1204, 637
+  size: 134, 61
+  orig: 134, 61
+  offset: 0, 0
+  index: -1
+ui/toggle_red
+  rotate: false
+  xy: 417, 44
+  size: 134, 60
+  orig: 134, 60
+  offset: 0, 0
+  index: -1
+
+textures2.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+minigames/swirl
+  rotate: false
+  xy: 2, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1

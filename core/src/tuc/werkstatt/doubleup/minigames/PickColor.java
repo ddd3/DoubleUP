@@ -26,7 +26,7 @@ public final class PickColor extends MiniGame {
     private Array<Swirl> swirls;
 
     private class Swirl extends Sprite {
-        static final float size = 96;
+        static final float size = 256;
         Vector2 vel = new Vector2();
         float rotationSpeed;
         boolean alive = false;
@@ -42,7 +42,7 @@ public final class PickColor extends MiniGame {
             float y = game.height + size;
             setColor(colors[MathUtils.random(colors.length - 1)]);
             setPosition(x, y);
-            vel.set(0, -MathUtils.random(240f, 615f)).rotate(MathUtils.random(-20f, 20f));
+            vel.set(0, -MathUtils.random(game.height / 4f, game.height / 1.5f)).rotate(MathUtils.random(-30f, 30f));
             setRotation(MathUtils.random(360f));
             rotationSpeed = MathUtils.random(90f, 360f);
             alive = true;
@@ -59,7 +59,7 @@ public final class PickColor extends MiniGame {
 
     @Override
     public void show() {
-        swirlTex = new Texture(Gdx.files.internal("swirl.png"));
+        swirlTex = new Texture(Gdx.files.internal("images/minigames/swirl.png"));
         swirls = new Array<Swirl>(maxActiveSwirls);
         for (int i = 0; i < maxActiveSwirls; ++i) {
             swirls.add(new Swirl());
@@ -86,7 +86,7 @@ public final class PickColor extends MiniGame {
         }
         game.font.setColor(Color.RED);
         game.font.draw(game.batch, "PickColor - Pick Red: " + getProgress() +
-                "/" + maxPoints + ", #active: " + numActive, 10, 20);
+                "/" + maxPoints + ", #active: " + numActive, 10, game.font.getLineHeight());
         game.font.setColor(Color.WHITE);
         game.batch.end();
     }

@@ -4,8 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -49,20 +47,21 @@ public class Lobby implements Screen {
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
         if (isHosting) {
-            game.font.draw(game.batch, "Lobby (Host): " + game.server.getConnections().length + " client(s)", 10, 20);
+            game.font.draw(game.batch, "Lobby (Host): " + game.server.getConnections().length +
+                    " client(s)", 10, game.font.getLineHeight());
             if (game.server.getConnections().length > 0) {
                 game.font.setColor(Color.GREEN);
-                game.font.draw(game.batch, "start games, GO!", game.width / 2 - 50, game.height / 2);
-                game.font.draw(game.batch, "Click/touch middle of screen to start", 10, 40);
+                game.font.draw(game.batch, "start games, GO!", 10, (game.height - game.font.getLineHeight()) / 2);
+                game.font.draw(game.batch, "Click/touch to start", 10, game.font.getLineHeight() * 2);
             } else {
                 game.font.setColor(Color.RED);
-                game.font.draw(game.batch, "waiting for clients", game.width / 2 - 50, game.height / 2);
-                game.font.draw(game.batch, "At least one client required to start", 10, 40);
+                game.font.draw(game.batch, "waiting for clients", 10, (game.height - game.font.getLineHeight()) / 2);
+                game.font.draw(game.batch, "At least one client required to start", 10, game.font.getLineHeight() * 2);
             }
             game.font.setColor(Color.WHITE);
         } else {
-            game.font.draw(game.batch, "Lobby (Client): " +
-                    (game.client.isConnected() ? "connected" : "discovering host") , 10, 20);
+            game.font.draw(game.batch, "Lobby (Client): " + (game.client.isConnected() ?
+                    "connected" : "discovering host"), 10, game.font.getLineHeight());
         }
         game.batch.end();
 
@@ -79,12 +78,7 @@ public class Lobby implements Screen {
             startMiniGameManger();
         }
         else if (Gdx.input.justTouched()) {
-            Vector3 touchPos = game.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-            final float dist = Vector2.dst(touchPos.x, touchPos.y,
-                    game.width / 2, game.height / 2);
-            if (dist < Math.min(game.width, game.height) / 4) {
-                startMiniGameManger();
-            }
+            startMiniGameManger();
         }
     }
 

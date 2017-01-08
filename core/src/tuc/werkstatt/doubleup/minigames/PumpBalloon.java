@@ -42,7 +42,8 @@ public final class PumpBalloon extends MiniGame {
         renderer.end();
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
-        game.font.draw(game.batch, "PumpBalloon - touch to pump: " + getProgress() + "%", 10, 20);
+        game.font.draw(game.batch, "PumpBalloon - touch to pump: " + getProgress() + "%",
+                10, game.font.getLineHeight());
         game.batch.end();
     }
 

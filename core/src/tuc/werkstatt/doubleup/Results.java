@@ -20,7 +20,7 @@ public class Results implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
-        game.font.draw(game.batch, "Results", 10, 20);
+        game.font.draw(game.batch, "Results", 10, game.font.getLineHeight());
         game.batch.end();
 
         if (Gdx.input.justTouched()) {

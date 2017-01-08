@@ -3,6 +3,7 @@ package tuc.werkstatt.doubleup;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import tuc.werkstatt.doubleup.network.ClientFinishedMessage;
 
@@ -38,6 +39,10 @@ public abstract class MiniGame implements Screen {
             game.client.sendTCP(msg);
             game.setScreen(null);
         }
+    }
+
+    public final Sprite getSprite(String name) {
+        return game.atlas.createSprite(name);
     }
 
     public final void exit() {
