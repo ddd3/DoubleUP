@@ -21,13 +21,13 @@ import tuc.werkstatt.doubleup.network.GameNextMessage;
 import tuc.werkstatt.doubleup.network.GameProgressMessage;
 
 public class Lobby implements Screen {
-    private final DoubleUpPrototype game;
+    private final DoubleUp game;
     private final boolean isHosting;
     final int tcpPort = 54545;
     final int udpPort = 54544;
     Thread managerThread = null;
 
-    public Lobby(DoubleUpPrototype game, boolean isHosting) {
+    public Lobby(DoubleUp game, boolean isHosting) {
         this.game = game;
         this.isHosting = isHosting;
 

@@ -23,7 +23,7 @@ public class AndroidLauncher extends AndroidApplication {
 		config.useCompass = false;
 		config.useAccelerometer = false;
 		config.useGyroscope = false;
-		initialize(new DoubleUpPrototype(null), config);
+		initialize(new DoubleUp(null), config);
 	}
 
     @Override

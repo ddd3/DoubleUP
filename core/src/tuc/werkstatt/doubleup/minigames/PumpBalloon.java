@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-import tuc.werkstatt.doubleup.DoubleUpPrototype;
+import tuc.werkstatt.doubleup.DoubleUp;
 import tuc.werkstatt.doubleup.MiniGame;
 
 public final class PumpBalloon extends MiniGame {
@@ -15,7 +15,7 @@ public final class PumpBalloon extends MiniGame {
     private Color balloonColor;
     private ShapeRenderer renderer;
 
-    public PumpBalloon(DoubleUpPrototype game) {
+    public PumpBalloon(DoubleUp game) {
         super(game);
     }
 

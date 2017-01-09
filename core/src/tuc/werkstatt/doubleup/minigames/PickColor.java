@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
-import tuc.werkstatt.doubleup.DoubleUpPrototype;
+import tuc.werkstatt.doubleup.DoubleUp;
 import tuc.werkstatt.doubleup.MiniGame;
 
 public final class PickColor extends MiniGame {
@@ -53,7 +53,7 @@ public final class PickColor extends MiniGame {
         }
     }
 
-    public PickColor(DoubleUpPrototype game) {
+    public PickColor(DoubleUp game) {
         super(game);
     }
 

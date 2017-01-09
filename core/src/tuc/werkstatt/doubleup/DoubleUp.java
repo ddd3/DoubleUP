@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
 
-public class DoubleUpPrototype extends Game {
+public class DoubleUp extends Game {
     // 16:10 aspect ratio, native nexus 7 (course device) resolution
 	public final int width = 1200;
 	public final int height = 1920;
@@ -39,7 +39,7 @@ public class DoubleUpPrototype extends Game {
     private String testingMiniGame = null;
     private String[] args;
 
-    public DoubleUpPrototype(String[] args) {
+    public DoubleUp(String[] args) {
         this.args = args;
     }
 
@@ -115,7 +115,7 @@ public class DoubleUpPrototype extends Game {
     void loadMiniGame(String screenName) {
         try {
             setScreen((MiniGame)Class.forName("tuc.werkstatt.doubleup.minigames." + screenName)
-                    .getConstructor(DoubleUpPrototype.class).newInstance(this));
+                    .getConstructor(DoubleUp.class).newInstance(this));
         } catch (Exception e) {
             e.printStackTrace();
             dispose();

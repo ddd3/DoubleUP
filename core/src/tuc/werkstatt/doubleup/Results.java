@@ -5,9 +5,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 
 public class Results implements Screen {
-    private final DoubleUpPrototype game;
+    private final DoubleUp game;
 
-    public Results(DoubleUpPrototype game) {
+    public Results(DoubleUp game) {
         this.game = game;
     }
 

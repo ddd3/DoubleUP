@@ -8,9 +8,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import tuc.werkstatt.doubleup.network.ClientFinishedMessage;
 
 public abstract class MiniGame implements Screen {
-    public final DoubleUpPrototype game;
+    public final DoubleUp game;
 
-    public MiniGame(DoubleUpPrototype game) {
+    public MiniGame(DoubleUp game) {
         this.game = game;
         game.currMiniGame = this;
     }

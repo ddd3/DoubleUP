@@ -8,12 +8,12 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class Start implements Screen {
-    private final DoubleUpPrototype game;
+    private final DoubleUp game;
     private ObjectMap<String, Sprite> sprites;
     private boolean isHosting = false;
     private boolean isSlidedOut = false;
 
-    public Start(final DoubleUpPrototype game) {
+    public Start(final DoubleUp game) {
         this.game = game;
         final float padding = 30;
         sprites = new ObjectMap<String, Sprite>();

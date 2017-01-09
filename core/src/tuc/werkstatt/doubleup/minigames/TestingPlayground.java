@@ -3,12 +3,12 @@ package tuc.werkstatt.doubleup.minigames;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
-import tuc.werkstatt.doubleup.DoubleUpPrototype;
+import tuc.werkstatt.doubleup.DoubleUp;
 import tuc.werkstatt.doubleup.MiniGame;
 
 public final class TestingPlayground extends MiniGame {
 
-    public TestingPlayground(DoubleUpPrototype game) {
+    public TestingPlayground(DoubleUp game) {
         super(game);
     }
 

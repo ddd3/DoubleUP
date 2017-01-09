@@ -11,13 +11,13 @@ import tuc.werkstatt.doubleup.network.GameFinishedMessage;
 import tuc.werkstatt.doubleup.network.GameNextMessage;
 
 public class MiniGameManager {
-	private final DoubleUpPrototype game;
+	private final DoubleUp game;
     private int currMiniGameID = -1;
     private int currRound = 0;
     private final int numRounds = 3;
     private IntIntMap players = new IntIntMap(); // ID and points
 
-    public MiniGameManager(final DoubleUpPrototype game) {
+    public MiniGameManager(final DoubleUp game) {
 		this.game = game;
 
         System.out.println("Num connected: " + game.server.getConnections().length + " clients");
