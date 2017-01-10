@@ -16,7 +16,7 @@ public final class TestingPlayground extends MiniGame {
     public void show() {}
 
     @Override
-    public int getProgress() {
+    public float getProgress() {
         return 0;
     }
 
@@ -36,15 +36,6 @@ public final class TestingPlayground extends MiniGame {
             Gdx.app.exit();
         }
     }
-
-    @Override
-    public void resize(int width, int height) {}
-
-    @Override
-    public void pause() {}
-
-    @Override
-    public void resume() {}
 
     @Override
     public void hide() {}

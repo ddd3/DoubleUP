@@ -17,17 +17,17 @@ public final class PumpBalloon extends MiniGame {
 
     public PumpBalloon(DoubleUp game) {
         super(game);
-    }
 
-    @Override
-    public void show() {
         renderer = new ShapeRenderer();
         balloonColor = new Color(1f, 1f, 0f, 1f);
     }
 
     @Override
-    public int getProgress() {
-        return (int)((balloonRadius - initialRadius) / (edgeDist - initialRadius) * 100);
+    public void show() {}
+
+    @Override
+    public float getProgress() {
+        return 100f * (balloonRadius - initialRadius) / (edgeDist - initialRadius);
     }
 
     @Override
@@ -54,15 +54,6 @@ public final class PumpBalloon extends MiniGame {
             balloonColor.g -= 1f / numOfPumpsUntilFull;
         }
     }
-
-    @Override
-    public void resize(int width, int height) {}
-
-    @Override
-    public void pause() {}
-
-    @Override
-    public void resume() {}
 
     @Override
     public void hide() {}
