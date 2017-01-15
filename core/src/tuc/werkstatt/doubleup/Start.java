@@ -29,7 +29,7 @@ public class Start implements Screen {
         sprites.put("help_button", sp);
 
         sp = game.atlas.createSprite("ui/settings_button");
-        sp.setPosition(game.width - sp.getWidth() - padding, padding);
+        sp.setPosition(game.targetResWidth - sp.getWidth() - padding, padding);
         sprites.put("settings_button", sp);
 
         sp = game.atlas.createSprite("ui/settings_slideout");
@@ -38,15 +38,15 @@ public class Start implements Screen {
         sprites.put("settings_slideout", sp);
 
         sp = game.atlas.createSprite("ui/title_logo");
-        sp.setPosition((game.width - sp.getWidth()) / 2, game.height - sp.getHeight() - padding * 3);
+        sp.setPosition((game.targetResWidth - sp.getWidth()) / 2, game.targetResHeight - sp.getHeight() - padding * 3);
         sprites.put("title_logo", sp);
 
         sp = game.atlas.createSprite("ui/join_button");
-        sp.setPosition((game.width - sp.getWidth()) / 2, (game.height - sp.getHeight()) / 2);
+        sp.setPosition((game.targetResWidth - sp.getWidth()) / 2, (game.targetResHeight - sp.getHeight()) / 2);
         sprites.put("join_button", sp);
 
         sp = game.atlas.createSprite("ui/host_panel");
-        sp.setPosition((game.width - sp.getWidth()) / 2, sprites.get("join_button").getY() - sp.getHeight() + 15);
+        sp.setPosition((game.targetResWidth - sp.getWidth()) / 2, sprites.get("join_button").getY() - sp.getHeight() + 15);
         sprites.put("host_panel", sp);
 
         Sprite parent = sprites.get("host_panel");
@@ -60,7 +60,7 @@ public class Start implements Screen {
         sprites.put("toggle_red", sp);
 
         sp = game.atlas.createSprite("ui/highscores_button");
-        sp.setPosition((game.width - sp.getWidth()) / 2, sprites.get("host_panel").getY() - sp.getHeight() - padding);
+        sp.setPosition((game.targetResWidth - sp.getWidth()) / 2, sprites.get("host_panel").getY() - sp.getHeight() - padding);
         sprites.put("highscores_button", sp);
     }
 
@@ -69,9 +69,10 @@ public class Start implements Screen {
 
     @Override
     public void render(float deltaTime) {
+        game.uiView.apply();
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.batch.setProjectionMatrix(game.camera.combined);
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
 
         sprites.get("title_background").draw(game.batch);
@@ -94,7 +95,7 @@ public class Start implements Screen {
 
     private void updateLogic(float deltaTime) {
         if (Gdx.input.justTouched()) {
-            Vector3 touchPos = game.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+            Vector3 touchPos = game.uiCamera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
             if (sprites.get("toggle_green").getBoundingRectangle().contains(touchPos.x, touchPos.y)) {
                 isHosting = !isHosting;
             } else if (sprites.get("settings_button").getBoundingRectangle().contains(touchPos.x, touchPos.y)) {
@@ -106,7 +107,9 @@ public class Start implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {}
+    public void resize(int width, int height) {
+        game.resizeViews();
+    }
 
     @Override
     public void pause() {}

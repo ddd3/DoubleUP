@@ -16,9 +16,10 @@ public class Results implements Screen {
 
     @Override
     public void render(float delta) {
+        game.uiView.apply();
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.batch.setProjectionMatrix(game.camera.combined);
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
         game.font.draw(game.batch, "Results", 10, game.font.getLineHeight());
         game.batch.end();
@@ -30,7 +31,9 @@ public class Results implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {}
+    public void resize(int width, int height) {
+        game.resizeViews();
+    }
 
     @Override
     public void pause() {}

@@ -13,20 +13,29 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
 
 public class DoubleUp extends Game {
     // 16:10 aspect ratio, native nexus 7 (course device) resolution
-	public final int width = 1200;
-	public final int height = 1920;
+    public final int targetResWidth = 1200;
+    public final int targetResHeight = 1920;
+    public final int targetTopBarHeight = 96;
+    public final int targetBottomBarHeight = 96;
+	public final int width = targetResWidth;
+	public final int height = targetResHeight - targetTopBarHeight - targetBottomBarHeight;
 
-    final String atlasFileName = "textures";
+    private final String atlasFileName = "textures";
     public TextureAtlas atlas;
     public AssetManager assets;
 	public SpriteBatch batch;
 	public BitmapFont font;
 	public OrthographicCamera camera;
+    public OrthographicCamera uiCamera;
+    public Viewport gameView;
+    public Viewport uiView;
     Server server;
     Client client;
 
@@ -52,8 +61,17 @@ public class DoubleUp extends Game {
         loadAssets();
         atlas = assets.get("images/" + atlasFileName + ".atlas", TextureAtlas.class);
         batch = new SpriteBatch();
+
+        // user interface, e.g. start screen, top and bottom bar in minigame screen
+        uiCamera = new OrthographicCamera();
+        uiCamera.setToOrtho(false, targetResWidth, targetResHeight);
+        uiView = new StretchViewport(targetResWidth, targetResHeight, uiCamera);
+
+        // minigame camera and view
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, width, height);
+        gameView = new StretchViewport(width, height, camera);
+        resizeViews();
 
         // minigame provided by program argument will be quick started and looped for testing purposes
         if (args != null && args.length > 0 &&
@@ -102,6 +120,16 @@ public class DoubleUp extends Game {
         assets.load("images/" + atlasFileName + ".atlas", TextureAtlas.class);
         System.out.println("Loading assets ...");
         assets.finishLoading();
+    }
+
+    public void resizeViews() {
+        uiView.setScreenBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        final int screenBottomBarHeight = (int)((float)Gdx.graphics.getHeight()
+                / targetResHeight * targetBottomBarHeight);
+        final int screenTopBarHeight = (int)((float)Gdx.graphics.getHeight()
+                / targetResHeight * targetTopBarHeight);
+        gameView.setScreenBounds(0, screenBottomBarHeight, Gdx.graphics.getWidth(),
+                Gdx.graphics.getHeight() - screenBottomBarHeight - screenTopBarHeight);
     }
 
     public boolean isTestingEnvironment() {
