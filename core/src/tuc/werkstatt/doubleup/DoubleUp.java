@@ -22,8 +22,8 @@ public class DoubleUp extends Game {
     // 16:10 aspect ratio, native nexus 7 (course device) resolution
     public final int targetResWidth = 1200;
     public final int targetResHeight = 1920;
-    public final int targetTopBarHeight = 96;
-    public final int targetBottomBarHeight = 96;
+    public final int targetTopBarHeight = 80;
+    public final int targetBottomBarHeight = 80;
 	public final int width = targetResWidth;
 	public final int height = targetResHeight - targetTopBarHeight - targetBottomBarHeight;
 
