@@ -12,6 +12,8 @@ import com.esotericsoftware.kryonet.Server;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import tuc.werkstatt.doubleup.network.ClientFinishedMessage;
 import tuc.werkstatt.doubleup.network.ClientProgressMessage;
@@ -42,20 +44,21 @@ public class Lobby implements Screen {
 
     @Override
     public void render(float deltaTime) {
+        game.uiView.apply();
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.batch.setProjectionMatrix(game.camera.combined);
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
         if (isHosting) {
             game.font.draw(game.batch, "Lobby (Host): " + game.server.getConnections().length +
                     " client(s)", 10, game.font.getLineHeight());
             if (game.server.getConnections().length > 0) {
                 game.font.setColor(Color.GREEN);
-                game.font.draw(game.batch, "start games, GO!", 10, (game.height - game.font.getLineHeight()) / 2);
+                game.font.draw(game.batch, "start games, GO!", 10, (game.targetResHeight - game.font.getLineHeight()) / 2);
                 game.font.draw(game.batch, "Click/touch to start", 10, game.font.getLineHeight() * 2);
             } else {
                 game.font.setColor(Color.RED);
-                game.font.draw(game.batch, "waiting for clients", 10, (game.height - game.font.getLineHeight()) / 2);
+                game.font.draw(game.batch, "waiting for clients", 10, (game.targetResHeight - game.font.getLineHeight()) / 2);
                 game.font.draw(game.batch, "At least one client required to start", 10, game.font.getLineHeight() * 2);
             }
             game.font.setColor(Color.WHITE);
@@ -136,15 +139,33 @@ public class Lobby implements Screen {
                     System.out.println("Client: GameNextMessage received");
                     GameNextMessage msg = (GameNextMessage) object;
                     final int ID = msg.gameID;
+                    final int currRound = msg.currRound;
+                    final int maxRounds = msg.maxRounds;
                     Gdx.app.postRunnable(new Runnable() {
                         @Override
                         public void run() {
                             game.loadMiniGame(game.minigames.get(ID));
+                            game.currMiniGame.currRound = currRound;
+                            game.currMiniGame.maxRounds = maxRounds;
+                            if (game.currMiniGame.players != null) {
+                                for (Player p : game.currMiniGame.players) {
+                                    p.miniGameProgress = 0;
+                                }
+                            }
                         }
                     });
                 }
                 else if (object instanceof GameProgressMessage) {
-                    // TODO GAMEPROGRESSMESSAGE
+                    GameProgressMessage msg = (GameProgressMessage) object;
+                    if (game.currMiniGame.getClass().getSimpleName().equals(game.minigames.get(msg.gameID))) {
+                        game.currMiniGame.players = msg.players;
+                        Arrays.sort(game.currMiniGame.players, new Comparator<Player>() {
+                            @Override
+                            public int compare(Player p1, Player p2) {
+                                return p1.miniGameProgress < p2.miniGameProgress ? 1 : -1;
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -194,10 +215,14 @@ public class Lobby implements Screen {
         kryo.register(ClientProgressMessage.class);
         kryo.register(ClientFinishedMessage.class);
         kryo.register(ExitMessage.class);
+        kryo.register(Player[].class);
+        kryo.register(Player.class);
     }
 
     @Override
-    public void resize(int width, int height) {}
+    public void resize(int width, int height) {
+        game.resizeViews();
+    }
 
     @Override
     public void pause() {}
