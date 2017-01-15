@@ -121,7 +121,8 @@ public abstract class MiniGame implements Screen {
             for (Player p : players) {
                 Color.rgba8888ToColor(playerColor, p.color8888);
                 uiRenderer.setColor(playerColor);
-                final int progressInWidth = (int) (maxIndicatorWidth / 100f * p.miniGameProgress);
+                final float progress = p.ID == game.client.getID() ? getProgress() : p.miniGameProgress;
+                final int progressInWidth = (int) (maxIndicatorWidth / 100f * progress);
                 uiRenderer.rect(padding, topBarY + padding, progressInWidth, indicatorHeight);
             }
         }
@@ -134,9 +135,9 @@ public abstract class MiniGame implements Screen {
     }
 
     private void drawUiBottomBar() {
-        final int indicatorSpacing = 12;
+        final int indicatorSpacing = game.targetBottomBarHeight / 8;
         final int padding = game.targetBottomBarHeight / 4;
-        final int maxPossibleIndicatorSize = (game.targetResWidth - padding * 2 - (maxRounds - 1) * indicatorSpacing) / maxRounds;
+        final int maxPossibleIndicatorSize = Math.max(1, (game.targetResWidth - padding * 2 - (maxRounds - 1) * indicatorSpacing) / maxRounds);
         final int indicatorSize = Math.min(game.targetBottomBarHeight / 2, maxPossibleIndicatorSize);
         final boolean evenNumRounds = maxRounds % 2 == 0;
         final int startPosX = evenNumRounds ?
