@@ -1,6 +1,7 @@
 package tuc.werkstatt.doubleup;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -70,6 +71,9 @@ public class Lobby implements Screen {
     }
 
     private void updateLogic(float deltaTime) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+            game.toggleMusicMute();
+        }
         //TODO: android back button and keyboard escape should return to startscreen
         if (!isHosting || game.server.getConnections().length <= 0) {
             return;

@@ -1,6 +1,7 @@
 package tuc.werkstatt.doubleup;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -128,6 +129,10 @@ public abstract class MiniGame implements Screen {
 
         game.uiView.apply();
         drawUserInterface();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+            game.toggleMusicMute();
+        }
 
         if (isFinished()) {
             System.out.println("Client: ClientFinishedMessage sent");
