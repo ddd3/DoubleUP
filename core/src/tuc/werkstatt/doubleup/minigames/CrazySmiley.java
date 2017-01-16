@@ -191,7 +191,7 @@ public final class CrazySmiley extends MiniGame {
                         b.sprite.getX() + b.sprite.getWidth() / 2, b.sprite.getY() + b.sprite.getHeight() / 2);
                 if (distance < b.sprite.getWidth() / 2) {
 
-                    hitYellow.play(0.1f);
+                    hitYellow.play(0.5f);
                     ++currPoints;
                     b.kill();
 
@@ -216,7 +216,7 @@ public final class CrazySmiley extends MiniGame {
 
 
                 if (distance < b.sprite.getWidth() / 2) {
-                    hitRed.play(0.1f);
+                    hitRed.play(0.5f);
                     if (currPoints > 0) {
                         --currPoints;
                     }
