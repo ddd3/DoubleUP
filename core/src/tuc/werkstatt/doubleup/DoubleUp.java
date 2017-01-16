@@ -42,7 +42,7 @@ public class DoubleUp extends Game {
     // add your individual minigame name (needs to match java file) here
     // index also being used as gameID in messages
     Array<String> minigames = new Array<String>(new String[]{
-            "PickColor", "PumpBalloon" });
+            "CrazySmiley","PickColor", "PumpBalloon"  });
 
     MiniGame currMiniGame = null;
     private String testingMiniGame = null;
@@ -160,7 +160,8 @@ public class DoubleUp extends Game {
 	public void dispose() {
         if (client != null) { client.stop(); }
         if (server != null) { server.stop(); }
-		font.dispose();
+
+        font.dispose();
 		batch.dispose();
         assets.dispose();
 	}
