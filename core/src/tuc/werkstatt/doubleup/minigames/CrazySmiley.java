@@ -10,17 +10,20 @@
 package tuc.werkstatt.doubleup.minigames;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.audio.Sound;
+
 import tuc.werkstatt.doubleup.DoubleUp;
 import tuc.werkstatt.doubleup.MiniGame;
 
 public final class CrazySmiley extends MiniGame {
+
+    private Sound hitYellow;
+    private Sound hitRed;
+    private Sprite backgroundSprite;
 
     private final int maxPoints = 5;
     private int currPoints = 0;
@@ -120,8 +123,11 @@ public final class CrazySmiley extends MiniGame {
 
 
     public CrazySmiley (DoubleUp game) {
-
         super(game);
+
+        backgroundSprite = getSprite("ui/title_background");
+        backgroundSprite.setSize(game.width, game.height);
+        backgroundSprite.setPosition(0, 0);
 
         ball = new Array<Ball>(maxBall1);
         for (int i = 0; i < maxBall1; ++i) {
@@ -131,12 +137,13 @@ public final class CrazySmiley extends MiniGame {
             for (int j = 0; j < maxBall2; ++j) {
                 balld.add(new Balld());
             }
-
     }
 
     @Override
     public void show() {
-
+        game.loadMusic("music/game_start_loop.ogg");
+        hitYellow = getSound("sounds/laughter.wav");
+        hitRed = getSound("sounds/error.wav");
     }
 
     @Override
@@ -145,12 +152,12 @@ public final class CrazySmiley extends MiniGame {
     @Override
     public boolean isFinished() { return currPoints >= maxPoints; }
 
-
-
     @Override
     public void draw(float deltaTime) {
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
+
+        backgroundSprite.draw(game.batch);
 
         int numActive = 0;
         for (Ball b : ball) {
@@ -166,20 +173,12 @@ public final class CrazySmiley extends MiniGame {
                 numActive++;
             }
         }
-        game.font.setColor(Color.GREEN);
-        game.font.draw(game.batch, "CrazySmiley - Only Yellow: " + currPoints + "/" + maxPoints +
-                " (" + getProgress() + "%) " + ", #active: " + numActive, 10, game.font.getLineHeight());
-        game.font.setColor(Color.WHITE);
 
         game.batch.end();
     }
 
     @Override
     public void update(float deltaTime) {
-        Sound hitYellow = Gdx.audio.newSound(Gdx.files.internal("sounds/laughter.wav"));
-        Sound hitRed = Gdx.audio.newSound(Gdx.files.internal("sounds/error.wav"));
-
-
         if (Gdx.input.justTouched()) {
             Vector2 pos = getTouchPos();
 
@@ -191,7 +190,7 @@ public final class CrazySmiley extends MiniGame {
                         b.sprite.getX() + b.sprite.getWidth() / 2, b.sprite.getY() + b.sprite.getHeight() / 2);
                 if (distance < b.sprite.getWidth() / 2) {
 
-                    hitYellow.play(0.1f);
+                    hitYellow.play();
                     ++currPoints;
                     b.kill();
 
@@ -216,7 +215,7 @@ public final class CrazySmiley extends MiniGame {
 
 
                 if (distance < b.sprite.getWidth() / 2) {
-                    hitRed.play(0.1f);
+                    hitRed.play();
                     if (currPoints > 0) {
                         --currPoints;
                     }
@@ -285,5 +284,5 @@ public final class CrazySmiley extends MiniGame {
     public void hide() {}
 
     @Override
-    public void dispose() {    }
+    public void dispose() {}
 }

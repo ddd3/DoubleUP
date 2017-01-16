@@ -2,6 +2,7 @@ package tuc.werkstatt.doubleup;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -196,6 +197,14 @@ public abstract class MiniGame implements Screen {
 
     public final Sprite getSprite(String name) {
         return game.atlas.createSprite(name);
+    }
+
+    public final Sound getSound(String name) {
+        if(!game.assets.isLoaded(name)) {
+            game.assets.load(name, Sound.class);
+            game.assets.finishLoadingAsset(name);
+        }
+        return game.assets.get(name);
     }
 
     @Override
