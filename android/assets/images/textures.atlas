@@ -4,6 +4,39 @@ size: 2048,2048
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+minigames/CrazySmiley/red
+  rotate: false
+  xy: 2, 2
+  size: 297, 299
+  orig: 297, 299
+  offset: 0, 0
+  index: -1
+minigames/CrazySmiley/yellow
+  rotate: false
+  xy: 2, 303
+  size: 1024, 1024
+  orig: 1024, 1024
+  offset: 0, 0
+  index: -1
+
+textures2.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+minigames/PickColor/swirl
+  rotate: false
+  xy: 2, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+
+textures3.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
 ui/help_button
   rotate: false
   xy: 1733, 1404
@@ -72,18 +105,5 @@ ui/toggle_red
   xy: 417, 44
   size: 134, 60
   orig: 134, 60
-  offset: 0, 0
-  index: -1
-
-textures2.png
-size: 512,512
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-minigames/PickColor/swirl
-  rotate: false
-  xy: 2, 2
-  size: 256, 256
-  orig: 256, 256
   offset: 0, 0
   index: -1
