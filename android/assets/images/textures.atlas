@@ -4,51 +4,56 @@ size: 2048,2048
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-ui/bottom_circle
+minigames/CrazySmiley/red
   rotate: false
-  xy: 1204, 111
-  size: 71, 71
-  orig: 71, 71
+  xy: 2, 2
+  size: 297, 299
+  orig: 297, 299
   offset: 0, 0
   index: -1
-ui/bottom_filled
+minigames/CrazySmiley/yellow
   rotate: false
-  xy: 1332, 403
-  size: 71, 71
-  orig: 71, 71
+  xy: 2, 303
+  size: 1024, 1024
+  orig: 1024, 1024
   offset: 0, 0
   index: -1
-ui/bottom_panel
-  rotate: true
-  xy: 1733, 826
-  size: 1200, 138
-  orig: 1200, 138
-  offset: 0, 0
-  index: -1
-ui/flag
+
+textures2.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+minigames/PickColor/swirl
   rotate: false
-  xy: 1204, 184
-  size: 86, 89
-  orig: 86, 89
+  xy: 2, 2
+  size: 256, 256
+  orig: 256, 256
   offset: 0, 0
   index: -1
+
+textures3.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
 ui/help_button
   rotate: false
-  xy: 1204, 405
+  xy: 1733, 1404
   size: 126, 131
   orig: 126, 131
   offset: 0, 0
   index: -1
 ui/highscores_button
-  rotate: false
-  xy: 1204, 666
+  rotate: true
+  xy: 1733, 1537
   size: 489, 160
   orig: 489, 160
   offset: 0, 0
   index: -1
 ui/host_panel
   rotate: false
-  xy: 1204, 538
+  xy: 1204, 700
   size: 421, 126
   orig: 421, 126
   offset: 0, 0
@@ -62,7 +67,7 @@ ui/join_button
   index: -1
 ui/settings_button
   rotate: false
-  xy: 1204, 275
+  xy: 1895, 1898
   size: 124, 128
   orig: 124, 128
   offset: 0, 0
@@ -90,35 +95,15 @@ ui/title_logo
   index: -1
 ui/toggle_green
   rotate: false
-  xy: 417, 43
+  xy: 1204, 637
   size: 134, 61
   orig: 134, 61
   offset: 0, 0
   index: -1
 ui/toggle_red
   rotate: false
-  xy: 1332, 476
+  xy: 417, 44
   size: 134, 60
   orig: 134, 60
-  offset: 0, 0
-  index: -1
-ui/top_panel
-  rotate: true
-  xy: 1873, 826
-  size: 1200, 138
-  orig: 1200, 138
-  offset: 0, 0
-  index: -1
-
-textures2.png
-size: 512,512
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-minigames/PickColor/swirl
-  rotate: false
-  xy: 2, 2
-  size: 256, 256
-  orig: 256, 256
   offset: 0, 0
   index: -1
