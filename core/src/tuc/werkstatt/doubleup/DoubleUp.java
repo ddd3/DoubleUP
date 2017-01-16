@@ -25,19 +25,19 @@ public class DoubleUp extends Game {
     public final int targetResHeight = 1920;
     public final int targetTopBarHeight = 138;
     public final int targetBottomBarHeight = 138;
-	public final int width = targetResWidth;
-	public final int height = targetResHeight - targetTopBarHeight - targetBottomBarHeight;
+    public final int width = targetResWidth;
+    public final int height = targetResHeight - targetTopBarHeight - targetBottomBarHeight;
 
     private final String atlasFileName = "textures";
     public TextureAtlas atlas;
     public AssetManager assets;
-	public SpriteBatch batch;
-	public BitmapFont font;
+    public SpriteBatch batch;
+    public BitmapFont font;
     private Music music;
     private String currMusicFileName;
     private boolean isMusicMuted = false;
 
-	public OrthographicCamera camera;
+    public OrthographicCamera camera;
     public OrthographicCamera uiCamera;
     public Viewport gameView;
     public Viewport uiView;
@@ -47,7 +47,7 @@ public class DoubleUp extends Game {
     // add your individual minigame name (needs to match java file) here
     // index also being used as gameID in messages
     Array<String> minigames = new Array<String>(new String[]{
-           "PickColor", "PumpBalloon",  "CrazySmiley"   });
+            "CrazySmiley","PickColor", "PumpBalloon", "FindTheMatch"  });
 
     MiniGame currMiniGame = null;
     private String testingMiniGame = null;
@@ -57,8 +57,8 @@ public class DoubleUp extends Game {
         this.args = args;
     }
 
-	@Override
-	public void create() {
+    @Override
+    public void create() {
         if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
             generateTextureAtlas();
         }
@@ -72,8 +72,8 @@ public class DoubleUp extends Game {
         uiView = new StretchViewport(targetResWidth, targetResHeight, uiCamera);
 
         // minigame camera and view
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, width, height);
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, width, height);
         gameView = new StretchViewport(width, height, camera);
         resizeViews();
 
@@ -85,7 +85,7 @@ public class DoubleUp extends Game {
         } else {
             setScreen(new Start(this));
         }
-	}
+    }
 
     private void generateTextureAtlas() {
         final long imageDirModTime = Gdx.files.internal("images").lastModified();
@@ -183,19 +183,19 @@ public class DoubleUp extends Game {
         }
     }
 
-	@Override
-	public void render() {
-		super.render();
-	}
+    @Override
+    public void render() {
+        super.render();
+    }
 
     @Override
-	public void dispose() {
+    public void dispose() {
         if (client != null) { client.stop(); }
         if (server != null) { server.stop(); }
 
         if (music != null) { music.stop(); }
         font.dispose();
-		batch.dispose();
+        batch.dispose();
         assets.dispose();
-	}
+    }
 }
