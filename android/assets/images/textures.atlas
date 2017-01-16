@@ -4,23 +4,51 @@ size: 2048,2048
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+ui/bottom_circle
+  rotate: false
+  xy: 1204, 111
+  size: 71, 71
+  orig: 71, 71
+  offset: 0, 0
+  index: -1
+ui/bottom_filled
+  rotate: false
+  xy: 1332, 403
+  size: 71, 71
+  orig: 71, 71
+  offset: 0, 0
+  index: -1
+ui/bottom_panel
+  rotate: true
+  xy: 1733, 826
+  size: 1200, 138
+  orig: 1200, 138
+  offset: 0, 0
+  index: -1
+ui/flag
+  rotate: false
+  xy: 1204, 184
+  size: 86, 89
+  orig: 86, 89
+  offset: 0, 0
+  index: -1
 ui/help_button
   rotate: false
-  xy: 1733, 1404
+  xy: 1204, 405
   size: 126, 131
   orig: 126, 131
   offset: 0, 0
   index: -1
 ui/highscores_button
-  rotate: true
-  xy: 1733, 1537
+  rotate: false
+  xy: 1204, 666
   size: 489, 160
   orig: 489, 160
   offset: 0, 0
   index: -1
 ui/host_panel
   rotate: false
-  xy: 1204, 700
+  xy: 1204, 538
   size: 421, 126
   orig: 421, 126
   offset: 0, 0
@@ -34,7 +62,7 @@ ui/join_button
   index: -1
 ui/settings_button
   rotate: false
-  xy: 1895, 1898
+  xy: 1204, 275
   size: 124, 128
   orig: 124, 128
   offset: 0, 0
@@ -62,16 +90,23 @@ ui/title_logo
   index: -1
 ui/toggle_green
   rotate: false
-  xy: 1204, 637
+  xy: 417, 43
   size: 134, 61
   orig: 134, 61
   offset: 0, 0
   index: -1
 ui/toggle_red
   rotate: false
-  xy: 417, 44
+  xy: 1332, 476
   size: 134, 60
   orig: 134, 60
+  offset: 0, 0
+  index: -1
+ui/top_panel
+  rotate: true
+  xy: 1873, 826
+  size: 1200, 138
+  orig: 1200, 138
   offset: 0, 0
   index: -1
 

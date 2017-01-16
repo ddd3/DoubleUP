@@ -19,10 +19,6 @@ public class Results implements Screen {
         game.uiView.apply();
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.batch.setProjectionMatrix(game.uiCamera.combined);
-        game.batch.begin();
-        game.font.draw(game.batch, "Results", 10, game.font.getLineHeight());
-        game.batch.end();
 
         if (Gdx.input.justTouched()) {
             dispose();

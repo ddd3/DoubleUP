@@ -16,8 +16,10 @@ public final class PickColor extends MiniGame {
     private final int maxActiveSwirls = 30;
     private final float swirlSpawnMinDelay = 0.15f;
     private float currSpawnDelay = 0f;
-    private final Color colorToCollect = Color.RED;
-    private final Color[] colors = {Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW};
+    private final Color[] colors = {Color.valueOf("ff6565ff"), Color.valueOf("6565ffff"),
+            Color.valueOf("65ff65ff"), Color.valueOf("ffff65ff")};
+    private final Color colorToCollect = colors[0];
+    private Sprite backgroundSprite;
 
     private Array<Swirl> swirls;
 
@@ -52,6 +54,9 @@ public final class PickColor extends MiniGame {
 
     public PickColor(DoubleUp game) {
         super(game);
+        backgroundSprite = getSprite("ui/title_background");
+        backgroundSprite.setSize(game.width, game.height);
+        backgroundSprite.setPosition(0, 0);
 
         swirls = new Array<Swirl>(maxActiveSwirls);
         for (int i = 0; i < maxActiveSwirls; ++i) {
@@ -72,7 +77,7 @@ public final class PickColor extends MiniGame {
     public void draw(float deltaTime) {
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
-
+        backgroundSprite.draw(game.batch);
         int numActive = 0;
         for (Swirl sw : swirls) {
             if (sw.alive) {
@@ -80,10 +85,6 @@ public final class PickColor extends MiniGame {
                 numActive++;
             }
         }
-        game.font.setColor(Color.RED);
-        game.font.draw(game.batch, "PickColor - Pick Red: " + currPoints + "/" + maxPoints +
-                " (" + getProgress() + "%) " + ", #active: " + numActive, 10, game.font.getLineHeight());
-        game.font.setColor(Color.WHITE);
         game.batch.end();
     }
 
