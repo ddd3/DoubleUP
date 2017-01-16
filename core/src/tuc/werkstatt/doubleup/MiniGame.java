@@ -18,9 +18,17 @@ import tuc.werkstatt.doubleup.network.ClientProgressMessage;
 public abstract class MiniGame implements Screen {
     public final DoubleUp game;
 
-    private ShapeRenderer uiRenderer;
-    private Color uiBarColor;
-    private Color playerColor;
+    private static boolean isUiInitialized = false;
+    private static ShapeRenderer uiShapeRenderer;
+    private static Color uiPlayerColor;
+    private static Sprite bottomPanelSprite;
+    private static Sprite topPanelSprite;
+    private static Sprite roundIndicatorSprite;
+    private static Sprite currRoundIndicatorSprite;
+    private static Sprite flagSprite;
+
+    private static final float indicatorSpacing = 12f;
+    private static float indicatorStartPosX;
 
     private Vector3 projectedTouchPos = new Vector3();
     private Vector2 unprojectedTouchPos = new Vector2();
@@ -35,13 +43,40 @@ public abstract class MiniGame implements Screen {
 
     public MiniGame(DoubleUp game) {
         this.game = game;
-        this.uiRenderer = new ShapeRenderer();
-        this.uiBarColor = new Color(0.85f, 0.85f, 0.85f, 1f);
-        this.playerColor = new Color();
         game.currMiniGame = this;
         sendProgressTimer = new Timer();
         progressMsg = new ClientProgressMessage();
         scheduleProgressTask();
+    }
+
+    public void init(int currRound, int maxRounds) {
+        this.currRound = currRound;
+        this.maxRounds = maxRounds;
+        initUserInterface();
+    }
+
+    private void initUserInterface() {
+        if (isUiInitialized) { return; } else { isUiInitialized = true; }
+
+        uiShapeRenderer = new ShapeRenderer();
+        uiPlayerColor = new Color();
+        topPanelSprite = getSprite("ui/top_panel");
+        topPanelSprite.setPosition(0, game.targetResHeight - game.targetTopBarHeight);
+        bottomPanelSprite = getSprite("ui/bottom_panel");
+        bottomPanelSprite.setPosition(0, 0);
+        roundIndicatorSprite = getSprite("ui/bottom_circle");
+        final float originalIndicatorSize = roundIndicatorSprite.getWidth();
+        final float maxPossibleIndicatorSize = Math.max(10, (game.targetResWidth - (maxRounds + 1) * indicatorSpacing) / maxRounds);
+        final float scaledIndicatorSize = Math.min(originalIndicatorSize, maxPossibleIndicatorSize);
+        final boolean evenNumRounds = maxRounds % 2 == 0;
+        indicatorStartPosX = evenNumRounds ?
+                game.targetResWidth / 2 - ((maxRounds / 2) * (scaledIndicatorSize + indicatorSpacing)) + indicatorSpacing / 2:
+                (game.targetResWidth - scaledIndicatorSize) / 2 - ((maxRounds / 2) * (scaledIndicatorSize + indicatorSpacing));
+        currRoundIndicatorSprite = getSprite("ui/bottom_filled");
+        roundIndicatorSprite.setSize(scaledIndicatorSize, scaledIndicatorSize);
+        currRoundIndicatorSprite.setSize(scaledIndicatorSize, scaledIndicatorSize);
+        flagSprite = getSprite("ui/flag");
+        flagSprite.setPosition(1140f - flagSprite.getWidth() / 2, game.targetResHeight - flagSprite.getHeight() - 3f);
     }
 
     private void scheduleProgressTask() {
@@ -77,12 +112,10 @@ public abstract class MiniGame implements Screen {
 
     @Override
     public final void render(float deltaTime) {
-        game.uiView.apply();
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        drawUserInterface();
 
-        game.camera.update();
+        //game.camera.update();
         if (Gdx.input.isTouched()) {
             projectedTouchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             game.camera.unproject(projectedTouchPos);
@@ -91,6 +124,9 @@ public abstract class MiniGame implements Screen {
         game.gameView.apply();
         draw(deltaTime);
         update(deltaTime);
+
+        game.uiView.apply();
+        drawUserInterface();
 
         if (isFinished()) {
             System.out.println("Client: ClientFinishedMessage sent");
@@ -103,61 +139,55 @@ public abstract class MiniGame implements Screen {
     }
 
     private void drawUserInterface() {
-        uiRenderer.setProjectionMatrix(game.uiCamera.combined);
         drawUiTopBar();
         drawUiBottomBar();
     }
 
     private void drawUiTopBar() {
-        final int topBarY = game.targetResHeight - game.targetTopBarHeight;
-        uiRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        uiRenderer.setColor(uiBarColor);
-        uiRenderer.rect(0, topBarY, game.targetResWidth, game.targetTopBarHeight);
+        final int topPanelY = game.targetResHeight - game.targetTopBarHeight;
+        // values measured in image editor
+        final int progressBarX = 20;
+        final int progressBarY = topPanelY + 52;
+        final int progressBarWidth = 1162;
+        final int progressBarHeight = 36;
 
-        final int padding = game.targetTopBarHeight / 4;
-        final int indicatorHeight = game.targetTopBarHeight / 2;
-        final int maxIndicatorWidth = game.targetResWidth - padding * 2;
+        uiShapeRenderer.setProjectionMatrix(game.uiCamera.combined);
+        uiShapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        uiShapeRenderer.setColor(Color.WHITE);
+        uiShapeRenderer.rect(progressBarX, progressBarY, progressBarWidth, progressBarHeight);
         if (players != null) {
             for (Player p : players) {
-                Color.rgba8888ToColor(playerColor, p.color8888);
-                uiRenderer.setColor(playerColor);
+                Color.rgba8888ToColor(uiPlayerColor, p.color8888);
+                uiShapeRenderer.setColor(uiPlayerColor);
                 final float progress = p.ID == game.client.getID() ? getProgress() : p.miniGameProgress;
-                final int progressInWidth = (int) (maxIndicatorWidth / 100f * progress);
-                uiRenderer.rect(padding, topBarY + padding, progressInWidth, indicatorHeight);
+                final int currPlayerProgressInWidth = (int) (progressBarWidth / 100f * progress);
+                uiShapeRenderer.rect(progressBarX, progressBarY, currPlayerProgressInWidth, progressBarHeight);
             }
         }
-        uiRenderer.end();
+        uiShapeRenderer.end();
 
-        uiRenderer.begin(ShapeRenderer.ShapeType.Line);
-        uiRenderer.setColor(Color.GRAY);
-        uiRenderer.rect(padding, topBarY + padding, maxIndicatorWidth, indicatorHeight);
-        uiRenderer.end();
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
+        game.batch.begin();
+        topPanelSprite.draw(game.batch);
+        flagSprite.draw(game.batch);
+        game.batch.end();
     }
 
     private void drawUiBottomBar() {
-        final int indicatorSpacing = game.targetBottomBarHeight / 8;
-        final int padding = game.targetBottomBarHeight / 4;
-        final int maxPossibleIndicatorSize = Math.max(1, (game.targetResWidth - padding * 2 - (maxRounds - 1) * indicatorSpacing) / maxRounds);
-        final int indicatorSize = Math.min(game.targetBottomBarHeight / 2, maxPossibleIndicatorSize);
-        final boolean evenNumRounds = maxRounds % 2 == 0;
-        final int startPosX = evenNumRounds ?
-                game.targetResWidth / 2 - ((maxRounds / 2) * (indicatorSize + indicatorSpacing)) + indicatorSpacing / 2:
-                (game.targetResWidth - indicatorSize) / 2 - ((maxRounds / 2) * (indicatorSize + indicatorSpacing));
-
-        uiRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        uiRenderer.setColor(uiBarColor);
-        uiRenderer.rect(0, 0, game.targetResWidth, game.targetBottomBarHeight);
-
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
+        game.batch.begin();
+        bottomPanelSprite.draw(game.batch);
         for (int i = 1; i <= maxRounds; ++i) {
+            final float currPosX = indicatorStartPosX + (i - 1) * (roundIndicatorSprite.getWidth() + indicatorSpacing);
             if (i == currRound) {
-                uiRenderer.setColor(Color.SCARLET);
+                currRoundIndicatorSprite.setPosition(currPosX, (game.targetBottomBarHeight - currRoundIndicatorSprite.getWidth()) / 2);
+                currRoundIndicatorSprite.draw(game.batch);
             } else {
-                uiRenderer.setColor(Color.GRAY);
+                roundIndicatorSprite.setPosition(currPosX, (game.targetBottomBarHeight - roundIndicatorSprite.getWidth()) / 2);
+                roundIndicatorSprite.draw(game.batch);
             }
-            final int currPosX = startPosX + (i - 1) * (indicatorSize + indicatorSpacing);
-            uiRenderer.rect(currPosX, (game.targetBottomBarHeight - indicatorSize) / 2, indicatorSize, indicatorSize);
         }
-        uiRenderer.end();
+        game.batch.end();
     }
 
     public final Vector2 getTouchPos() {

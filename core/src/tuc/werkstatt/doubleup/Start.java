@@ -74,7 +74,6 @@ public class Start implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
-
         sprites.get("title_background").draw(game.batch);
         sprites.get("help_button").draw(game.batch);
         if (isSlidedOut) {
@@ -86,8 +85,6 @@ public class Start implements Screen {
         sprites.get(isHosting ? "toggle_green" : "toggle_red").draw(game.batch);
         sprites.get("highscores_button").draw(game.batch);
         sprites.get("join_button").draw(game.batch);
-
-        game.font.draw(game.batch, "StartScreen - options, game rules", 10, game.font.getLineHeight());
         game.batch.end();
 
         updateLogic(deltaTime);

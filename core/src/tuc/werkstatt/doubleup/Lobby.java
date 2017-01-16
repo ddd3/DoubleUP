@@ -54,11 +54,9 @@ public class Lobby implements Screen {
                     " client(s)", 10, game.font.getLineHeight());
             if (game.server.getConnections().length > 0) {
                 game.font.setColor(Color.GREEN);
-                game.font.draw(game.batch, "start games, GO!", 10, (game.targetResHeight - game.font.getLineHeight()) / 2);
                 game.font.draw(game.batch, "Click/touch to start", 10, game.font.getLineHeight() * 2);
             } else {
                 game.font.setColor(Color.RED);
-                game.font.draw(game.batch, "waiting for clients", 10, (game.targetResHeight - game.font.getLineHeight()) / 2);
                 game.font.draw(game.batch, "At least one client required to start", 10, game.font.getLineHeight() * 2);
             }
             game.font.setColor(Color.WHITE);
@@ -145,8 +143,7 @@ public class Lobby implements Screen {
                         @Override
                         public void run() {
                             game.loadMiniGame(game.minigames.get(ID));
-                            game.currMiniGame.currRound = currRound;
-                            game.currMiniGame.maxRounds = maxRounds;
+                            game.currMiniGame.init(currRound, maxRounds);
                             if (game.currMiniGame.players != null) {
                                 for (Player p : game.currMiniGame.players) {
                                     p.miniGameProgress = 0;
