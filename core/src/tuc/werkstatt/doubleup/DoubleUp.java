@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -32,6 +33,9 @@ public class DoubleUp extends Game {
     public AssetManager assets;
 	public SpriteBatch batch;
 	public BitmapFont font;
+    private Music music;
+    private String currMusicFileName;
+
 	public OrthographicCamera camera;
     public OrthographicCamera uiCamera;
     public Viewport gameView;
@@ -61,7 +65,6 @@ public class DoubleUp extends Game {
         loadAssets();
         atlas = assets.get("images/" + atlasFileName + ".atlas", TextureAtlas.class);
         batch = new SpriteBatch();
-
         // user interface, e.g. start screen, top and bottom bar in minigame screen
         uiCamera = new OrthographicCamera();
         uiCamera.setToOrtho(false, targetResWidth, targetResHeight);
@@ -117,9 +120,23 @@ public class DoubleUp extends Game {
 
     private void loadAssets() {
         assets = new AssetManager();
-        assets.load("images/" + atlasFileName + ".atlas", TextureAtlas.class);
         System.out.println("Loading assets ...");
+        assets.load("images/" + atlasFileName + ".atlas", TextureAtlas.class);
         assets.finishLoading();
+    }
+
+    public void loadMusic(String name) {
+        if(!assets.isLoaded(name)) {
+            assets.load(name, Music.class);
+            assets.finishLoadingAsset(name);
+            if (music != null) {
+                music.stop();
+                assets.unload(currMusicFileName);
+            }
+            music = assets.get(name);
+            currMusicFileName = name;
+            music.play();
+        }
     }
 
     public void resizeViews() {
@@ -161,6 +178,7 @@ public class DoubleUp extends Game {
         if (client != null) { client.stop(); }
         if (server != null) { server.stop(); }
 
+        if (music != null) { music.stop(); }
         font.dispose();
 		batch.dispose();
         assets.dispose();

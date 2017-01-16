@@ -27,7 +27,9 @@ public final class PumpBalloon extends MiniGame {
     }
 
     @Override
-    public void show() {}
+    public void show() {
+        game.loadMusic("music/game_start_loop.ogg");
+    }
 
     @Override
     public float getProgress() {

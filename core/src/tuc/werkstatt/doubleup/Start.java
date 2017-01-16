@@ -65,7 +65,9 @@ public class Start implements Screen {
     }
 
     @Override
-    public void show() {}
+    public void show() {
+        game.loadMusic("music/best_intro_loop.ogg");
+    }
 
     @Override
     public void render(float deltaTime) {
