@@ -1,6 +1,7 @@
 package tuc.werkstatt.doubleup;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -102,6 +103,9 @@ public class Start implements Screen {
             } else if (sprites.get("join_button").getBoundingRectangle().contains(touchPos.x, touchPos.y)) {
                 game.setScreen(new Lobby(game, isHosting));
             }
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+            game.toggleMusicMute();
         }
     }
 

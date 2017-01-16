@@ -35,6 +35,7 @@ public class DoubleUp extends Game {
 	public BitmapFont font;
     private Music music;
     private String currMusicFileName;
+    private boolean isMusicMuted = false;
 
 	public OrthographicCamera camera;
     public OrthographicCamera uiCamera;
@@ -134,8 +135,22 @@ public class DoubleUp extends Game {
                 assets.unload(currMusicFileName);
             }
             music = assets.get(name);
+            music.setLooping(true);
             currMusicFileName = name;
+            if (!isMusicMuted) {
+                music.play();
+            }
+        }
+    }
+
+    public void toggleMusicMute() {
+        if (music == null) { return; }
+        if (isMusicMuted) {
             music.play();
+            isMusicMuted = false;
+        } else {
+            music.pause();
+            isMusicMuted = true;
         }
     }
 
