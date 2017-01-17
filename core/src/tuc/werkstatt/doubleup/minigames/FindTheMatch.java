@@ -71,7 +71,7 @@ public final class FindTheMatch extends MiniGame {
     }
 
     private FileHandle getFileHandle(String file) {
-        return Gdx.files.internal(file);
+        return Gdx.files.internal("images/minigames/FindTheMatch/"+file);
     }
 
     private Texture loadTexture(String fileHandle) {
@@ -187,15 +187,12 @@ public final class FindTheMatch extends MiniGame {
 
     private void compute(float offset, float cardHeight) {
         if (Gdx.input.justTouched()) {
-            // go to menu if game is finished.
-
-
             // (x,y) from top left corner
             float x = Gdx.input.getX()/ ((float) Gdx.graphics.getWidth())* ((float) 1200);
             float y = Gdx.input.getY()/ ((float) Gdx.graphics.getHeight())* ((float) 1920);
             // System.out.println("x" + x);
-            //System.out.println("y" + y);
-            //System.out.println("-----------");
+            // System.out.println("y" + y);
+            // System.out.println("-----------");
 
             // row might be easier:
             int hitRow = -1;
