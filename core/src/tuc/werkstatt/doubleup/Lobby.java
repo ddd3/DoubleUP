@@ -48,24 +48,24 @@ public class Lobby implements Screen {
         game.uiView.apply();
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.batch.setProjectionMatrix(game.uiCamera.combined);
-        game.batch.begin();
+        game.uiBatch.setProjectionMatrix(game.uiCamera.combined);
+        game.uiBatch.begin();
         if (isHosting) {
-            game.font.draw(game.batch, "Lobby (Host): " + game.server.getConnections().length +
+            game.font.draw(game.uiBatch, "Lobby (Host): " + game.server.getConnections().length +
                     " client(s)", 10, game.font.getLineHeight());
             if (game.server.getConnections().length > 0) {
                 game.font.setColor(Color.GREEN);
-                game.font.draw(game.batch, "Click/touch to start", 10, game.font.getLineHeight() * 2);
+                game.font.draw(game.uiBatch, "Click/touch to start", 10, game.font.getLineHeight() * 2);
             } else {
                 game.font.setColor(Color.RED);
-                game.font.draw(game.batch, "At least one client required to start", 10, game.font.getLineHeight() * 2);
+                game.font.draw(game.uiBatch, "At least one client required to start", 10, game.font.getLineHeight() * 2);
             }
             game.font.setColor(Color.WHITE);
         } else {
-            game.font.draw(game.batch, "Lobby (Client): " + (game.client.isConnected() ?
+            game.font.draw(game.uiBatch, "Lobby (Client): " + (game.client.isConnected() ?
                     "connected" : "discovering host"), 10, game.font.getLineHeight());
         }
-        game.batch.end();
+        game.uiBatch.end();
 
         updateLogic(deltaTime);
     }
