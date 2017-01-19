@@ -22,6 +22,9 @@ public class MiniGameManager {
     private int currMiniGameRound = 0;
     private int maxMiniGameRounds = 5;
     private Array<Player> players;
+    private Color[] playerColors = {MiniGame.materialRed, MiniGame.materialGreen,
+            MiniGame.materialBlue, MiniGame.materialLime, MiniGame.materialOrange,
+            MiniGame.materialPurple, MiniGame.materialBrown, MiniGame.materialTeal};
 
     private Timer sendProgressTimer;
     private TimerTask sendProgressTimerTask;
@@ -39,7 +42,7 @@ public class MiniGameManager {
         for (Connection conn : game.server.getConnections()) {
             Player player = new Player();
             player.ID = conn.getID();
-            player.color8888 = Color.rgba8888(MathUtils.random(1f), MathUtils.random(1f), MathUtils.random(1f), 1f);
+            player.color8888 = Color.rgba8888(playerColors[MathUtils.random(playerColors.length - 1)]);
             player.miniGameProgress = 0;
             player.points = 0;
             players.add(player);

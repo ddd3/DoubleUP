@@ -20,6 +20,17 @@ import tuc.werkstatt.doubleup.network.ClientProgressMessage;
 public abstract class MiniGame implements Screen {
     public final DoubleUp game;
 
+    public static Color materialRed = Color.valueOf("f44336ff");
+    public static Color materialGreen = Color.valueOf("4caf50ff");
+    public static Color materialBlue = Color.valueOf("2196f3ff");
+    public static Color materialLime = Color.valueOf("cddc39ff");
+    public static Color materialOrange = Color.valueOf("ff9800ff");
+    public static Color materialPurple = Color.valueOf("9c27b0ff");
+    public static Color materialBrown = Color.valueOf("795548ff");
+    public static Color materialTeal = Color.valueOf("009688ff");
+    public static Color materialBackground = Color.valueOf("212121ff");
+    public static Color materialText = Color.valueOf("ffffffff");
+
     private static boolean isUiInitialized = false;
     private static ShapeRenderer uiShapeRenderer;
     private static Color uiPlayerColor;
@@ -117,7 +128,7 @@ public abstract class MiniGame implements Screen {
 
     @Override
     public final void render(float deltaTime) {
-        Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
+        Gdx.gl.glClearColor(materialBackground.r, materialBackground.g, materialBackground.b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         game.uiView.apply();
