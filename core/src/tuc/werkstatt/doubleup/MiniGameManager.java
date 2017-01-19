@@ -1,7 +1,6 @@
 package tuc.werkstatt.doubleup;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -23,8 +22,8 @@ public class MiniGameManager {
     private int maxMiniGameRounds = 5;
     private Array<Player> players;
     private Color[] playerColors = {MiniGame.materialRed, MiniGame.materialGreen,
-            MiniGame.materialBlue, MiniGame.materialLime, MiniGame.materialOrange,
-            MiniGame.materialPurple, MiniGame.materialBrown, MiniGame.materialTeal};
+            MiniGame.materialBlue, MiniGame.materialOrange, MiniGame.materialPurple,
+            MiniGame.materialBrown, MiniGame.materialTeal, MiniGame.materialLime};
 
     private Timer sendProgressTimer;
     private TimerTask sendProgressTimerTask;
@@ -42,7 +41,7 @@ public class MiniGameManager {
         for (Connection conn : game.server.getConnections()) {
             Player player = new Player();
             player.ID = conn.getID();
-            player.color8888 = Color.rgba8888(playerColors[MathUtils.random(playerColors.length - 1)]);
+            player.color8888 = Color.rgba8888(playerColors[conn.getID() % playerColors.length]);
             player.miniGameProgress = 0;
             player.points = 0;
             players.add(player);
