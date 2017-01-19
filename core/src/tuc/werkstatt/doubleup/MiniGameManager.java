@@ -19,7 +19,7 @@ public class MiniGameManager {
 	private final DoubleUp game;
     private int currMiniGameID = -1;
     private int currMiniGameRound = 0;
-    private int maxMiniGameRounds = 5;
+    private int maxMiniGameRounds = 10;
     private Array<Player> players;
     private Color[] playerColors = {MiniGame.materialRed, MiniGame.materialGreen,
             MiniGame.materialBlue, MiniGame.materialOrange, MiniGame.materialPurple,
@@ -41,7 +41,7 @@ public class MiniGameManager {
         for (Connection conn : game.server.getConnections()) {
             Player player = new Player();
             player.ID = conn.getID();
-            player.color8888 = Color.rgba8888(playerColors[conn.getID() % playerColors.length]);
+            player.color8888 = Color.rgba8888(playerColors[(conn.getID() - 1) % playerColors.length]);
             player.miniGameProgress = 0;
             player.points = 0;
             players.add(player);
