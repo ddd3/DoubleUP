@@ -1,6 +1,7 @@
 package tuc.werkstatt.doubleup;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -29,7 +30,7 @@ public class Start implements Screen {
         sprites.put("help_button", sp);
 
         sp = game.atlas.createSprite("ui/settings_button");
-        sp.setPosition(game.width - sp.getWidth() - padding, padding);
+        sp.setPosition(game.targetResWidth - sp.getWidth() - padding, padding);
         sprites.put("settings_button", sp);
 
         sp = game.atlas.createSprite("ui/settings_slideout");
@@ -38,15 +39,15 @@ public class Start implements Screen {
         sprites.put("settings_slideout", sp);
 
         sp = game.atlas.createSprite("ui/title_logo");
-        sp.setPosition((game.width - sp.getWidth()) / 2, game.height - sp.getHeight() - padding * 3);
+        sp.setPosition((game.targetResWidth - sp.getWidth()) / 2, game.targetResHeight - sp.getHeight() - padding * 3);
         sprites.put("title_logo", sp);
 
         sp = game.atlas.createSprite("ui/join_button");
-        sp.setPosition((game.width - sp.getWidth()) / 2, (game.height - sp.getHeight()) / 2);
+        sp.setPosition((game.targetResWidth - sp.getWidth()) / 2, (game.targetResHeight - sp.getHeight()) / 2);
         sprites.put("join_button", sp);
 
         sp = game.atlas.createSprite("ui/host_panel");
-        sp.setPosition((game.width - sp.getWidth()) / 2, sprites.get("join_button").getY() - sp.getHeight() + 15);
+        sp.setPosition((game.targetResWidth - sp.getWidth()) / 2, sprites.get("join_button").getY() - sp.getHeight() + 15);
         sprites.put("host_panel", sp);
 
         Sprite parent = sprites.get("host_panel");
@@ -60,41 +61,41 @@ public class Start implements Screen {
         sprites.put("toggle_red", sp);
 
         sp = game.atlas.createSprite("ui/highscores_button");
-        sp.setPosition((game.width - sp.getWidth()) / 2, sprites.get("host_panel").getY() - sp.getHeight() - padding);
+        sp.setPosition((game.targetResWidth - sp.getWidth()) / 2, sprites.get("host_panel").getY() - sp.getHeight() - padding);
         sprites.put("highscores_button", sp);
     }
 
     @Override
-    public void show() {}
+    public void show() {
+        game.loadMusic("music/best_intro_loop.ogg");
+    }
 
     @Override
     public void render(float deltaTime) {
+        game.uiView.apply();
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.batch.setProjectionMatrix(game.camera.combined);
-        game.batch.begin();
-
-        sprites.get("title_background").draw(game.batch);
-        sprites.get("help_button").draw(game.batch);
+        game.uiBatch.setProjectionMatrix(game.uiCamera.combined);
+        game.uiBatch.begin();
+        sprites.get("title_background").draw(game.uiBatch);
+        sprites.get("help_button").draw(game.uiBatch);
         if (isSlidedOut) {
-            sprites.get("settings_slideout").draw(game.batch);
+            sprites.get("settings_slideout").draw(game.uiBatch);
         }
-        sprites.get("settings_button").draw(game.batch);
-        sprites.get("title_logo").draw(game.batch);
-        sprites.get("host_panel").draw(game.batch);
-        sprites.get(isHosting ? "toggle_green" : "toggle_red").draw(game.batch);
-        sprites.get("highscores_button").draw(game.batch);
-        sprites.get("join_button").draw(game.batch);
-
-        game.font.draw(game.batch, "StartScreen - options, game rules", 10, game.font.getLineHeight());
-        game.batch.end();
+        sprites.get("settings_button").draw(game.uiBatch);
+        sprites.get("title_logo").draw(game.uiBatch);
+        sprites.get("host_panel").draw(game.uiBatch);
+        sprites.get(isHosting ? "toggle_green" : "toggle_red").draw(game.uiBatch);
+        sprites.get("highscores_button").draw(game.uiBatch);
+        sprites.get("join_button").draw(game.uiBatch);
+        game.uiBatch.end();
 
         updateLogic(deltaTime);
     }
 
     private void updateLogic(float deltaTime) {
         if (Gdx.input.justTouched()) {
-            Vector3 touchPos = game.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+            Vector3 touchPos = game.uiCamera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
             if (sprites.get("toggle_green").getBoundingRectangle().contains(touchPos.x, touchPos.y)) {
                 isHosting = !isHosting;
             } else if (sprites.get("settings_button").getBoundingRectangle().contains(touchPos.x, touchPos.y)) {
@@ -103,10 +104,15 @@ public class Start implements Screen {
                 game.setScreen(new Lobby(game, isHosting));
             }
         }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+            game.toggleMusicMute();
+        }
     }
 
     @Override
-    public void resize(int width, int height) {}
+    public void resize(int width, int height) {
+        game.resizeViews();
+    }
 
     @Override
     public void pause() {}

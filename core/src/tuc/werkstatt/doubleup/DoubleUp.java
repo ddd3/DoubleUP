@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -13,27 +14,41 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
 
 public class DoubleUp extends Game {
     // 16:10 aspect ratio, native nexus 7 (course device) resolution
-	public final int width = 1200;
-	public final int height = 1920;
+    public final int targetResWidth = 1200;
+    public final int targetResHeight = 1920;
+    public final int targetTopBarHeight = 138;
+    public final int targetBottomBarHeight = 138;
+    public final int width = targetResWidth;
+    public final int height = targetResHeight - targetTopBarHeight - targetBottomBarHeight;
 
-    final String atlasFileName = "textures";
+    private final String atlasFileName = "textures";
     public TextureAtlas atlas;
     public AssetManager assets;
-	public SpriteBatch batch;
-	public BitmapFont font;
-	public OrthographicCamera camera;
+    public BitmapFont font;
+    private Music music;
+    private String currMusicFileName;
+    private boolean isMusicMuted = false;
+
+    public OrthographicCamera camera;
+    public OrthographicCamera uiCamera;
+    public Viewport gameView;
+    public Viewport uiView;
+    public SpriteBatch batch;
+    public SpriteBatch uiBatch;
     Server server;
     Client client;
 
     // add your individual minigame name (needs to match java file) here
     // index also being used as gameID in messages
     Array<String> minigames = new Array<String>(new String[]{
-            "PickColor", "PumpBalloon" });
+            "CrazySmiley","PickColor", "PumpBalloon", "FindTheMatch"  });
 
     MiniGame currMiniGame = null;
     private String testingMiniGame = null;
@@ -43,8 +58,8 @@ public class DoubleUp extends Game {
         this.args = args;
     }
 
-	@Override
-	public void create() {
+    @Override
+    public void create() {
         if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
             generateTextureAtlas();
         }
@@ -52,8 +67,17 @@ public class DoubleUp extends Game {
         loadAssets();
         atlas = assets.get("images/" + atlasFileName + ".atlas", TextureAtlas.class);
         batch = new SpriteBatch();
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, width, height);
+        uiBatch = new SpriteBatch();
+        // user interface, e.g. start screen, top and bottom bar in minigame screen
+        uiCamera = new OrthographicCamera();
+        uiCamera.setToOrtho(false, targetResWidth, targetResHeight);
+        uiView = new StretchViewport(targetResWidth, targetResHeight, uiCamera);
+
+        // minigame camera and view
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, width, height);
+        gameView = new StretchViewport(width, height, camera);
+        resizeViews();
 
         // minigame provided by program argument will be quick started and looped for testing purposes
         if (args != null && args.length > 0 &&
@@ -63,7 +87,7 @@ public class DoubleUp extends Game {
         } else {
             setScreen(new Start(this));
         }
-	}
+    }
 
     private void generateTextureAtlas() {
         final long imageDirModTime = Gdx.files.internal("images").lastModified();
@@ -99,9 +123,47 @@ public class DoubleUp extends Game {
 
     private void loadAssets() {
         assets = new AssetManager();
-        assets.load("images/" + atlasFileName + ".atlas", TextureAtlas.class);
         System.out.println("Loading assets ...");
+        assets.load("images/" + atlasFileName + ".atlas", TextureAtlas.class);
         assets.finishLoading();
+    }
+
+    public void loadMusic(String name) {
+        if(!assets.isLoaded(name)) {
+            assets.load(name, Music.class);
+            assets.finishLoadingAsset(name);
+            if (music != null) {
+                music.stop();
+                assets.unload(currMusicFileName);
+            }
+            music = assets.get(name);
+            music.setLooping(true);
+            currMusicFileName = name;
+            if (!isMusicMuted) {
+                music.play();
+            }
+        }
+    }
+
+    public void toggleMusicMute() {
+        if (music == null) { return; }
+        if (isMusicMuted) {
+            music.play();
+            isMusicMuted = false;
+        } else {
+            music.pause();
+            isMusicMuted = true;
+        }
+    }
+
+    public void resizeViews() {
+        uiView.setScreenBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        final int screenBottomBarHeight = (int)((float)Gdx.graphics.getHeight()
+                / targetResHeight * targetBottomBarHeight);
+        final int screenTopBarHeight = (int)((float)Gdx.graphics.getHeight()
+                / targetResHeight * targetTopBarHeight);
+        gameView.setScreenBounds(0, screenBottomBarHeight, Gdx.graphics.getWidth(),
+                Gdx.graphics.getHeight() - screenBottomBarHeight - screenTopBarHeight);
     }
 
     public boolean isTestingEnvironment() {
@@ -123,17 +185,19 @@ public class DoubleUp extends Game {
         }
     }
 
-	@Override
-	public void render() {
-		super.render();
-	}
+    @Override
+    public void render() {
+        super.render();
+    }
 
     @Override
-	public void dispose() {
+    public void dispose() {
         if (client != null) { client.stop(); }
         if (server != null) { server.stop(); }
-		font.dispose();
-		batch.dispose();
+        if (music != null) { music.stop(); }
+        font.dispose();
+        batch.dispose();
+        uiBatch.dispose();
         assets.dispose();
-	}
+    }
 }
