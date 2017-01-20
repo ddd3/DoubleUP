@@ -5,7 +5,6 @@ import java.util.Iterator;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -34,6 +33,10 @@ public final class Drop extends MiniGame {
 
     public Drop(DoubleUp game) {
         super(game);
+
+        backgroundSprite = getSprite("ui/title_background");
+        backgroundSprite.setSize(game.width, game.height);
+        backgroundSprite.setPosition(0, 0);
 
         // load the images for the droplet and the bucket, 64x64 pixels each
         dropImage = new Texture(Gdx.files.internal("images/minigames/Drop/droplet.png"));
@@ -79,25 +82,24 @@ public final class Drop extends MiniGame {
 
     @Override
     public void draw(float deltaTime) {
-        // clear the screen with a dark blue color. The
-        // arguments to glClearColor are the red, green
-        // blue and alpha component in the range [0,1]
-        // of the color to be used to clear the screen.
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // tell the SpriteBatch to render in the
         // coordinate system specified by the camera.
-        batch.setProjectionMatrix(game.camera.combined);
+        game.batch.setProjectionMatrix(game.camera.combined);
+        game.batch.begin();
+        game.batch.draw(bucketImage, bucket.x, bucket.y);
+        backgroundSprite.draw(game.batch);
+        game.batch.end();
 
         // begin a new batch and draw the bucket and
         // all drops
-        batch.begin();
-        batch.draw(bucketImage, bucket.x, bucket.y);
+        game.batch.begin();
+        game.batch.draw(bucketImage, bucket.x, bucket.y);
+        //backgroundSprite.draw(game.batch);
         for(Rectangle raindrop: raindrops) {
-            batch.draw(dropImage, raindrop.x, raindrop.y);
+            game.batch.draw(dropImage, raindrop.x, raindrop.y);
         }
-        batch.end();
+        game.batch.end();
     }
 
     public void update(float deltaTime) {
