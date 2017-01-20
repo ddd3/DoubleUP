@@ -278,3 +278,16 @@ minigames/FindTheMatch/vacation/umbrella_256x256
   orig: 256, 256
   offset: 0, 0
   index: -1
+
+textures8.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+minigames/PumpBalloon/balloon
+  rotate: true
+  xy: 2, 2
+  size: 430, 512
+  orig: 430, 512
+  offset: 0, 0
+  index: -1

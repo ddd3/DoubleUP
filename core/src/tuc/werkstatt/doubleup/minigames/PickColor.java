@@ -115,7 +115,7 @@ public final class PickColor extends MiniGame {
                         }
                     } else {
                         currPoints = Math.max(0, currPoints - 1);
-                        if (System.currentTimeMillis() - lastSoundPlayed > 250) {
+                        if (now - lastSoundPlayed > 250) {
                             minusSound.play(0.5f);
                             lastSoundPlayed = now;
                         }
