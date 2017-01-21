@@ -1,18 +1,16 @@
 package tuc.werkstatt.doubleup.minigames;
 
-import java.util.Iterator;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+
+import java.util.Iterator;
 
 import tuc.werkstatt.doubleup.DoubleUp;
 import tuc.werkstatt.doubleup.MiniGame;
@@ -20,16 +18,13 @@ import tuc.werkstatt.doubleup.MiniGame;
 public final class Drop extends MiniGame {
 
     private Sprite backgroundSprite;
+    private Sprite dropSprite;
+    private Sprite bucketSprite;
     private final int maxPoints = 20;
     private int currPoints = 0;
-    private Texture dropImage;
-    private Texture bucketImage;
     private Sound dropSound;
-    private SpriteBatch batch;
-    private Rectangle bucket;
-    private Array<Rectangle> raindrops;
+    private Array<Vector2> raindrops;
     private long lastDropTime;
-
 
     public Drop(DoubleUp game) {
         super(game);
@@ -38,40 +33,31 @@ public final class Drop extends MiniGame {
         backgroundSprite.setSize(game.width, game.height);
         backgroundSprite.setPosition(0, 0);
 
-        // load the images for the droplet and the bucket, 64x64 pixels each
-        dropImage = new Texture(Gdx.files.internal("images/minigames/Drop/droplet.png"));
-        bucketImage = new Texture(Gdx.files.internal("images/minigames/Drop/bucket.png"));
-
-        // load the drop sound effect
-        dropSound = Gdx.audio.newSound(Gdx.files.internal("sounds/drop.wav"));
-
-        // create the SpriteBatch
-        batch = new SpriteBatch();
-
-        // create a Rectangle to logically represent the bucket
-        bucket = new Rectangle();
-        bucket.x = game.width / 2 - 64 / 2; // center the bucket horizontally
-        bucket.y = 20; // bottom left corner of the bucket is 20 pixels above the bottom screen edge
-        bucket.width = 64;
-        bucket.height = 64;
+        // TODO: are these resources free to use in non-commercial projects and licenced accordingly?
+        dropSprite = getSprite("minigames/Drop/droplet");
+        dropSprite.setSize(64, 64);
+        bucketSprite = getSprite("minigames/Drop/bucket");
+        bucketSprite.setSize(64, 64);
+        // center the bucket horizontally
+        // bottom left corner of the bucket is 20 pixels above the bottom screen edge
+        bucketSprite.setPosition((game.width - bucketSprite.getWidth()) / 2, 20);
 
         // create the raindrops array and spawn the first raindrop
-        raindrops = new Array<Rectangle>();
+        raindrops = new Array<Vector2>();
         spawnRaindrop();
-        }
+    }
 
     private void spawnRaindrop() {
-        Rectangle raindrop = new Rectangle();
-        raindrop.x = MathUtils.random(0, game.width-64);
-        raindrop.y = game.height;
-        raindrop.width = 64;
-        raindrop.height = 64;
+        Vector2 raindrop = new Vector2(MathUtils.random(0, game.width - bucketSprite.getWidth()), game.height);
         raindrops.add(raindrop);
         lastDropTime = TimeUtils.nanoTime();
     }
 
     @Override
-    public void show() {game.loadMusic("music/examples/Stan.mp3");
+    public void show() {
+        // TODO: are these resources free to use in non-commercial projects and licenced accordingly?
+        game.loadMusic("music/examples/Stan.mp3");
+        dropSound = getSound("sounds/drop.wav");
     }
 
     @Override
@@ -82,40 +68,34 @@ public final class Drop extends MiniGame {
 
     @Override
     public void draw(float deltaTime) {
-
         // tell the SpriteBatch to render in the
         // coordinate system specified by the camera.
-        game.batch.setProjectionMatrix(game.camera.combined);
-        game.batch.begin();
-        game.batch.draw(bucketImage, bucket.x, bucket.y);
-        backgroundSprite.draw(game.batch);
-        game.batch.end();
-
         // begin a new batch and draw the bucket and
         // all drops
+        game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
-        game.batch.draw(bucketImage, bucket.x, bucket.y);
-        //backgroundSprite.draw(game.batch);
-        for(Rectangle raindrop: raindrops) {
-            game.batch.draw(dropImage, raindrop.x, raindrop.y);
+        backgroundSprite.draw(game.batch);
+        for(Vector2 raindrop: raindrops) {
+            dropSprite.setPosition(raindrop.x, raindrop.y);
+            dropSprite.draw(game.batch);
         }
+        bucketSprite.draw(game.batch);
         game.batch.end();
     }
 
     public void update(float deltaTime) {
         // process user input
         if(Gdx.input.isTouched()) {
-            Vector3 touchPos = new Vector3();
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            game.camera.unproject(touchPos);
-            bucket.x = touchPos.x - 64 / 2;
+            bucketSprite.setX(getTouchPos().x - bucketSprite.getWidth() / 2);
         }
-        if(Gdx.input.isKeyPressed(Keys.LEFT)) bucket.x -= 200 * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Keys.RIGHT)) bucket.x += 200 * Gdx.graphics.getDeltaTime();
+        if(Gdx.input.isKeyPressed(Keys.LEFT)) bucketSprite.translateX(-200 * deltaTime);
+        if(Gdx.input.isKeyPressed(Keys.RIGHT)) bucketSprite.translateX(200 * deltaTime);
 
         // make sure the bucket stays within the screen bounds
-        if(bucket.x < 0) bucket.x = 0;
-        if(bucket.x > game.width - 64) bucket.x = game.width - 64;
+        if(bucketSprite.getX() < 0) bucketSprite.setX(0);
+        if(bucketSprite.getX() > game.width - bucketSprite.getWidth()) {
+            bucketSprite.setX(game.width - bucketSprite.getWidth());
+        }
 
         // check if we need to create a new raindrop
         if(TimeUtils.nanoTime() - lastDropTime > 200000000) spawnRaindrop();
@@ -123,12 +103,16 @@ public final class Drop extends MiniGame {
         // move the raindrops, remove any that are beneath the bottom edge of
         // the screen or that hit the bucket. In the later case we play back
         // a sound effect as well.
-        Iterator<Rectangle> iter = raindrops.iterator();
+        Iterator<Vector2> iter = raindrops.iterator();
         while(iter.hasNext()) {
-            Rectangle raindrop = iter.next();
-            raindrop.y -= 1000 * Gdx.graphics.getDeltaTime();
-            if(raindrop.y + 64 < 0) iter.remove();
-            if(raindrop.overlaps(bucket)) {
+            Vector2 raindrop = iter.next();
+            raindrop.y -= 1000 * deltaTime;
+            if(raindrop.y + dropSprite.getHeight() < 0) {
+                iter.remove();
+                continue;
+            }
+            Rectangle.tmp.set(raindrop.x, raindrop.y, dropSprite.getWidth(), dropSprite.getHeight());
+            if (bucketSprite.getBoundingRectangle().overlaps(Rectangle.tmp)) {
                 dropSound.play();
                 iter.remove();
                 currPoints++;
@@ -140,12 +124,5 @@ public final class Drop extends MiniGame {
     public void hide() {}
 
     @Override
-    public void dispose() {
-        // dispose of all the native resources
-        dropImage.dispose();
-        bucketImage.dispose();
-        dropSound.dispose();
-        batch.dispose();
-    }
-
+    public void dispose() {}
 }
