@@ -50,7 +50,7 @@ public final class PlaneWarGame extends MiniGame {
         backgroundSprite.setSize(game.width, game.height);
         backgroundSprite.setPosition(0, 0);
 
-        heroSprite.setSize(256,256);
+        heroSprite.setSize(200,200);
         heroSprite.setPosition((game.width - heroSprite.getWidth()) / 2, 20);
 
         enemySprite.setSize(128,128);
@@ -75,7 +75,7 @@ public final class PlaneWarGame extends MiniGame {
 
     private void spawnBullet() {
         Rectangle bullet = new Rectangle
-                (heroSprite.getX()+128,heroSprite.getY()+128,bulletSprite.getHeight()+112,bulletSprite.getWidth()+112);
+                (heroSprite.getX()+100,heroSprite.getY()+128,bulletSprite.getHeight()+150,bulletSprite.getWidth()+150);
         bullets.add(bullet);
         lastShootTime=TimeUtils.nanoTime();
     }
@@ -147,10 +147,10 @@ public final class PlaneWarGame extends MiniGame {
             heroSprite.setY(getTouchPos().y - heroSprite.getWidth() / 2);
         }
 
-        if(Gdx.input.isKeyPressed(Keys.LEFT)) heroSprite.translateX(-200 * deltaTime);
-        if(Gdx.input.isKeyPressed(Keys.RIGHT)) heroSprite.translateX(200 * deltaTime);
-        if(Gdx.input.isKeyPressed(Keys.UP)) heroSprite.translateY(200 * deltaTime);
-        if(Gdx.input.isKeyPressed(Keys.DOWN)) heroSprite.translateY(-200 * deltaTime);
+        if(Gdx.input.isKeyPressed(Keys.LEFT)) heroSprite.translateX(-400 * deltaTime);
+        if(Gdx.input.isKeyPressed(Keys.RIGHT)) heroSprite.translateX(400 * deltaTime);
+        if(Gdx.input.isKeyPressed(Keys.UP)) heroSprite.translateY(400 * deltaTime);
+        if(Gdx.input.isKeyPressed(Keys.DOWN)) heroSprite.translateY(-400 * deltaTime);
 
         // make sure the hero stays within the screen bounds
         if(heroSprite.getX() < 0) heroSprite.setX(0);
@@ -164,7 +164,7 @@ public final class PlaneWarGame extends MiniGame {
         }
 
 
-        if(TimeUtils.nanoTime() - lastShootTime > 200000000) spawnBullet();
+        if(TimeUtils.nanoTime() - lastShootTime > 300000000) spawnBullet();
 //        bulletSound.play();
 
         Iterator<Rectangle> iter = bullets.iterator();
