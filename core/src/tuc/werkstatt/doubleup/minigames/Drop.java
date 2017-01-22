@@ -20,6 +20,7 @@ public final class Drop extends MiniGame {
     private Sprite backgroundSprite;
     private Sprite dropSprite;
     private Sprite bucketSprite;
+
     private final int maxPoints = 20;
     private int currPoints = 0;
     private Sound dropSound;
@@ -37,8 +38,7 @@ public final class Drop extends MiniGame {
         dropSprite = getSprite("minigames/Drop/droplet");
         dropSprite.setSize(64, 64);
         bucketSprite = getSprite("minigames/Drop/bucket");
-        bucketSprite.setSize(64, 64);
-        // center the bucket horizontally
+        bucketSprite.setSize(100, 100);
         // bottom left corner of the bucket is 20 pixels above the bottom screen edge
         bucketSprite.setPosition((game.width - bucketSprite.getWidth()) / 2, 20);
 
@@ -88,6 +88,7 @@ public final class Drop extends MiniGame {
         if(Gdx.input.isTouched()) {
             bucketSprite.setX(getTouchPos().x - bucketSprite.getWidth() / 2);
         }
+
         if(Gdx.input.isKeyPressed(Keys.LEFT)) bucketSprite.translateX(-200 * deltaTime);
         if(Gdx.input.isKeyPressed(Keys.RIGHT)) bucketSprite.translateX(200 * deltaTime);
 
@@ -106,7 +107,7 @@ public final class Drop extends MiniGame {
         Iterator<Vector2> iter = raindrops.iterator();
         while(iter.hasNext()) {
             Vector2 raindrop = iter.next();
-            raindrop.y -= 1000 * deltaTime;
+            raindrop.y -= 1500 * deltaTime;
             if(raindrop.y + dropSprite.getHeight() < 0) {
                 iter.remove();
                 continue;
