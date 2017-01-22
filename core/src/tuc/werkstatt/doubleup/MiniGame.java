@@ -20,6 +20,17 @@ import tuc.werkstatt.doubleup.network.ClientProgressMessage;
 public abstract class MiniGame implements Screen {
     public final DoubleUp game;
 
+    public static Color materialRed = Color.valueOf("f44336ff");
+    public static Color materialGreen = Color.valueOf("4caf50ff");
+    public static Color materialBlue = Color.valueOf("2196f3ff");
+    public static Color materialLime = Color.valueOf("cddc39ff");
+    public static Color materialOrange = Color.valueOf("ff9800ff");
+    public static Color materialPurple = Color.valueOf("9c27b0ff");
+    public static Color materialBrown = Color.valueOf("795548ff");
+    public static Color materialTeal = Color.valueOf("009688ff");
+    public static Color materialBackground = Color.valueOf("212121ff");
+    public static Color materialText = Color.valueOf("ffffffff");
+
     private static boolean isUiInitialized = false;
     private static ShapeRenderer uiShapeRenderer;
     private static Color uiPlayerColor;
@@ -61,6 +72,9 @@ public abstract class MiniGame implements Screen {
         if (isUiInitialized) { return; } else { isUiInitialized = true; }
 
         uiShapeRenderer = new ShapeRenderer();
+        uiShapeRenderer.setProjectionMatrix(game.uiCamera.combined);
+        game.uiBatch.setProjectionMatrix(game.uiCamera.combined);
+
         uiPlayerColor = new Color();
         topPanelSprite = getSprite("ui/top_panel");
         topPanelSprite.setPosition(0, game.targetResHeight - game.targetTopBarHeight);
@@ -114,8 +128,11 @@ public abstract class MiniGame implements Screen {
 
     @Override
     public final void render(float deltaTime) {
-        Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
+        Gdx.gl.glClearColor(materialBackground.r, materialBackground.g, materialBackground.b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        game.uiView.apply();
+        drawUserInterface();
 
         //game.camera.update();
         if (Gdx.input.isTouched()) {
@@ -126,9 +143,6 @@ public abstract class MiniGame implements Screen {
         game.gameView.apply();
         draw(deltaTime);
         update(deltaTime);
-
-        game.uiView.apply();
-        drawUserInterface();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
             game.toggleMusicMute();
@@ -145,11 +159,6 @@ public abstract class MiniGame implements Screen {
     }
 
     private void drawUserInterface() {
-        drawUiTopBar();
-        drawUiBottomBar();
-    }
-
-    private void drawUiTopBar() {
         final int topPanelY = game.targetResHeight - game.targetTopBarHeight;
         // values measured in image editor
         final int progressBarX = 20;
@@ -157,7 +166,6 @@ public abstract class MiniGame implements Screen {
         final int progressBarWidth = 1162;
         final int progressBarHeight = 36;
 
-        uiShapeRenderer.setProjectionMatrix(game.uiCamera.combined);
         uiShapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         uiShapeRenderer.setColor(Color.WHITE);
         uiShapeRenderer.rect(progressBarX, progressBarY, progressBarWidth, progressBarHeight);
@@ -172,28 +180,21 @@ public abstract class MiniGame implements Screen {
         }
         uiShapeRenderer.end();
 
-        game.batch.setProjectionMatrix(game.uiCamera.combined);
-        game.batch.begin();
-        topPanelSprite.draw(game.batch);
-        flagSprite.draw(game.batch);
-        game.batch.end();
-    }
-
-    private void drawUiBottomBar() {
-        game.batch.setProjectionMatrix(game.uiCamera.combined);
-        game.batch.begin();
-        bottomPanelSprite.draw(game.batch);
+        game.uiBatch.begin();
+        topPanelSprite.draw(game.uiBatch);
+        flagSprite.draw(game.uiBatch);
+        bottomPanelSprite.draw(game.uiBatch);
         for (int i = 1; i <= maxRounds; ++i) {
             final float currPosX = indicatorStartPosX + (i - 1) * (roundIndicatorSprite.getWidth() + indicatorSpacing);
             if (i == currRound) {
                 currRoundIndicatorSprite.setPosition(currPosX, (game.targetBottomBarHeight - currRoundIndicatorSprite.getWidth()) / 2);
-                currRoundIndicatorSprite.draw(game.batch);
+                currRoundIndicatorSprite.draw(game.uiBatch);
             } else {
                 roundIndicatorSprite.setPosition(currPosX, (game.targetBottomBarHeight - roundIndicatorSprite.getWidth()) / 2);
-                roundIndicatorSprite.draw(game.batch);
+                roundIndicatorSprite.draw(game.uiBatch);
             }
         }
-        game.batch.end();
+        game.uiBatch.end();
     }
 
     public final Vector2 getTouchPos() {

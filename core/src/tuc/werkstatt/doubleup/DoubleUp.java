@@ -31,7 +31,6 @@ public class DoubleUp extends Game {
     private final String atlasFileName = "textures";
     public TextureAtlas atlas;
     public AssetManager assets;
-    public SpriteBatch batch;
     public BitmapFont font;
     private Music music;
     private String currMusicFileName;
@@ -41,13 +40,15 @@ public class DoubleUp extends Game {
     public OrthographicCamera uiCamera;
     public Viewport gameView;
     public Viewport uiView;
+    public SpriteBatch batch;
+    public SpriteBatch uiBatch;
     Server server;
     Client client;
 
     // add your individual minigame name (needs to match java file) here
     // index also being used as gameID in messages
     Array<String> minigames = new Array<String>(new String[]{
-            "CrazySmiley","PickColor", "PumpBalloon", "FindTheMatch"  });
+            "CrazySmiley","PickColor", "PumpBalloon", "FindTheMatch","Drop"  });
 
     MiniGame currMiniGame = null;
     private String testingMiniGame = null;
@@ -66,6 +67,7 @@ public class DoubleUp extends Game {
         loadAssets();
         atlas = assets.get("images/" + atlasFileName + ".atlas", TextureAtlas.class);
         batch = new SpriteBatch();
+        uiBatch = new SpriteBatch();
         // user interface, e.g. start screen, top and bottom bar in minigame screen
         uiCamera = new OrthographicCamera();
         uiCamera.setToOrtho(false, targetResWidth, targetResHeight);
@@ -192,10 +194,10 @@ public class DoubleUp extends Game {
     public void dispose() {
         if (client != null) { client.stop(); }
         if (server != null) { server.stop(); }
-
         if (music != null) { music.stop(); }
         font.dispose();
         batch.dispose();
+        uiBatch.dispose();
         assets.dispose();
     }
 }

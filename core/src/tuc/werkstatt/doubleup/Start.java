@@ -75,20 +75,20 @@ public class Start implements Screen {
         game.uiView.apply();
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.batch.setProjectionMatrix(game.uiCamera.combined);
-        game.batch.begin();
-        sprites.get("title_background").draw(game.batch);
-        sprites.get("help_button").draw(game.batch);
+        game.uiBatch.setProjectionMatrix(game.uiCamera.combined);
+        game.uiBatch.begin();
+        sprites.get("title_background").draw(game.uiBatch);
+        sprites.get("help_button").draw(game.uiBatch);
         if (isSlidedOut) {
-            sprites.get("settings_slideout").draw(game.batch);
+            sprites.get("settings_slideout").draw(game.uiBatch);
         }
-        sprites.get("settings_button").draw(game.batch);
-        sprites.get("title_logo").draw(game.batch);
-        sprites.get("host_panel").draw(game.batch);
-        sprites.get(isHosting ? "toggle_green" : "toggle_red").draw(game.batch);
-        sprites.get("highscores_button").draw(game.batch);
-        sprites.get("join_button").draw(game.batch);
-        game.batch.end();
+        sprites.get("settings_button").draw(game.uiBatch);
+        sprites.get("title_logo").draw(game.uiBatch);
+        sprites.get("host_panel").draw(game.uiBatch);
+        sprites.get(isHosting ? "toggle_green" : "toggle_red").draw(game.uiBatch);
+        sprites.get("highscores_button").draw(game.uiBatch);
+        sprites.get("join_button").draw(game.uiBatch);
+        game.uiBatch.end();
 
         updateLogic(deltaTime);
     }
