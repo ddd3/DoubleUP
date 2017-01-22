@@ -198,7 +198,6 @@ public final class PlaneWarGame extends MiniGame {
 
             Rectangle.tmp.set(enemy.x, enemy.y, enemySprite.getWidth(), enemySprite.getHeight());
             if (heroSprite.getBoundingRectangle().overlaps(Rectangle.tmp)) {
-                iter1.remove();
                 iter.remove();
                 gameoverSound.play();
                 currPoints=0;
