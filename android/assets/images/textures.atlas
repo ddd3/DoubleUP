@@ -1,18 +1,5 @@
 
 textures.png
-size: 512,512
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-minigames/ClickTarget/target
-  rotate: false
-  xy: 2, 2
-  size: 256, 256
-  orig: 256, 256
-  offset: 0, 0
-  index: -1
-
-textures2.png
 size: 2048,2048
 format: RGBA8888
 filter: Linear,Linear
@@ -32,7 +19,7 @@ minigames/CrazySmiley/yellow
   offset: 0, 0
   index: -1
 
-textures3.png
+textures2.png
 size: 256,128
 format: RGBA8888
 filter: Linear,Linear
@@ -52,7 +39,7 @@ minigames/Drop/droplet
   offset: 0, 0
   index: -1
 
-textures4.png
+textures3.png
 size: 2048,2048
 format: RGBA8888
 filter: Linear,Linear
@@ -107,7 +94,7 @@ minigames/FindTheMatch/grey
   offset: 0, 0
   index: -1
 
-textures5.png
+textures4.png
 size: 2048,2048
 format: RGBA8888
 filter: Linear,Linear
@@ -120,7 +107,7 @@ minigames/FindTheMatch/vehicles
   offset: 0, 0
   index: -1
 
-textures6.png
+textures5.png
 size: 1024,256
 format: RGBA8888
 filter: Linear,Linear
@@ -168,7 +155,7 @@ minigames/FindTheMatch/animals/Turtle_128x128
   offset: 0, 0
   index: -1
 
-textures7.png
+textures6.png
 size: 1024,512
 format: RGBA8888
 filter: Linear,Linear
@@ -188,7 +175,7 @@ minigames/FindTheMatch/vacation/umbrella_256x256
   offset: 0, 0
   index: -1
 
-textures8.png
+textures7.png
 size: 512,512
 format: RGBA8888
 filter: Linear,Linear
@@ -201,7 +188,33 @@ minigames/PickColor/swirl
   offset: 0, 0
   index: -1
 
+textures8.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+minigames/PlaneWarGame/shoot
+  rotate: false
+  xy: 2, 2
+  size: 1024, 1024
+  orig: 1024, 1024
+  offset: 0, 0
+  index: -1
+
 textures9.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+minigames/PlaneWarGame/shoot_background
+  rotate: false
+  xy: 2, 2
+  size: 1024, 1024
+  orig: 1024, 1024
+  offset: 0, 0
+  index: -1
+
+textures10.png
 size: 1024,512
 format: RGBA8888
 filter: Linear,Linear
@@ -214,7 +227,7 @@ minigames/PumpBalloon/balloon
   offset: 0, 0
   index: -1
 
-textures10.png
+textures11.png
 size: 2048,2048
 format: RGBA8888
 filter: Linear,Linear
