@@ -1,4 +1,7 @@
-package tuc.werkstatt.doubleup;
+package tuc.werkstatt.doubleup.minigames;
+
+import tuc.werkstatt.doubleup.DoubleUp;
+import tuc.werkstatt.doubleup.MiniGame;
 
 public final class MiniGameTemplate extends MiniGame {
 

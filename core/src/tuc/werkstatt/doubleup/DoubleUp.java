@@ -5,9 +5,11 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -16,8 +18,8 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.kryonet.Server;
+
+import java.util.Arrays;
 
 public class DoubleUp extends Game {
     // 16:10 aspect ratio, native nexus 7 (course device) resolution
@@ -27,6 +29,9 @@ public class DoubleUp extends Game {
     public final int targetBottomBarHeight = 138;
     public final int width = targetResWidth;
     public final int height = targetResHeight - targetTopBarHeight - targetBottomBarHeight;
+
+    public Client client;
+    public Server server;
 
     private final String atlasFileName = "textures";
     public TextureAtlas atlas;
@@ -60,8 +65,11 @@ public class DoubleUp extends Game {
 
     @Override
     public void create() {
-        if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
-            generateTextureAtlas();
+         if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
+             Gdx.app.setLogLevel(Application.LOG_DEBUG);
+             generateTextureAtlas();
+        } else {
+            Gdx.app.setLogLevel(Application.LOG_NONE);
         }
         generateFonts();
         loadAssets();
@@ -81,9 +89,10 @@ public class DoubleUp extends Game {
 
         // minigame provided by program argument will be quick started and looped for testing purposes
         if (args != null && args.length > 0 &&
-                (minigames.contains(args[0], false) || args[0].equals("TestingPlayground"))) {
+                (Arrays.asList(minigames).contains(args[0]) || args[0].equals("TestingPlayground"))) {
             testingMiniGame = args[0];
-            setScreen(new Lobby(this, true));
+            Network.isHosting = true;
+            setScreen(new Lobby(this));
         } else {
             setScreen(new Start(this));
         }
@@ -96,7 +105,7 @@ public class DoubleUp extends Game {
         // regenerate texture atlas if dir or subdirs have changed
         if (!Gdx.files.internal("images/" + atlasFileName + ".atlas").exists() ||
                 imageDirModTime > atlasCreationTime + modTimeThreshold) {
-            System.out.println("Image changes detected, generating new texture atlas ...");
+            Gdx.app.log("Assets", "Image changes detected, generating new texture atlas ...");
             TexturePacker.Settings settings = new TexturePacker.Settings();
             settings.maxWidth = 2048;
             settings.maxHeight = 2048;
@@ -105,16 +114,16 @@ public class DoubleUp extends Game {
             settings.filterMin = Texture.TextureFilter.Linear;
             TexturePacker.process(settings, "images/", "images/", atlasFileName);
         } else {
-            System.out.println("No image changes detected, keep current texture atlas.");
+            Gdx.app.log("Assets", "No image changes detected, keep current texture atlas.");
         }
     }
 
     private void generateFonts() {
-        System.out.println("Generating bitmap fonts ...");
+        Gdx.app.log("Assets", "Generating bitmap fonts ...");
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
                 Gdx.files.internal("fonts/FiraSans-Medium.otf"));
         FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-        parameter.size = 48;
+        parameter.size = 64;
         parameter.magFilter = Texture.TextureFilter.Linear;
         parameter.minFilter = Texture.TextureFilter.Linear;
         font = generator.generateFont(parameter);
@@ -123,7 +132,7 @@ public class DoubleUp extends Game {
 
     private void loadAssets() {
         assets = new AssetManager();
-        System.out.println("Loading assets ...");
+        Gdx.app.log("Assets", "Loading assets ...");
         assets.load("images/" + atlasFileName + ".atlas", TextureAtlas.class);
         assets.finishLoading();
     }
@@ -143,6 +152,18 @@ public class DoubleUp extends Game {
                 music.play();
             }
         }
+    }
+
+    public Sprite getSprite(String name) {
+        return atlas.createSprite(name);
+    }
+
+    public Sound getSound(String name) {
+        if(!assets.isLoaded(name)) {
+            assets.load(name, Sound.class);
+            assets.finishLoadingAsset(name);
+        }
+        return assets.get(name);
     }
 
     public void toggleMusicMute() {
@@ -174,9 +195,9 @@ public class DoubleUp extends Game {
         return testingMiniGame;
     }
 
-    void loadMiniGame(String screenName) {
+    public void loadMiniGame(int id) {
         try {
-            setScreen((MiniGame)Class.forName("tuc.werkstatt.doubleup.minigames." + screenName)
+            setScreen((MiniGame)Class.forName("tuc.werkstatt.doubleup.minigames." + minigames[id])
                     .getConstructor(DoubleUp.class).newInstance(this));
         } catch (Exception e) {
             e.printStackTrace();
@@ -192,8 +213,8 @@ public class DoubleUp extends Game {
 
     @Override
     public void dispose() {
-        if (client != null) { client.stop(); }
-        if (server != null) { server.stop(); }
+        if (client != null) { client.dispose(); }
+        if (server != null) { server.dispose(); }
         if (music != null) { music.stop(); }
         font.dispose();
         batch.dispose();
