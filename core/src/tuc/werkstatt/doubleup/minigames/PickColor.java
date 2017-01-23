@@ -9,12 +9,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import tuc.werkstatt.doubleup.DoubleUp;
+import tuc.werkstatt.doubleup.MaterialColors;
 import tuc.werkstatt.doubleup.MiniGame;
 
 public final class PickColor extends MiniGame {
     private final int maxPoints = 10;
     private int currPoints = 0;
-    private final Color[] colors = { materialRed, materialGreen, materialBlue, materialOrange };
+    private final Color[] colors = {MaterialColors.red, MaterialColors.green,
+                                    MaterialColors.blue, MaterialColors.orange };
     private final Color colorToCollect = colors[0];
     private Sprite backgroundSprite;
     private Sprite swirlSprite;
