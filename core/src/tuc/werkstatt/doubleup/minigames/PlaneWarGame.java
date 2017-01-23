@@ -21,7 +21,7 @@ import tuc.werkstatt.doubleup.MiniGame;
 public final class PlaneWarGame extends MiniGame {
 
     private Sprite backgroundSprite, heroSprite, bulletSprite, enemySprite;
-    private TextureAtlas shoot_background,shoot;
+    private TextureAtlas shoot;
     private final int maxPoints = 20;
     private int currPoints = 0;
     private Array<Rectangle> bullets,enemys;
@@ -38,11 +38,11 @@ public final class PlaneWarGame extends MiniGame {
         bitmapFont.getData().setScale(4,4);
         bitmapFont.setColor(Color.BLACK);
         layout = new GlyphLayout();
-
-        shoot_background = new TextureAtlas(Gdx.files.internal("images/minigames/PlaneWarGame/shoot_background.pack"));
-        shoot = new TextureAtlas(Gdx.files.internal("images/minigames/PlaneWarGame/shoot.pack"));
-
-        backgroundSprite = shoot_background.createSprite("background");
+	
+	shoot = new TextureAtlas(Gdx.files.internal("images/minigames/PlaneWarGame/shoot.pack"));
+	
+	    
+        backgroundSprite = getSprite("ui/title_background");
         heroSprite = shoot.createSprite("hero1");
         bulletSprite = shoot.createSprite("bullet1");
         enemySprite = shoot.createSprite("enemy1");
