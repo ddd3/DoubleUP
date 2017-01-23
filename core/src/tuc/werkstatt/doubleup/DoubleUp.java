@@ -15,7 +15,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -47,13 +46,11 @@ public class DoubleUp extends Game {
     public Viewport uiView;
     public SpriteBatch batch;
     public SpriteBatch uiBatch;
-    Server server;
-    Client client;
 
     // add your individual minigame name (needs to match java file) here
     // index also being used as gameID in messages
-    Array<String> minigames = new Array<String>(new String[]{
-            "ClickTarget", "CrazySmiley","PickColor", "PumpBalloon", "FindTheMatch","Drop","PlaneWarGame"  });
+    final static String[] minigames = { "CrazySmiley", "PickColor", "PumpBalloon",
+            "FindTheMatch", "Drop", "PlaneWarGame", "ClickTarget" };
 
     MiniGame currMiniGame = null;
     private String testingMiniGame = null;
