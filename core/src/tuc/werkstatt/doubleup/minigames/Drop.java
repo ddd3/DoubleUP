@@ -56,7 +56,7 @@ public final class Drop extends MiniGame {
     @Override
     public void show() {
         // TODO: are these resources free to use in non-commercial projects and licenced accordingly?
-        game.loadMusic("music/examples/Stan.mp3");
+        game.loadMusic("music/examples/Dropbackground.mp3");
         dropSound = getSound("sounds/drop.wav");
     }
 
