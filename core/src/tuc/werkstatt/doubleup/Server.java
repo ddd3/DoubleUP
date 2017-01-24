@@ -3,7 +3,6 @@ package tuc.werkstatt.doubleup;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -14,7 +13,6 @@ import java.util.Arrays;
 import tuc.werkstatt.doubleup.Network.ClientFinishedMessage;
 import tuc.werkstatt.doubleup.Network.ClientOptionsMessage;
 import tuc.werkstatt.doubleup.Network.ClientProgressMessage;
-import tuc.werkstatt.doubleup.Network.ClientReadyMessage;
 import tuc.werkstatt.doubleup.Network.ExitMessage;
 import tuc.werkstatt.doubleup.Network.GameFinishedMessage;
 import tuc.werkstatt.doubleup.Network.GameNextMessage;
@@ -31,7 +29,6 @@ public class Server {
     private GameProgressMessage progressMsg;
     private GameOptionsMessage optionsMessage;
     private Player[] players;
-    private IntMap<Boolean> readyPlayers;
     private Array<String> availableIcons;
 
     public Server(final DoubleUp game) {
@@ -39,7 +36,6 @@ public class Server {
         progressMsg = new GameProgressMessage();
         optionsMessage = new GameOptionsMessage();
         availableIcons = new Array<String>(GameOptions.animalNames);
-        readyPlayers = new IntMap<Boolean>();
 
         netServer = new com.esotericsoftware.kryonet.Server();
         Network.registerClasses(netServer.getKryo());
@@ -65,8 +61,6 @@ public class Server {
                     onClientProgressMessage((ClientProgressMessage) object);
                 } else if (object instanceof ClientOptionsMessage) {
                     onClientOptionsMessage((ClientOptionsMessage) object);
-                } else if (object instanceof ClientReadyMessage) {
-                    onClientReadyMessage((ClientReadyMessage) object);
                 }
             }
         });
@@ -120,6 +114,23 @@ public class Server {
             Gdx.app.log("Server", "Last client disconnected, shutting down");
             Gdx.app.exit();
         }
+    }
+
+    public boolean areAllPlayersReady() {
+        synchronized (lock) {
+            return GameOptions.animalNames.length == availableIcons.size + players.length;
+        }
+    }
+
+    private int numOfReadyPlayers() {
+        synchronized (lock) {
+            return GameOptions.animalNames.length - availableIcons.size;
+        }
+    }
+
+    public void startMiniGameSession() {
+        sendOptionsMessage();
+        sendGameNextMessage();
     }
 
     public void update() {
@@ -176,10 +187,9 @@ public class Server {
 
     private void onClientOptionsMessage(ClientOptionsMessage msg) {
         Gdx.app.log("Server", "ClientOptionsMessage received from client " + msg.clientID);
-        boolean allPlayersReady = false;
         String name = GameOptions.animalNames[msg.icon];
-        if (availableIcons.contains(name, false)) {
-            synchronized (lock) {
+        synchronized (lock) {
+            if (availableIcons.contains(name, false)) {
                 for (Player p : players) {
                     if (p.ID != msg.clientID) { continue; }
                     if (p.icon != -1) {
@@ -189,26 +199,8 @@ public class Server {
                     p.icon = msg.icon;
                     break;
                 }
-                allPlayersReady = (GameOptions.animalNames.length == availableIcons.size + players.length);
             }
         }
-        if (allPlayersReady) {
-            sendOptionsMessage();
-            sendGameNextMessage();
-        }
-    }
-
-    private void onClientReadyMessage(ClientReadyMessage msg) {
-        synchronized (lock) {
-            readyPlayers.put(msg.clientID, msg.isReady);
-            for (Player p : players) {
-                if (!readyPlayers.get(p.ID, false)) {
-                    return;
-                }
-            }
-        }
-        sendOptionsMessage();
-        sendGameNextMessage();
     }
 
     private void sendGameNextMessage() {
@@ -268,6 +260,8 @@ public class Server {
         synchronized (lock) {
             optionsMessage.maxMiniGameRounds = GameOptions.maxMiniGameRounds;
             optionsMessage.players = players;
+            optionsMessage.numReady = numOfReadyPlayers();
+            optionsMessage.sequence = GameOptions.sequence;
             netServer.sendToAllTCP(optionsMessage);
         }
     }

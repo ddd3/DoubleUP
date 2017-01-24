@@ -33,6 +33,7 @@ public abstract class MiniGame implements Screen {
     private Vector2 unprojectedTouchPos = new Vector2();
 
     private long lastProgressTime;
+    private Player[] cachePlayers;
 
     public MiniGame(DoubleUp game) {
         this.game = game;
@@ -40,6 +41,7 @@ public abstract class MiniGame implements Screen {
         Network.state = Network.State.Minigame;
         game.client.setCurrMinigame(this);
         lastProgressTime = TimeUtils.millis();
+        cachePlayers = game.client.getPlayers();
     }
 
     private void initUserInterface() {
@@ -103,6 +105,7 @@ public abstract class MiniGame implements Screen {
         if (TimeUtils.timeSinceMillis(lastProgressTime) > 500) {
             game.client.sendClientProgressMessage(getProgress());
             lastProgressTime = TimeUtils.millis();
+            cachePlayers = game.client.getPlayers();
         }
     }
 
@@ -125,9 +128,8 @@ public abstract class MiniGame implements Screen {
         game.uiBatch.begin();
         topPanelSprite.draw(game.uiBatch);
         flagSprite.draw(game.uiBatch);
-        Player[] players = game.client.getPlayers();
         Sprite currPlayerSprite = null;
-        for (Player p : players) {
+        for (Player p : cachePlayers) {
             if (p.ID == game.client.getID()) {
                 currPlayerSprite = animalSprites[p.icon];
                 continue;

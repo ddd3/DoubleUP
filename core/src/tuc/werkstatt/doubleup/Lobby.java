@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Lobby implements Screen {
@@ -12,8 +11,8 @@ public class Lobby implements Screen {
     private Sprite backgroundSprite;
     private Sprite checkSprite;
     private Sprite loadingSprite;
-    private GlyphLayout loadingTextLayout;
-    private GlyphLayout checkTextLayout;
+    private Sprite checkTextSprite;
+    private Sprite loadingTextSprite;
     private float transitionTimeInSeconds = 1.75f;
     private boolean isReady = false;
 
@@ -32,10 +31,12 @@ public class Lobby implements Screen {
                 (game.targetResHeight - loadingSprite.getHeight()) / 2);
         loadingSprite.setOriginCenter();
 
-        game.font.setColor(MaterialColors.green);
-        checkTextLayout = new GlyphLayout(game.font, "Hostserver found");
-        game.font.setColor(MaterialColors.orange);
-        loadingTextLayout = new GlyphLayout(game.font, "Discovering hostserver");
+        checkTextSprite = game.getSprite("ui/check_text");
+        checkTextSprite.setPosition((game.targetResWidth - checkTextSprite.getWidth()) / 2f,
+                checkSprite.getY() - checkTextSprite.getHeight() - checkTextSprite.getHeight() / 4f);
+        loadingTextSprite = game.getSprite("ui/loading_text");
+        loadingTextSprite.setPosition((game.targetResWidth - loadingTextSprite.getWidth()) / 2f,
+                loadingSprite.getY() - loadingTextSprite.getHeight() - loadingTextSprite.getHeight() / 4f);
 
         if (Network.isHosting) {
             game.server = new Server(game);
@@ -60,13 +61,11 @@ public class Lobby implements Screen {
         backgroundSprite.draw(game.uiBatch);
         if (game.client.isConnected()) {
             checkSprite.draw(game.uiBatch);
-            game.font.draw(game.uiBatch, checkTextLayout , (game.targetResWidth - checkTextLayout.width) / 2,
-                    checkSprite.getY() - 1.5f * checkTextLayout.height);
+            checkTextSprite.draw(game.uiBatch);
         } else {
             loadingSprite.rotate(270f * deltaTime);
             loadingSprite.draw(game.uiBatch);
-            game.font.draw(game.uiBatch, loadingTextLayout , (game.targetResWidth - loadingTextLayout.width) / 2,
-                    loadingSprite.getY() - 1.5f * loadingTextLayout.height);
+            loadingTextSprite.draw(game.uiBatch);
         }
         game.uiBatch.end();
 

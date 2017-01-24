@@ -49,7 +49,7 @@ public class DoubleUp extends Game {
 
     // add your individual minigame name (needs to match java file) here
     // index also being used as gameID in messages
-    final static String[] minigames = { "ClickTarget", "CrazySmiley", "PickColor", "PumpBalloon",
+    final String[] minigames = { "ClickTarget", "CrazySmiley", "PickColor", "PumpBalloon",
             "FindTheMatch", "Drop", "PlaneWarGame"};
 
     MiniGame currMiniGame = null;
@@ -118,11 +118,14 @@ public class DoubleUp extends Game {
     private void generateFonts() {
         Gdx.app.log("Assets", "Generating bitmap fonts ...");
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
-                Gdx.files.internal("fonts/FiraSans-Medium.otf"));
+                Gdx.files.internal("fonts/CarterOne.ttf"));
         FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-        parameter.size = 64;
+        parameter.size = 60;
         parameter.magFilter = Texture.TextureFilter.Linear;
         parameter.minFilter = Texture.TextureFilter.Linear;
+        parameter.borderWidth = 2;
+        parameter.shadowOffsetX = 4;
+        parameter.shadowOffsetY = 4;
         font = generator.generateFont(parameter);
         generator.dispose();
     }

@@ -11,7 +11,6 @@ import java.util.Arrays;
 import tuc.werkstatt.doubleup.Network.ClientFinishedMessage;
 import tuc.werkstatt.doubleup.Network.ClientOptionsMessage;
 import tuc.werkstatt.doubleup.Network.ClientProgressMessage;
-import tuc.werkstatt.doubleup.Network.ClientReadyMessage;
 import tuc.werkstatt.doubleup.Network.ExitMessage;
 import tuc.werkstatt.doubleup.Network.GameFinishedMessage;
 import tuc.werkstatt.doubleup.Network.GameNextMessage;
@@ -28,6 +27,7 @@ public class Client {
     private int currMiniGameRound = 0;
     private int maxMiniGameRounds = 0;
     private ClientProgressMessage progressMsg;
+    private int numReadyPlayers = 0;
 
     public Client(DoubleUp game) {
         this.game = game;
@@ -73,7 +73,9 @@ public class Client {
     }
 
     public boolean isConnected() { return netClient.isConnected(); }
+
     public int getID() { return netClient.getID(); }
+
     public Player[] getPlayers() {
         if (players != null) {
             synchronized (lock) {
@@ -81,6 +83,20 @@ public class Client {
             }
         } else {
             return null;
+        }
+    }
+    public int getNumPlayers() {
+        if (players != null) {
+            synchronized (lock) {
+                return players.length;
+            }
+        }
+        return 0;
+    }
+
+    public int getNumReadyPlayers() {
+        synchronized (lock) {
+            return numReadyPlayers;
         }
     }
 
@@ -180,6 +196,10 @@ public class Client {
         synchronized (lock) {
             players = msg.players;
             maxMiniGameRounds = msg.maxMiniGameRounds;
+            numReadyPlayers = msg.numReady;
+            if (!Network.isHosting) {
+                GameOptions.sequence = msg.sequence;
+            }
         }
     }
 
@@ -219,14 +239,6 @@ public class Client {
         ClientOptionsMessage msg = new ClientOptionsMessage();
         msg.clientID = netClient.getID();
         msg.icon = icon;
-        netClient.sendTCP(msg);
-    }
-
-    public void sendClientReadyMessage(boolean isReady) {
-        Gdx.app.log("Client", "ClientReadyMessage sent");
-        ClientReadyMessage msg = new ClientReadyMessage();
-        msg.isReady = isReady;
-        msg.clientID = netClient.getID();
         netClient.sendTCP(msg);
     }
 

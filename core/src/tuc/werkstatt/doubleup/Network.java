@@ -16,9 +16,9 @@ public class Network {
         kryo.register(GameFinishedMessage.class);
         kryo.register(GameProgressMessage.class);
         kryo.register(GameOptionsMessage.class);
+        kryo.register(GameOptions.Sequence.class);
         kryo.register(ClientProgressMessage.class);
         kryo.register(ClientFinishedMessage.class);
-        kryo.register(ClientReadyMessage.class);
         kryo.register(ClientOptionsMessage.class);
         kryo.register(ExitMessage.class);
         kryo.register(Player[].class);
@@ -41,11 +41,6 @@ public class Network {
         public int icon;
     }
 
-    public static class ClientReadyMessage {
-        public int clientID;
-        public boolean isReady;
-    }
-
     public static class GameFinishedMessage {
         public int gameID;
         public int clientWinnerID;
@@ -63,6 +58,8 @@ public class Network {
 
     public static class GameOptionsMessage {
         public int maxMiniGameRounds;
+        public GameOptions.Sequence sequence;
+        public int numReady;
         public Player[] players;
     }
 
