@@ -17,7 +17,7 @@ import java.util.Arrays;
 public abstract class MiniGame implements Screen {
     public final DoubleUp game;
 
-    private static boolean isUiInitialized = false;
+    public static boolean isUiInitialized = false;
     private static ShapeRenderer uiShapeRenderer;
     private static Sprite bottomPanelSprite;
     private static Sprite topPanelSprite;

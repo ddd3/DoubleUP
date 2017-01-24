@@ -18,7 +18,7 @@ public class GameOptions implements Screen {
     private final DoubleUp game;
 
     public static final int maxPlayers = 16;
-    public static int maxMiniGameRounds = 8;
+    public static int maxMiniGameRounds;
     public enum Sequence {Random, Sequential}
     public static Sequence sequence = Sequence.Random;
 
@@ -57,6 +57,7 @@ public class GameOptions implements Screen {
     public GameOptions(final DoubleUp game) {
         this.game = game;
         Network.state = Network.State.GameOptions;
+        maxMiniGameRounds = 8;
         initUserInterface();
         lastMessageTime = TimeUtils.millis();
     }
