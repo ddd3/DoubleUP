@@ -1,14 +1,11 @@
+
 /* TODO:
 / Bessere Notationen (Notationen sind teils veraltet vom anderen Minispiel), Komentare, Javadocs.
+/ Größe der Smileys in Ordnung?
 / Sounds passabel? Lautstärke?
+/ Musik einbauen? gleiche Musik über alle Minispiele ohne Neustart?
+/ Text Unten zu lang alternativ Beschreibung okay?!? SpawnDelay weiteranpassen?
 / Lizensen bzgl Musik und Images hinzufügen als Kommentar
-/ Teils geht Drücken auf Desktop nicht. Eventuell Kill funktion einbauen, die einen zähler +1 macht
-/--> nur wenn dieser zähler = 0 ist, wird Bild kleiner.
-/Ränder Passabel?
-/Andere Spawnsachen hinzufügen, als Blockade (bewegend)? Ausprobieren die nächsten Tage (spätestens nach dem 30.Januar)
-/counter 2 und ggf andere sinnlos sachen entfernen
-/Sound fürs Treffen muss noch rein
-/spielbar android gerät?
 */
 
 package tuc.werkstatt.doubleup.minigames;
@@ -25,22 +22,24 @@ import tuc.werkstatt.doubleup.MiniGame;
 
 public final class ClickTarget extends MiniGame {
 
-    private Sound hit;
+    private Sound hitYellow;
+    private Sound hitRed;
     private Sprite backgroundSprite;
 
     private final int maxPoints = 50;
     private int currPoints = 0;
     private final int maxBall1 = 1;
-    private int counter = 0;
-    private int counter2 = 2;
-    private final float ballSpawnMinDelay = 0.001f;
-    private float currSpawnDelay = 0f;
+    private final int maxBall2 = 49;
+    private final float ballSpawnMinDelay = 0.0001f;
+    private final float birdieSpawnMinDelay = 0.25f;
+    private float currSpawnDelay1 = 0f;
+    private float currSpawnDelay2 = 0f;
 
     private Array<Ball> ball;
+    private Array<Balld> balld;
 
     private class Ball {
-     private float size = 250;
-
+        static final float size = 250;
         Sprite sprite;
         Vector2 vel = new Vector2();
         boolean alive = false;
@@ -50,35 +49,31 @@ public final class ClickTarget extends MiniGame {
         private Ball() {
 
             sprite = getSprite("minigames/ClickTarget/target");
-
+            sprite.setSize(size, size);
             sprite.setOriginCenter();
 
         }
 
         private void spawn() {
-            float x = MathUtils.random((0 - 256 / 2)+50, (game.width - 256 / 2)-50);
-            float y = game.height - MathUtils.random((256),(6*256));
+            float x = MathUtils.random(0, game.width - (size));
+            float y = game.height - MathUtils.random((1*size),(6*size));
 
-          sprite.setPosition(x, y);
 
-            if (counter == 0)
+
+            sprite.setPosition(x, y);
+
+            if (currPoints >= 0 && currPoints <=20)
             {
-                sprite.setSize(size, size);
+                vel.set(MathUtils.random(MathUtils.random(0,200)),(MathUtils.random(-200,200)));
             }
-
-            if (counter > 0)
-
+            if (currPoints >= 21 && currPoints <=40)
             {
-
-                    size = size -3 ;
-
-                sprite.setSize(size, size);
-                x = MathUtils.random(0 - 256 / 2 + (MathUtils.random(0,50)), game.width - 256 / 2+(MathUtils.random(-50,0)));
-                y = game.height - MathUtils.random((1*256)+((MathUtils.random(-50,0))),(6*256)+(MathUtils.random(-50,50)));
-
-
+                vel.set(MathUtils.random(MathUtils.random(0,350)),(MathUtils.random(-350,350)));
             }
-
+            if (currPoints >= 41 && currPoints < 50)
+            {
+                vel.set(MathUtils.random(MathUtils.random(0,500)),(MathUtils.random(-500,500)));
+            }
 
 
             alive = true;
@@ -88,13 +83,62 @@ public final class ClickTarget extends MiniGame {
             alive = false;
         }
 
-
+        private void killFail() {
+            alive = false;
+        }
 
     }
 
+    private class Balld {
+        static final float size = 180;
+        Vector2 vel = new Vector2();
+        boolean alive2 = false;
+        Sprite sprite;
 
 
-    public ClickTarget(DoubleUp game) {
+        private Balld() {
+
+            sprite = getSprite("minigames/ClickTarget/bird");
+            sprite.setSize(size, size);
+            sprite.setOriginCenter();
+        }
+
+        private void spawn2() {
+            float x = 0;
+            float y = game.height - MathUtils.random((1*size),(6*size));
+
+
+            sprite.setPosition(x, y);
+
+            if (currPoints >= 0 && currPoints <=20)
+            {
+                vel.set(MathUtils.random(MathUtils.random(0,400)),(MathUtils.random(-400,400)));
+            }
+            if (currPoints >= 21 && currPoints <=40)
+            {
+                vel.set(MathUtils.random(MathUtils.random(0,550)),(MathUtils.random(-550,550)));
+            }
+            if (currPoints >= 41 && currPoints < 50)
+            {
+                vel.set(MathUtils.random(MathUtils.random(0,700)),(MathUtils.random(-700,700)));
+            }
+
+
+            alive2 = true;
+        }
+
+        private void kill2() {
+            alive2 = false;
+
+        }
+
+        //    private void killFail2() {
+        //      alive2 = false;
+        //    }
+    }
+
+
+    public ClickTarget (DoubleUp game) {
         super(game);
 
         backgroundSprite = getSprite("ui/title_background");
@@ -105,14 +149,18 @@ public final class ClickTarget extends MiniGame {
         for (int i = 0; i < maxBall1; ++i) {
             ball.add(new Ball());
         }
-
+        balld = new Array<Balld>(maxBall2);
+        for (int j = 0; j < maxBall2; ++j) {
+            balld.add(new Balld());
+        }
     }
 
     @Override
     public void show() {
         game.loadMusic("music/game_start_loop.ogg");
-        hit = getSound("sounds/Bow_Fire.mp3");
-           }
+        hitYellow = getSound("sounds/laughter.wav");
+        hitRed = getSound("sounds/error.wav");
+    }
 
     @Override
     public float getProgress() { return 100f * currPoints / maxPoints; }
@@ -135,48 +183,78 @@ public final class ClickTarget extends MiniGame {
             }
         }
 
+        for (Balld b : balld) {
+            if (b.alive2) {
+                b.sprite.draw(game.batch);
+                numActive++;
+            }
+        }
 
         game.batch.end();
     }
 
     @Override
     public void update(float deltaTime) {
-        Vector2 vel = new Vector2();
         if (Gdx.input.justTouched()) {
             Vector2 pos = getTouchPos();
 
             for (Ball b : ball) {
                 if (!b.alive) {
                     continue;
-
                 }
                 final float distance = Vector2.dst(pos.x, pos.y,
                         b.sprite.getX() + b.sprite.getWidth() / 2, b.sprite.getY() + b.sprite.getHeight() / 2);
                 if (distance < b.sprite.getWidth() / 2) {
 
-                    hit.play();
+                    hitYellow.play();
                     ++currPoints;
-
-                 ++counter;
-                    counter2 = counter2 + 1;
                     b.kill();
 
                 }
+                else {
 
-          //      else {
-            //        b.kill();
-           //     }
+
+                    //    b.killFail();
+
+                }
+
+
 
             }
 
+            for (Balld b : balld) {
+                if (!b.alive2) {
+                    continue;
+                }
+                final float distance = Vector2.dst(pos.x, pos.y,
+                        b.sprite.getX() + b.sprite.getWidth() / 2, b.sprite.getY() + b.sprite.getHeight() / 2);
 
+
+                if (distance < b.sprite.getWidth() / 2) {
+                    hitRed.play();
+                    if (currPoints > 0) {
+                        --currPoints;
+                    }
+                    b.kill2();
+                }
+                else {
+
+
+                    //            b.killFail2();
+
+                }
+
+
+
+
+            }
         }
 
         for (Ball b : ball) {
             if (b.alive) {
                 final float x = b.sprite.getX() + b.vel.x * deltaTime;
                 final float y = b.sprite.getY() + b.vel.y * deltaTime;
-                if (x < 0 - b.sprite.getWidth() || x > game.width || y < 0 - b.sprite.getHeight()) {
+                if (x < 0 - b.sprite.getWidth() || x > game.width || y < 0 - b.sprite.getHeight()|| y > game.height)  {
                     b.kill();
                 } else {
                     b.sprite.setPosition(x, y);
@@ -185,18 +263,35 @@ public final class ClickTarget extends MiniGame {
             }
         }
 
+        for (Balld b : balld) {
+            if (b.alive2) {
+                final float x = b.sprite.getX() + b.vel.x * deltaTime;
+                final float y = b.sprite.getY() + b.vel.y * deltaTime;
+                if (x < 0 - b.sprite.getWidth() || x > game.width || y < 0 - b.sprite.getHeight() || y > game.height) {
+                    b.kill2();
+                } else {
+                    b.sprite.setPosition(x, y);
 
+                }
+            }
+        }
 
-        if((currSpawnDelay -= deltaTime) < 0) {
-            currSpawnDelay = ballSpawnMinDelay;
+        if((currSpawnDelay1 -= deltaTime) < 0) {
+            currSpawnDelay1 = ballSpawnMinDelay;
             for (Ball b : ball) {
                 if (!b.alive) {
                     b.spawn();
                     break;
                 }
+            }}
+        if((currSpawnDelay2 -= deltaTime) < 0) {
+            currSpawnDelay2 = birdieSpawnMinDelay;
+            for (Balld b : balld) {
+                if (!b.alive2) {
+                    b.spawn2();
+                    break;
+                }
             }
-
-
         }
 
     }
