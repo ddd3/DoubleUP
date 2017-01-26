@@ -22,8 +22,8 @@ import tuc.werkstatt.doubleup.MiniGame;
 
 public final class ClickTarget extends MiniGame {
 
-    private Sound hitYellow;
-    private Sound hitRed;
+
+    private Sound hitRight;
     private Sprite backgroundSprite;
 
     private final int maxPoints = 50;
@@ -158,8 +158,8 @@ public final class ClickTarget extends MiniGame {
     @Override
     public void show() {
         game.loadMusic("music/game_start_loop.ogg");
-        hitYellow = getSound("sounds/laughter.wav");
-        hitRed = getSound("sounds/error.wav");
+        hitRight= getSound("sounds/Bow_Fire.mp3");
+
     }
 
     @Override
@@ -206,7 +206,7 @@ public final class ClickTarget extends MiniGame {
                         b.sprite.getX() + b.sprite.getWidth() / 2, b.sprite.getY() + b.sprite.getHeight() / 2);
                 if (distance < b.sprite.getWidth() / 2) {
 
-                    hitYellow.play();
+                    hitRight.play();
                     ++currPoints;
                     b.kill();
 
@@ -231,7 +231,7 @@ public final class ClickTarget extends MiniGame {
 
 
                 if (distance < b.sprite.getWidth() / 2) {
-                    hitRed.play();
+
                     if (currPoints > 0) {
                         --currPoints;
                     }
