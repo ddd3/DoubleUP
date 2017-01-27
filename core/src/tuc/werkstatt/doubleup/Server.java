@@ -201,6 +201,9 @@ public class Server {
                 }
             }
         }
+        if (game.isTestingEnvironment()) {
+            startMiniGameSession();
+        }
     }
 
     private void sendGameNextMessage() {

@@ -219,7 +219,6 @@ public class GameOptions implements Screen {
     private void updateLogic(float deltaTime) {
         if (game.isTestingEnvironment()) {
             game.client.sendClientOptionsMessage(0);
-            game.server.startMiniGameSession();
         } else if (Gdx.input.justTouched()) {
             Vector3 touchPos = game.uiCamera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
             for (Sprite sp : animalSprites) {
