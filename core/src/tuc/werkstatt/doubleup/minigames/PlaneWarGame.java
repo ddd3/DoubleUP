@@ -83,9 +83,9 @@ public final class PlaneWarGame extends MiniGame {
     @Override
     public void show() {
         game.loadMusic("music/examples/game_music.mp3");
-        bulletSound = Gdx.audio.newSound(Gdx.files.internal("music/examples/bullet.mp3"));
-        explodeSound= Gdx.audio.newSound(Gdx.files.internal("music/examples/enemy3_down.mp3"));
-        gameoverSound= Gdx.audio.newSound(Gdx.files.internal("music/examples/game_over.mp3"));
+        bulletSound = getSound("sounds/bullet.mp3");
+        explodeSound= getSound("sounds/enemy3_down.mp3");
+        gameoverSound= getSound("sounds/game_over.mp3");
     }
 
     @Override
@@ -100,44 +100,37 @@ public final class PlaneWarGame extends MiniGame {
 
     @Override
     public void draw(float deltaTime) {
-
-        switch(state) {
-            case PLAYING:
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
-        backgroundSprite.draw(game.batch);
-
-        for(Rectangle enemy: enemys) {
-            enemySprite.setPosition(enemy.x, enemy.y);
-            enemySprite.draw(game.batch);
-        }
-        for(Rectangle bullet: bullets) {
-            bulletSprite.setPosition(bullet.x, bullet.y);
-            bulletSprite.draw(game.batch);
-        }
-        heroSprite.draw(game.batch);
-        game.batch.end();
-                break;
-
-        case GAME_OVER: {
+        switch(state) {
+        case PLAYING:
+            backgroundSprite.draw(game.batch);
+            for(Rectangle enemy: enemys) {
+                enemySprite.setPosition(enemy.x, enemy.y);
+                enemySprite.draw(game.batch);
+            }
+            for(Rectangle bullet: bullets) {
+                bulletSprite.setPosition(bullet.x, bullet.y);
+                bulletSprite.draw(game.batch);
+            }
+            heroSprite.draw(game.batch);
+            break;
+        case GAME_OVER:
             bullets.clear();
             enemys.clear();
             layout.setText(bitmapFont, GAME_OVER_TEXT);
-            game.batch.setProjectionMatrix(game.camera.combined);
-            game.batch.begin();
             backgroundSprite.draw(game.batch);
             bitmapFont.draw(game.batch, GAME_OVER_TEXT, (game.width - layout.width) / 2,
                     (game.height - layout.height) / 2);
-            game.batch.end();
-            if (Gdx.input.isKeyJustPressed(Keys.ANY_KEY))
+            if (Gdx.input.isKeyJustPressed(Keys.ANY_KEY) || Gdx.input.justTouched())
             {
                 state = STATE.PLAYING;
                 currPoints=0;
                 heroSprite.setPosition((game.width - heroSprite.getWidth()) / 2, 20);
             }
-    }
-        break;
+            break;
         }
+        game.batch.end();
     }
 
     public void update(float deltaTime) {
