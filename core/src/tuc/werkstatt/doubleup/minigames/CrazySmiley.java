@@ -23,7 +23,6 @@ public final class CrazySmiley extends MiniGame {
 
     private Sound hitYellow;
     private Sound hitRed;
-    private Sprite backgroundSprite;
 
     private final int maxPoints = 5;
     private int currPoints = 0;
@@ -124,10 +123,10 @@ public final class CrazySmiley extends MiniGame {
 
     public CrazySmiley (DoubleUp game) {
         super(game);
-
-        backgroundSprite = getSprite("ui/title_background");
-        backgroundSprite.setSize(game.width, game.height);
-        backgroundSprite.setPosition(0, 0);
+        setTitle("Crazy Smiley");
+        setDescription("Touch the yellow smiley, but avoid red ones or you will lose points");
+        setBackground("ui/title_background");
+        setIcon("minigames/CrazySmiley/yellow");
 
         ball = new Array<Ball>(maxBall1);
         for (int i = 0; i < maxBall1; ++i) {
@@ -156,8 +155,6 @@ public final class CrazySmiley extends MiniGame {
     public void draw(float deltaTime) {
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
-
-        backgroundSprite.draw(game.batch);
 
         int numActive = 0;
         for (Ball b : ball) {

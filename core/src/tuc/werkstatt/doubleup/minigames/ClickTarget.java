@@ -24,7 +24,6 @@ public final class ClickTarget extends MiniGame {
 
 
     private Sound hitRight;
-    private Sprite backgroundSprite;
 
     private final int maxPoints = 50;
     private int currPoints = 0;
@@ -140,10 +139,10 @@ public final class ClickTarget extends MiniGame {
 
     public ClickTarget (DoubleUp game) {
         super(game);
-
-        backgroundSprite = getSprite("ui/title_background");
-        backgroundSprite.setSize(game.width, game.height);
-        backgroundSprite.setPosition(0, 0);
+        setTitle("Click Target");
+        setDescription("Touch the targets, but avoid the birds or you will lose points");
+        setBackground("ui/title_background");
+        setIcon("minigames/ClickTarget/target");
 
         ball = new Array<Ball>(maxBall1);
         for (int i = 0; i < maxBall1; ++i) {
@@ -172,8 +171,6 @@ public final class ClickTarget extends MiniGame {
     public void draw(float deltaTime) {
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
-
-        backgroundSprite.draw(game.batch);
 
         int numActive = 0;
         for (Ball b : ball) {

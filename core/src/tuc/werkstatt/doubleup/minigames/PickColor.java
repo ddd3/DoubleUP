@@ -15,10 +15,9 @@ import tuc.werkstatt.doubleup.MiniGame;
 public final class PickColor extends MiniGame {
     private final int maxPoints = 10;
     private int currPoints = 0;
-    private final Color[] colors = {MaterialColors.red, MaterialColors.green,
-                                    MaterialColors.blue, MaterialColors.orange };
-    private final Color colorToCollect = colors[0];
-    private Sprite backgroundSprite;
+    private final Color[] colors = { MaterialColors.red, MaterialColors.green,
+            MaterialColors.blue, MaterialColors.orange };
+    private final Color colorToCollect = colors[MathUtils.random(colors.length - 1)];
     private Sprite swirlSprite;
     private final float swirlSize = 256f;
     private final int numSwirlsPerColor = 6;
@@ -59,9 +58,13 @@ public final class PickColor extends MiniGame {
 
     public PickColor(DoubleUp game) {
         super(game);
-        backgroundSprite = getSprite("ui/title_background");
-        backgroundSprite.setSize(game.width, game.height);
-        backgroundSprite.setPosition(0, 0);
+        setTitle("Pick Color");
+        String colName = colorToCollect == MaterialColors.red ? "red" : colorToCollect == MaterialColors.blue ? "blue" :
+                colorToCollect == MaterialColors.green ? "green" : colorToCollect == MaterialColors.orange ? "orange" : "UNDEF";
+        setDescription("Touch the " + colName + " swirls, avoid other colors or you'll lose points");
+        setBackground("ui/title_background");
+        setIcon("minigames/PickColor/swirl_icon");
+
         swirlSprite = getSprite("minigames/PickColor/swirl");
         swirlSprite.setSize(swirlSize, swirlSize);
         swirlSprite.setOriginCenter();
@@ -91,7 +94,6 @@ public final class PickColor extends MiniGame {
     public void draw(float deltaTime) {
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
-        backgroundSprite.draw(game.batch);
         for (Swirl sw : swirls) {
             swirlSprite.setPosition(sw.pos.x, sw.pos.y);
             swirlSprite.setRotation(sw.rot);

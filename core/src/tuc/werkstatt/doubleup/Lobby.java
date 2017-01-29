@@ -13,7 +13,7 @@ public class Lobby implements Screen {
     private Sprite loadingSprite;
     private Sprite checkTextSprite;
     private Sprite loadingTextSprite;
-    private float transitionTimeInSeconds = 1.75f;
+    private float transitionTimeInSeconds = 1.25f;
     private boolean isReady = false;
 
     public Lobby(DoubleUp game) {

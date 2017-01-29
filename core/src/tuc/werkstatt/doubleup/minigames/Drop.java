@@ -17,7 +17,6 @@ import tuc.werkstatt.doubleup.MiniGame;
 
 public final class Drop extends MiniGame {
 
-    private Sprite backgroundSprite;
     private Sprite dropSprite;
     private Sprite bucketSprite;
 
@@ -29,10 +28,10 @@ public final class Drop extends MiniGame {
 
     public Drop(DoubleUp game) {
         super(game);
-
-        backgroundSprite = getSprite("ui/title_background");
-        backgroundSprite.setSize(game.width, game.height);
-        backgroundSprite.setPosition(0, 0);
+        setTitle("Catch Drops");
+        setDescription("Catch falling raindrops with a bucket to earn points");
+        setBackground("ui/title_background");
+        setIcon("minigames/Drop/bucket");
 
         // TODO: are these resources free to use in non-commercial projects and licenced accordingly?
         dropSprite = getSprite("minigames/Drop/droplet");
@@ -74,7 +73,6 @@ public final class Drop extends MiniGame {
         // all drops
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
-        backgroundSprite.draw(game.batch);
         for(Vector2 raindrop: raindrops) {
             dropSprite.setPosition(raindrop.x, raindrop.y);
             dropSprite.draw(game.batch);

@@ -6,10 +6,12 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.Arrays;
@@ -25,6 +27,11 @@ public abstract class MiniGame implements Screen {
     private static Sprite currRoundIndicatorSprite;
     private static Sprite flagSprite;
     private static Sprite[] animalSprites;
+    private Sprite backgroundSprite;
+    private Sprite iconSprite;
+    private static Sprite iconBackgroundSprite;
+    private static Sprite introPanelSprite;
+    private static Sprite introGermSprite;
 
     private static final float indicatorSpacing = 12f;
     private static float indicatorStartPosX;
@@ -34,6 +41,14 @@ public abstract class MiniGame implements Screen {
 
     private long lastProgressTime;
     private Player[] cachePlayers;
+
+    private enum State { Intro, Count, Game, Score }
+    private State state = State.Intro;
+    private long introTimeStamp =  TimeUtils.millis();
+    private GlyphLayout title;
+    private GlyphLayout description;
+    private final float descriptionPadding = 32f;
+    private boolean isIntroInit = false;
 
     public MiniGame(DoubleUp game) {
         this.game = game;
@@ -73,6 +88,43 @@ public abstract class MiniGame implements Screen {
             sp.setSize(96, 96);
             sp.setY(game.targetResHeight - 68f - sp.getHeight() / 2f);
         }
+
+        // intro screen
+        introPanelSprite = getSprite("ui/doodle_select_panel");
+        introPanelSprite.setPosition((game.targetResWidth - introPanelSprite.getWidth()) / 2f,
+                (game.targetResHeight - introPanelSprite.getHeight()) / 2f + 100f);
+        introGermSprite = getSprite("ui/green_germs");
+        introGermSprite.setPosition(introPanelSprite.getX() + (introPanelSprite.getWidth() - introGermSprite.getWidth()) / 2f,
+                introPanelSprite.getY() + introPanelSprite.getHeight() - introGermSprite.getHeight() / 2f);
+        iconBackgroundSprite = getSprite("ui/doodle_box_selected_background");
+        iconBackgroundSprite.setSize(iconBackgroundSprite.getWidth() * 2.5f, iconBackgroundSprite.getHeight() * 2.5f);
+        iconBackgroundSprite.setPosition(introPanelSprite.getX() + (introPanelSprite.getWidth() - iconBackgroundSprite.getWidth()) / 2f,
+                introPanelSprite.getY() + introPanelSprite.getHeight() - iconBackgroundSprite.getHeight() - 120f);
+    }
+
+    public void setTitle(String title) {
+        this.title = new GlyphLayout(game.titleFont, title);
+    }
+
+    public void setDescription(String description) {
+        final float targetWidth = introPanelSprite.getWidth() - descriptionPadding * 2f;
+        this.description = new GlyphLayout(game.font, description, MaterialColors.text, targetWidth, Align.center, true);
+    }
+
+    public void setIcon(String name) {
+        final float padding = 24f;
+        final float iconSize = iconBackgroundSprite.getWidth() - padding * 2f;
+        iconSprite = getSprite(name);
+        final float scaleFactor = iconSize / Math.max(iconSprite.getWidth(), iconSprite.getHeight());
+        iconSprite.setSize(iconSprite.getWidth() * scaleFactor, iconSprite.getHeight() * scaleFactor);
+        iconSprite.setPosition(iconBackgroundSprite.getX() + (iconBackgroundSprite.getWidth() - iconSprite.getWidth()) / 2f,
+                iconBackgroundSprite.getY() + (iconBackgroundSprite.getHeight() - iconSprite.getHeight()) / 2f);
+    }
+
+    public void setBackground(String name) {
+        backgroundSprite = getSprite(name);
+        backgroundSprite.setSize(game.width, game.height);
+        backgroundSprite.setPosition(0, game.targetBottomBarHeight);
     }
 
     // implementation necessary for tracking game state and updating other players/server
@@ -87,29 +139,34 @@ public abstract class MiniGame implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         game.uiView.apply();
-        drawUserInterface();
+        if (state == State.Intro) {
+            drawUserInterface();
+            drawIntroInterface();
+            if (TimeUtils.timeSinceMillis(introTimeStamp) > 5000) {
+                state = State.Game;
+            }
+        } else if (state == State.Count) {
+            // ...
+        } else if (state == State.Game) {
+            drawUserInterface();
+            updateTouchPosition();
+            updateSubMiniGame(deltaTime);
+            updateNetwork();
+        } else if (state == State.Score) {
 
-        //game.camera.update();
-        if (Gdx.input.isTouched()) {
-            projectedTouchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            game.camera.unproject(projectedTouchPos);
-            unprojectedTouchPos.set(projectedTouchPos.x, projectedTouchPos.y);
         }
-        game.gameView.apply();
-        draw(deltaTime);
-        update(deltaTime);
-
         if (Gdx.input.isKeyJustPressed(Input.Keys.M)) { game.toggleMusicMute(); }
-        if (Network.isHosting) { game.server.update(); }
-        if (isFinished()) { game.client.sendClientFinishedMessage(); }
-        if (TimeUtils.timeSinceMillis(lastProgressTime) > 500) {
-            game.client.sendClientProgressMessage(getProgress());
-            lastProgressTime = TimeUtils.millis();
-            cachePlayers = game.client.getPlayers();
-        }
     }
 
     private void drawUserInterface() {
+        if (backgroundSprite != null) {
+            game.uiBatch.begin();
+            backgroundSprite.draw(game.uiBatch);
+            game.uiBatch.end();
+        } else {
+            setBackground("ui/title_background");
+        }
+
         final int topPanelY = game.targetResHeight - game.targetTopBarHeight;
         // values measured in image editor
         final int progressBarX = 20;
@@ -153,6 +210,56 @@ public abstract class MiniGame implements Screen {
             }
         }
         game.uiBatch.end();
+    }
+
+    private void drawIntroInterface() {
+        if (!isIntroInit) {
+            if (title == null) {
+                setTitle("Missing title");
+            }
+            if (description == null) {
+                setDescription("Missing description");
+            }
+            if (iconSprite == null) {
+                setIcon("minigames/PumpBalloon/balloon");
+            }
+            isIntroInit = true;
+        }
+        game.uiBatch.begin();
+        introPanelSprite.draw(game.uiBatch);
+        introGermSprite.draw(game.uiBatch);
+        iconBackgroundSprite.draw(game.uiBatch);
+        iconSprite.draw(game.uiBatch);
+        game.titleFont.draw(game.uiBatch, title, introPanelSprite.getX() + (introPanelSprite.getWidth() - title.width) / 2f,
+                introPanelSprite.getY() + introPanelSprite.getHeight() + title.height / 2f);
+        final float maxDescHeight = iconBackgroundSprite.getY() - introPanelSprite.getY() - descriptionPadding * 2f;
+        game.font.draw(game.uiBatch, description, introPanelSprite.getX() + (introPanelSprite.getWidth() - description.width) / 2f,
+                introPanelSprite.getY() + 2f * descriptionPadding + (maxDescHeight + description.height) / 2f);
+        game.uiBatch.end();
+    }
+
+    private void updateTouchPosition() {
+        if (Gdx.input.isTouched()) {
+            projectedTouchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+            game.camera.unproject(projectedTouchPos);
+            unprojectedTouchPos.set(projectedTouchPos.x, projectedTouchPos.y);
+        }
+    }
+
+    private void updateSubMiniGame(final float deltaTime) {
+        game.gameView.apply();
+        draw(deltaTime);
+        update(deltaTime);
+    }
+
+    private void updateNetwork() {
+        if (Network.isHosting) { game.server.update(); }
+        if (isFinished()) { game.client.sendClientFinishedMessage(); }
+        if (TimeUtils.timeSinceMillis(lastProgressTime) > 500) {
+            game.client.sendClientProgressMessage(getProgress());
+            lastProgressTime = TimeUtils.millis();
+            cachePlayers = game.client.getPlayers();
+        }
     }
 
     public final Vector2 getTouchPos() { return unprojectedTouchPos; }

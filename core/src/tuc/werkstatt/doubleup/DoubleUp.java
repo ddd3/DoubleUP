@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -36,6 +37,7 @@ public class DoubleUp extends Game {
     public TextureAtlas atlas;
     public AssetManager assets;
     public BitmapFont font;
+    public BitmapFont titleFont;
     private Music music;
     private String currMusicFileName;
     private boolean isMusicMuted = false;
@@ -89,6 +91,7 @@ public class DoubleUp extends Game {
                 (Arrays.asList(minigames).contains(args[0]) || args[0].equals("TestingPlayground"))) {
             testingMiniGame = args[0];
             Network.isHosting = true;
+            isMusicMuted = true;
             setScreen(new Lobby(this));
         } else {
             setScreen(new Start(this));
@@ -115,19 +118,27 @@ public class DoubleUp extends Game {
         }
     }
 
-    private void generateFonts() {
-        Gdx.app.log("Assets", "Generating bitmap fonts ...");
+    private BitmapFont generateFont(String fontName, int fontSize, Color borderColor, float borderWidth, int shadowOffset) {
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
-                Gdx.files.internal("fonts/CarterOne.ttf"));
+                Gdx.files.internal("fonts/" + fontName));
         FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-        parameter.size = 60;
+        parameter.size = fontSize;
         parameter.magFilter = Texture.TextureFilter.Linear;
         parameter.minFilter = Texture.TextureFilter.Linear;
-        parameter.borderWidth = 2;
-        parameter.shadowOffsetX = 4;
-        parameter.shadowOffsetY = 4;
-        font = generator.generateFont(parameter);
+        parameter.borderColor = borderColor;
+        parameter.borderWidth = borderWidth;
+        parameter.shadowColor = borderColor;
+        parameter.shadowOffsetX = shadowOffset;
+        parameter.shadowOffsetY = shadowOffset;
+        BitmapFont font = generator.generateFont(parameter);
         generator.dispose();
+        return font;
+    }
+
+    private void generateFonts() {
+        Gdx.app.log("Assets", "Generating bitmap fonts ...");
+        font = generateFont("CarterOne.ttf", 60, Color.BLACK, 2f, 4);
+        titleFont = generateFont("CarterOne.ttf", 82, Color.valueOf("1c6b65ff"), 6f, 5);
     }
 
     private void loadAssets() {
@@ -217,6 +228,7 @@ public class DoubleUp extends Game {
         if (server != null) { server.dispose(); }
         if (music != null) { music.stop(); }
         font.dispose();
+        titleFont.dispose();
         batch.dispose();
         uiBatch.dispose();
         assets.dispose();

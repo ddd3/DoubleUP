@@ -20,7 +20,7 @@ import tuc.werkstatt.doubleup.MiniGame;
 
 public final class PlaneWarGame extends MiniGame {
 
-    private Sprite backgroundSprite, heroSprite, bulletSprite, enemySprite;
+    private Sprite heroSprite, bulletSprite, enemySprite;
     private TextureAtlas shoot;
     private final int maxPoints = 20;
     private int currPoints = 0;
@@ -34,21 +34,21 @@ public final class PlaneWarGame extends MiniGame {
 
     public PlaneWarGame(DoubleUp game) {
         super(game);
+        setTitle("Plane Shooter");
+        setDescription("Touch to navigate, shoot and avoid other planes to gain points");
+        setBackground("ui/title_background");
+        setIcon("minigames/PlaneWarGame/plane_icon");
+
         bitmapFont = new BitmapFont();
         bitmapFont.getData().setScale(4,4);
         bitmapFont.setColor(Color.BLACK);
         layout = new GlyphLayout();
 	
-	shoot = new TextureAtlas(Gdx.files.internal("images/minigames/PlaneWarGame/shoot.pack"));
-	
-	    
-        backgroundSprite = getSprite("ui/title_background");
+	    shoot = new TextureAtlas(Gdx.files.internal("images/minigames/PlaneWarGame/shoot.pack"));
+
         heroSprite = shoot.createSprite("hero1");
         bulletSprite = shoot.createSprite("bullet1");
         enemySprite = shoot.createSprite("enemy1");
-
-        backgroundSprite.setSize(game.width, game.height);
-        backgroundSprite.setPosition(0, 0);
 
         heroSprite.setSize(200,200);
         heroSprite.setPosition((game.width - heroSprite.getWidth()) / 2, 20);
@@ -104,7 +104,6 @@ public final class PlaneWarGame extends MiniGame {
         game.batch.begin();
         switch(state) {
         case PLAYING:
-            backgroundSprite.draw(game.batch);
             for(Rectangle enemy: enemys) {
                 enemySprite.setPosition(enemy.x, enemy.y);
                 enemySprite.draw(game.batch);
@@ -119,7 +118,6 @@ public final class PlaneWarGame extends MiniGame {
             bullets.clear();
             enemys.clear();
             layout.setText(bitmapFont, GAME_OVER_TEXT);
-            backgroundSprite.draw(game.batch);
             bitmapFont.draw(game.batch, GAME_OVER_TEXT, (game.width - layout.width) / 2,
                     (game.height - layout.height) / 2);
             if (Gdx.input.isKeyJustPressed(Keys.ANY_KEY) || Gdx.input.justTouched())
@@ -166,7 +164,6 @@ public final class PlaneWarGame extends MiniGame {
             bullet.y += 1500 * deltaTime;
             if (bullet.y + bulletSprite.getHeight() > game.height) {
                 iter.remove();
-                continue;
             }
         }
 

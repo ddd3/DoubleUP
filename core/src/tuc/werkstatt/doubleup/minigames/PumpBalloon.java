@@ -9,7 +9,6 @@ import tuc.werkstatt.doubleup.DoubleUp;
 import tuc.werkstatt.doubleup.MiniGame;
 
 public final class PumpBalloon extends MiniGame {
-    private Sprite backgroundSprite;
     private Sprite balloonSprite;
     private final float initialHeight = game.height / 9f;
     private Sound pumpSound;
@@ -21,9 +20,11 @@ public final class PumpBalloon extends MiniGame {
 
     public PumpBalloon(DoubleUp game) {
         super(game);
-        backgroundSprite = getSprite("ui/title_background");
-        backgroundSprite.setSize(game.width, game.height);
-        backgroundSprite.setPosition(0, 0);
+        setTitle("Pump Balloon");
+        setDescription("Touch the screen repeatedly to pump the balloon until it pops");
+        setBackground("ui/title_background");
+        setIcon("minigames/PumpBalloon/balloon");
+
         balloonSprite = getSprite("minigames/PumpBalloon/balloon");
         balloonAspectRatio = balloonSprite.getWidth() / balloonSprite.getHeight();
         balloonSprite.setSize(initialHeight * balloonAspectRatio, initialHeight);
@@ -51,7 +52,6 @@ public final class PumpBalloon extends MiniGame {
     public void draw(float deltaTime) {
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
-        backgroundSprite.draw(game.batch);
 
         final float rot = 7f * getProgress() / 100f * MathUtils.sinDeg(balloonRotating);
         balloonSprite.setRotation(rot);

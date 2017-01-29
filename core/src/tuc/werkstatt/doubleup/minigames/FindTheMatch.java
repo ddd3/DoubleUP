@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import java.util.LinkedList;
+
 import tuc.werkstatt.doubleup.DoubleUp;
 import tuc.werkstatt.doubleup.MiniGame;
 
@@ -15,7 +17,7 @@ public final class FindTheMatch extends MiniGame {
 
     protected Texture card, cardBack, cardBackMark;
     public TextureRegion[] icons;
-    public Texture grey, background;
+    public Texture grey;
     protected BitmapFont font;
     public Texture gradientTop, gradientBottom;
     public Sound sndFlipCard, sndDing;
@@ -31,12 +33,15 @@ public final class FindTheMatch extends MiniGame {
 
     public FindTheMatch(DoubleUp game) {
         super(game);
+        setTitle("Find The Match");
+        setDescription("Touch to turn cards and find matching ones to earn points");
+        setBackground("ui/title_background");
+        setIcon("minigames/FindTheMatch/card-back");
 
         card = new Texture(getFileHandle("card-front.png"));
         cardBack = new Texture(getFileHandle("card-back.png"));
         cardBackMark = new Texture(getFileHandle("card-back-mark.png"));
         grey = new Texture(getFileHandle("grey.png"));
-        background = new Texture(getFileHandle("background.png"));
         gradientTop = new Texture(getFileHandle("gradient_oben.png"));
         gradientBottom = new Texture(getFileHandle("gradient_unten.png"));
 
@@ -137,12 +142,11 @@ public final class FindTheMatch extends MiniGame {
 
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
-        game.batch.draw(background, 0, 0, 1200, 1920);
 
         for (int r = 0; r < numRows; r++) {
             for (int c = 0; c < numCols; c++) {
                 cardX = 80 + (c * (cardHeight - cardHeight / 4.9f));
-                cardY = 340 + r * (cardHeight-80 + 16);;
+                cardY = 340 + r * (cardHeight-80 + 16);
                 float cardTime = model.introAnimationLength / ((float) model.numCards);
                 if (cardTime * (c + numCols * r) < model.introAnimationLength - model.introAnimation) {
                     if (model.getState((c + numCols * r)) == 0) {

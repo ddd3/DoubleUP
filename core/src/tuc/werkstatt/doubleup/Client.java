@@ -143,6 +143,12 @@ public class Client {
         }
     }
 
+    public String getCurrMinigameName() {
+        synchronized (lock) {
+            return currMiniGameName;
+        }
+    }
+
     public int getMaxMiniGameRounds() {
         return maxMiniGameRounds;
     }
