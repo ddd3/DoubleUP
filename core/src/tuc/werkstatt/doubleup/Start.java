@@ -65,7 +65,7 @@ public class Start implements Screen {
         sp.setPosition((game.targetResWidth - sp.getWidth()) / 2, sprites.get("host_panel").getY() - sp.getHeight() - padding);
         sprites.put("highscores_button", sp);
 
-        MiniGame.isUiInitialized = false;
+        MiniGame.reinit();
     }
 
     @Override

@@ -19,19 +19,16 @@ import java.util.Arrays;
 public abstract class MiniGame implements Screen {
     public final DoubleUp game;
 
-    public static boolean isUiInitialized = false;
+    private static boolean isInitialized = false;
     private static ShapeRenderer uiShapeRenderer;
-    private static Sprite bottomPanelSprite;
-    private static Sprite topPanelSprite;
-    private static Sprite roundIndicatorSprite;
-    private static Sprite currRoundIndicatorSprite;
-    private static Sprite flagSprite;
+    private static Sprite bottomPanelSprite, topPanelSprite, roundIndicatorSprite,
+            currRoundIndicatorSprite, flagSprite, iconBackgroundSprite, introPanelSprite, introGermSprite,
+            count1Sprite, count2Sprite, count3Sprite, countGoSprite, holdSprite, activeCountSprite;
     private static Sprite[] animalSprites;
-    private Sprite backgroundSprite;
-    private Sprite iconSprite;
-    private static Sprite iconBackgroundSprite;
-    private static Sprite introPanelSprite;
-    private static Sprite introGermSprite;
+    private Sprite backgroundSprite, iconSprite;
+
+
+    private static Sound count1Sound, count2Sound, count3Sound, countGoSound, holdSound;
 
     private static final float indicatorSpacing = 12f;
     private static float indicatorStartPosX;
@@ -42,9 +39,11 @@ public abstract class MiniGame implements Screen {
     private long lastProgressTime;
     private Player[] cachePlayers;
 
-    private enum State { Intro, Count, Game, Score }
+    private enum State { Intro, Count, Game, Hold, Score }
     private State state = State.Intro;
     private long introTimeStamp =  TimeUtils.millis();
+    private long countTimeStamp;
+    private int countdown = 3;
     private GlyphLayout title;
     private GlyphLayout description;
     private final float descriptionPadding = 32f;
@@ -52,16 +51,22 @@ public abstract class MiniGame implements Screen {
 
     public MiniGame(DoubleUp game) {
         this.game = game;
-        initUserInterface();
+        if (!isInitialized) {
+            initUserInterface();
+            initSounds();
+            isInitialized = true;
+        }
         Network.state = Network.State.Minigame;
         game.client.setCurrMinigame(this);
         lastProgressTime = TimeUtils.millis();
         cachePlayers = game.client.getPlayers();
     }
 
-    private void initUserInterface() {
-        if (isUiInitialized) { return; } else { isUiInitialized = true; }
+    public static void reinit() {
+        isInitialized = false;
+    }
 
+    private void initUserInterface() {
         uiShapeRenderer = new ShapeRenderer();
         uiShapeRenderer.setProjectionMatrix(game.uiCamera.combined);
         game.uiBatch.setProjectionMatrix(game.uiCamera.combined);
@@ -89,7 +94,7 @@ public abstract class MiniGame implements Screen {
             sp.setY(game.targetResHeight - 68f - sp.getHeight() / 2f);
         }
 
-        // intro screen
+        // intro overlay
         introPanelSprite = getSprite("ui/doodle_select_panel");
         introPanelSprite.setPosition((game.targetResWidth - introPanelSprite.getWidth()) / 2f,
                 (game.targetResHeight - introPanelSprite.getHeight()) / 2f + 100f);
@@ -100,6 +105,32 @@ public abstract class MiniGame implements Screen {
         iconBackgroundSprite.setSize(iconBackgroundSprite.getWidth() * 2.5f, iconBackgroundSprite.getHeight() * 2.5f);
         iconBackgroundSprite.setPosition(introPanelSprite.getX() + (introPanelSprite.getWidth() - iconBackgroundSprite.getWidth()) / 2f,
                 introPanelSprite.getY() + introPanelSprite.getHeight() - iconBackgroundSprite.getHeight() - 120f);
+
+        // count overlay
+        final float countPosFromTop = 640f;
+        count1Sprite = getSprite("ui/count1");
+        count1Sprite.setPosition(game.targetResWidth / 2f - count1Sprite.getWidth() / 2f,
+                game.targetResHeight - countPosFromTop - count1Sprite.getHeight() / 2f);
+        count2Sprite = getSprite("ui/count2");
+        count2Sprite.setPosition(game.targetResWidth / 2f - count2Sprite.getWidth() / 2f,
+                game.targetResHeight - countPosFromTop - count2Sprite.getHeight() / 2f);
+        count3Sprite = getSprite("ui/count3");
+        count3Sprite.setPosition(game.targetResWidth / 2f - count3Sprite.getWidth() / 2f,
+                game.targetResHeight - countPosFromTop - count3Sprite.getHeight() / 2f);
+        countGoSprite = getSprite("ui/countGo");
+        countGoSprite.setPosition(game.targetResWidth / 2f - countGoSprite.getWidth() / 2f,
+                game.targetResHeight - countPosFromTop - countGoSprite.getHeight() / 2f);
+        holdSprite = getSprite("ui/hold");
+        holdSprite.setPosition(game.targetResWidth / 2f - holdSprite.getWidth() / 2f,
+                game.targetResHeight - countPosFromTop - holdSprite.getHeight() / 2f);
+    }
+
+    private void initSounds() {
+        count1Sound = getSound("sounds/1.ogg");
+        count2Sound = getSound("sounds/2.ogg");
+        count3Sound = getSound("sounds/3.ogg");
+        countGoSound = getSound("sounds/go.ogg");
+        holdSound = getSound("sounds/hold.ogg");
     }
 
     public void setTitle(String title) {
@@ -142,16 +173,19 @@ public abstract class MiniGame implements Screen {
         if (state == State.Intro) {
             drawUserInterface();
             drawIntroInterface();
-            if (TimeUtils.timeSinceMillis(introTimeStamp) > 5000) {
-                state = State.Game;
+            if (TimeUtils.timeSinceMillis(introTimeStamp) > 4000) {
+                state = State.Count;
             }
         } else if (state == State.Count) {
-            // ...
+            drawUserInterface();
+            updateAndDrawCountOverlay();
         } else if (state == State.Game) {
             drawUserInterface();
             updateTouchPosition();
             updateSubMiniGame(deltaTime);
             updateNetwork();
+        } else if (state == State.Hold) {
+
         } else if (state == State.Score) {
 
         }
@@ -235,6 +269,39 @@ public abstract class MiniGame implements Screen {
         final float maxDescHeight = iconBackgroundSprite.getY() - introPanelSprite.getY() - descriptionPadding * 2f;
         game.font.draw(game.uiBatch, description, introPanelSprite.getX() + (introPanelSprite.getWidth() - description.width) / 2f,
                 introPanelSprite.getY() + 2f * descriptionPadding + (maxDescHeight + description.height) / 2f);
+        game.uiBatch.end();
+    }
+
+    private void updateAndDrawCountOverlay() {
+        final long stepMillis = 800;
+        final float soundVol = 0.8f;
+        if (countdown == 3) {
+            countTimeStamp = TimeUtils.millis();
+            activeCountSprite = count3Sprite;
+            count3Sound.play(soundVol);
+            --countdown;
+        } else if (countdown == 2 && TimeUtils.timeSinceMillis(countTimeStamp) > stepMillis) {
+            countTimeStamp = TimeUtils.millis();
+            activeCountSprite = count2Sprite;
+            count2Sound.play(soundVol);
+            --countdown;
+        } else if (countdown == 1 && TimeUtils.timeSinceMillis(countTimeStamp) > stepMillis) {
+            countTimeStamp = TimeUtils.millis();
+            activeCountSprite = count1Sprite;
+            count1Sound.play(soundVol);
+            --countdown;
+        } else if (countdown == 0 && TimeUtils.timeSinceMillis(countTimeStamp) > stepMillis) {
+            countTimeStamp = TimeUtils.millis();
+            activeCountSprite = countGoSprite;
+            countGoSound.play(soundVol);
+            --countdown;
+        } else if (countdown < 0 && TimeUtils.timeSinceMillis(countTimeStamp) > stepMillis) {
+            state = State.Game;
+        }
+        game.uiBatch.begin();
+        final float alphaVal = Math.max(0, 1f - TimeUtils.timeSinceMillis(countTimeStamp) / (float)stepMillis);
+        activeCountSprite.setAlpha(alphaVal);
+        activeCountSprite.draw(game.uiBatch);
         game.uiBatch.end();
     }
 
