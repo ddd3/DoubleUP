@@ -2,6 +2,7 @@ package tuc.werkstatt.doubleup;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -49,6 +50,16 @@ public class Lobby implements Screen {
         if (!game.isTestingEnvironment()) {
             game.loadMusic("music/best_intro_loop.ogg");
         }
+
+        Gdx.input.setInputProcessor(new InputAdapter() {
+            @Override public boolean keyUp(final int keycode) {
+                if (keycode == Input.Keys.BACK) {
+                    Gdx.app.log("Lobby", "Back button pressed, returning to StartScreen");
+                    game.setScreen(new Start(game));
+                }
+                return false;
+            }
+        });
     }
 
     @Override

@@ -2,6 +2,7 @@ package tuc.werkstatt.doubleup;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -20,7 +21,7 @@ public class GameOptions implements Screen {
     public static final int maxPlayers = 16;
     public static int maxMiniGameRounds;
     public enum Sequence {Random, Sequential}
-    public static Sequence sequence = Sequence.Random;
+    public static Sequence sequence;
 
     public static final String[] animalNames = {"bird", "bull", "cat", "cow", "dog", "duck", "elephant",
             "fish", "horse", "ladybug", "leopard", "lion", "lobster", "rabbit", "snail", "turtle"};
@@ -58,6 +59,7 @@ public class GameOptions implements Screen {
         this.game = game;
         Network.state = Network.State.GameOptions;
         maxMiniGameRounds = 8;
+        sequence = Sequence.Random;
         initUserInterface();
         lastMessageTime = TimeUtils.millis();
     }
@@ -154,6 +156,16 @@ public class GameOptions implements Screen {
         if (!game.isTestingEnvironment()) {
             game.loadMusic("music/best_intro_loop.ogg");
         }
+
+        Gdx.input.setInputProcessor(new InputAdapter() {
+            @Override public boolean keyUp(final int keycode) {
+                if (keycode == Input.Keys.BACK) {
+                    Gdx.app.log("GameOptions", "Back button pressed, returning to StartScreen");
+                    game.setScreen(new Start(game));
+                }
+                return false;
+            }
+        });
     }
 
     @Override

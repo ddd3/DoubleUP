@@ -39,7 +39,7 @@ public class DoubleUp extends Game {
     public BitmapFont font;
     public BitmapFont titleFont;
     private Music music;
-    private String currMusicFileName;
+    private String currMusicFileName = "";
     private boolean isMusicMuted = false;
 
     public OrthographicCamera camera;
@@ -86,6 +86,7 @@ public class DoubleUp extends Game {
         gameView = new StretchViewport(width, height, camera);
         resizeViews();
 
+        Gdx.input.setCatchBackKey(true);
         // minigame provided by program argument will be quick started and looped for testing purposes
         if (args != null && args.length > 0 &&
                 (Arrays.asList(minigames).contains(args[0]) || args[0].equals("TestingPlayground"))) {
@@ -150,18 +151,31 @@ public class DoubleUp extends Game {
     }
 
     public void loadMusic(String name) {
-        if(!assets.isLoaded(name)) {
-            assets.load(name, Music.class);
-            assets.finishLoadingAsset(name);
-            if (music != null) {
-                music.stop();
+        if (name.equals(currMusicFileName)) {
+            return;
+        }
+        if (music != null) {
+            music.stop();
+            if (assets.isLoaded(currMusicFileName)) {
                 assets.unload(currMusicFileName);
             }
-            music = assets.get(name);
-            music.setLooping(true);
-            currMusicFileName = name;
-            if (!isMusicMuted) {
-                music.play();
+        }
+        assets.load(name, Music.class);
+        assets.finishLoadingAsset(name);
+        music = assets.get(name);
+        music.setLooping(true);
+        currMusicFileName = name;
+        if (!isMusicMuted) {
+            music.play();
+        }
+    }
+
+    public void stopMusic() {
+        if (music != null && music.isPlaying()) {
+            music.stop();
+            if (assets.isLoaded(currMusicFileName)) {
+                assets.unload(currMusicFileName);
+                currMusicFileName = "";
             }
         }
     }

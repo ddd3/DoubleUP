@@ -2,6 +2,7 @@ package tuc.werkstatt.doubleup;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -15,6 +16,9 @@ public class Start implements Screen {
 
     public Start(final DoubleUp game) {
         this.game = game;
+
+        reInitialize();
+
         final float padding = 30;
         sprites = new ObjectMap<String, Sprite>();
         Sprite sp;
@@ -64,7 +68,14 @@ public class Start implements Screen {
         sp = game.getSprite("ui/highscores_button");
         sp.setPosition((game.targetResWidth - sp.getWidth()) / 2, sprites.get("host_panel").getY() - sp.getHeight() - padding);
         sprites.put("highscores_button", sp);
+    }
 
+    private void reInitialize() {
+        game.stopMusic();
+        Network.state = Network.State.None;
+        Network.isHosting = false;
+        if (game.client != null) { game.client.dispose(); }
+        if (game.server != null) { game.server.dispose(); }
         MiniGame.reinit();
     }
 
@@ -73,6 +84,16 @@ public class Start implements Screen {
         if (!game.isTestingEnvironment()) {
             game.loadMusic("music/best_intro_loop.ogg");
         }
+
+        Gdx.input.setInputProcessor(new InputAdapter() {
+            @Override public boolean keyUp(final int keycode) {
+                if (keycode == Input.Keys.BACK) {
+                    Gdx.app.log("StartScreen", "Back button pressed, exiting");
+                    Gdx.app.exit();
+                }
+                return false;
+            }
+        });
     }
 
     @Override

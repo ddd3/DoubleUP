@@ -2,6 +2,7 @@ package tuc.werkstatt.doubleup;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -26,7 +27,6 @@ public abstract class MiniGame implements Screen {
             count1Sprite, count2Sprite, count3Sprite, countGoSprite, holdSprite, activeCountSprite;
     private static Sprite[] animalSprites;
     private Sprite backgroundSprite, iconSprite;
-
 
     private static Sound count1Sound, count2Sound, count3Sound, countGoSound, holdSound;
 
@@ -54,6 +54,7 @@ public abstract class MiniGame implements Screen {
         if (!isInitialized) {
             initUserInterface();
             initSounds();
+            initKeyHandling();
             isInitialized = true;
         }
         Network.state = Network.State.Minigame;
@@ -131,6 +132,18 @@ public abstract class MiniGame implements Screen {
         count3Sound = getSound("sounds/3.ogg");
         countGoSound = getSound("sounds/go.ogg");
         holdSound = getSound("sounds/hold.ogg");
+    }
+
+    private void initKeyHandling() {
+        Gdx.input.setInputProcessor(new InputAdapter() {
+            @Override public boolean keyUp(final int keycode) {
+                if (keycode == Input.Keys.BACK) {
+                    Gdx.app.log("MiniGame", "Back button pressed, returning to StartScreen");
+                    game.setScreen(new Start(game));
+                }
+                return false;
+            }
+        });
     }
 
     public void setTitle(String title) {

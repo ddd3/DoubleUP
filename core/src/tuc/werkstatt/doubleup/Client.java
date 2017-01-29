@@ -28,6 +28,7 @@ public class Client {
     private int maxMiniGameRounds = 0;
     private ClientProgressMessage progressMsg;
     private int numReadyPlayers = 0;
+    private boolean shouldDiscover;
 
     public Client(DoubleUp game) {
         this.game = game;
@@ -67,10 +68,7 @@ public class Client {
     }
 
     private void onConnected(Connection connection) {}
-
-    private void onDisconnected(Connection connection) {
-        game.setScreen(new Start(game));
-    }
+    private void onDisconnected(Connection connection) {}
 
     public boolean isConnected() { return netClient.isConnected(); }
 
@@ -102,9 +100,10 @@ public class Client {
 
     private String discoverHost() {
         final int timeout = 5000;
-        String hostAddress;
+        String hostAddress = null;
+        shouldDiscover = true;
         Gdx.app.log("Client", "Trying to discover host");
-        while(true) {
+        while(shouldDiscover) {
             InetAddress host = netClient.discoverHost(Network.udpPort, timeout);
             if (host != null) {
                 hostAddress = host.getHostAddress();
@@ -117,7 +116,6 @@ public class Client {
     private void connectToHost(String hostAddress) {
         if (hostAddress == null || hostAddress.equals("")) {
             Gdx.app.log("Client", "Invalid host address");
-            Gdx.app.exit();
             return;
         }
         final int timeout = 5000;
@@ -249,6 +247,7 @@ public class Client {
     }
 
     public void dispose() {
+        shouldDiscover = false;
         if (netClient != null) { netClient.stop(); }
     }
 }
