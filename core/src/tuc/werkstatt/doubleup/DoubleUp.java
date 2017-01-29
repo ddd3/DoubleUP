@@ -166,6 +166,7 @@ public class DoubleUp extends Game {
         music.setLooping(true);
         currMusicFileName = name;
         if (!isMusicMuted) {
+            music.setVolume(0.65f);
             music.play();
         }
     }

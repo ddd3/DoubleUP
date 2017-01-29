@@ -287,7 +287,7 @@ public abstract class MiniGame implements Screen {
 
     private void updateAndDrawCountOverlay() {
         final long stepMillis = 800;
-        final float soundVol = 0.8f;
+        final float soundVol = 0.55f;
         if (countdown == 3) {
             countTimeStamp = TimeUtils.millis();
             activeCountSprite = count3Sprite;
