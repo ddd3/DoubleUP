@@ -25,7 +25,7 @@ public final class ClickTarget extends MiniGame {
 
     private Sound hitRight;
 
-    private final int maxPoints = 50;
+    private final int maxPoints = 16;
     private int currPoints = 0;
     private final int maxBall1 = 1;
     private final int maxBall2 = 49;
@@ -57,23 +57,15 @@ public final class ClickTarget extends MiniGame {
             float x = MathUtils.random(0, game.width - (size));
             float y = game.height - MathUtils.random((1*size),(6*size));
 
-
-
             sprite.setPosition(x, y);
 
-            if (currPoints >= 0 && currPoints <=20)
-            {
+            if (currPoints <= maxPoints / 50f / 5f * 2f) {
                 vel.set(MathUtils.random(MathUtils.random(0,200)),(MathUtils.random(-200,200)));
-            }
-            if (currPoints >= 21 && currPoints <=40)
-            {
+            } else if (currPoints <= maxPoints / 50f / 5f * 4f) {
                 vel.set(MathUtils.random(MathUtils.random(0,350)),(MathUtils.random(-350,350)));
-            }
-            if (currPoints >= 41 && currPoints < 50)
-            {
+            } else {
                 vel.set(MathUtils.random(MathUtils.random(0,500)),(MathUtils.random(-500,500)));
             }
-
 
             alive = true;
         }
@@ -106,22 +98,15 @@ public final class ClickTarget extends MiniGame {
             float x = 0;
             float y = game.height - MathUtils.random((1*size),(6*size));
 
-
             sprite.setPosition(x, y);
 
-            if (currPoints >= 0 && currPoints <=20)
-            {
+            if (currPoints <= maxPoints / 50f / 5f * 2f) {
                 vel.set(MathUtils.random(MathUtils.random(0,400)),(MathUtils.random(-400,400)));
-            }
-            if (currPoints >= 21 && currPoints <=40)
-            {
+            } else if (currPoints <= maxPoints / 50f / 5f * 4f) {
                 vel.set(MathUtils.random(MathUtils.random(0,550)),(MathUtils.random(-550,550)));
-            }
-            if (currPoints >= 41 && currPoints < 50)
-            {
+            } else {
                 vel.set(MathUtils.random(MathUtils.random(0,700)),(MathUtils.random(-700,700)));
             }
-
 
             alive2 = true;
         }
@@ -228,10 +213,7 @@ public final class ClickTarget extends MiniGame {
 
 
                 if (distance < b.sprite.getWidth() / 2) {
-
-                    if (currPoints > 0) {
-                        --currPoints;
-                    }
+                    currPoints = Math.max(0, currPoints - 2);
                     b.kill2();
                 }
                 else {

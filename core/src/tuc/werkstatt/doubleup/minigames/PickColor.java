@@ -13,7 +13,7 @@ import tuc.werkstatt.doubleup.MaterialColors;
 import tuc.werkstatt.doubleup.MiniGame;
 
 public final class PickColor extends MiniGame {
-    private final int maxPoints = 10;
+    private final int maxPoints = 8;
     private int currPoints = 0;
     private final Color[] colors = { MaterialColors.red, MaterialColors.green,
             MaterialColors.blue, MaterialColors.orange };
@@ -126,7 +126,7 @@ public final class PickColor extends MiniGame {
                             lastSoundPlayed = now;
                         }
                     } else {
-                        currPoints = Math.max(0, currPoints - 1);
+                        currPoints = Math.max(0, currPoints - 2);
                         if (now - lastSoundPlayed > 250) {
                             minusSound.play(0.5f);
                             lastSoundPlayed = now;

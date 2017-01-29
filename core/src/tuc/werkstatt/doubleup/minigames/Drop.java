@@ -20,7 +20,7 @@ public final class Drop extends MiniGame {
     private Sprite dropSprite;
     private Sprite bucketSprite;
 
-    private final int maxPoints = 20;
+    private final int maxPoints = 25;
     private int currPoints = 0;
     private Sound dropSound;
     private Array<Vector2> raindrops;
@@ -37,7 +37,7 @@ public final class Drop extends MiniGame {
         dropSprite = getSprite("minigames/Drop/droplet");
         dropSprite.setSize(64, 64);
         bucketSprite = getSprite("minigames/Drop/bucket");
-        bucketSprite.setSize(100, 100);
+        bucketSprite.setSize(128, 128);
         // bottom left corner of the bucket is 20 pixels above the bottom screen edge
         bucketSprite.setPosition((game.width - bucketSprite.getWidth()) / 2, 20);
 

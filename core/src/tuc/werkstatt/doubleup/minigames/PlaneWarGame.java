@@ -22,7 +22,7 @@ public final class PlaneWarGame extends MiniGame {
 
     private Sprite heroSprite, bulletSprite, enemySprite;
     private TextureAtlas shoot;
-    private final int maxPoints = 20;
+    private final int maxPoints = 10;
     private int currPoints = 0;
     private Array<Rectangle> bullets,enemys;
     private Sound bulletSound,explodeSound,gameoverSound;
@@ -172,7 +172,7 @@ public final class PlaneWarGame extends MiniGame {
         Iterator<Rectangle> iter1 = enemys.iterator();
         while(iter1.hasNext()) {
             Rectangle enemy = iter1.next();
-            enemy.y -= 1500 * deltaTime;
+            enemy.y -= 1000 * deltaTime;
             if(enemy.y + enemySprite.getHeight() < 0) {
                 iter1.remove();
                 continue;
