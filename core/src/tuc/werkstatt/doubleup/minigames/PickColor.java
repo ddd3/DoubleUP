@@ -59,8 +59,16 @@ public final class PickColor extends MiniGame {
     public PickColor(DoubleUp game) {
         super(game);
         setTitle("Pick Color");
-        String colName = colorToCollect == MaterialColors.red ? "red" : colorToCollect == MaterialColors.blue ? "blue" :
-                colorToCollect == MaterialColors.green ? "green" : colorToCollect == MaterialColors.orange ? "orange" : "UNDEF";
+        String colName;
+        if (colorToCollect == MaterialColors.red) {
+            colName = "[#" + MaterialColors.red.toString() +"]red[]";
+        } else if (colorToCollect == MaterialColors.green) {
+            colName = "[#" + MaterialColors.green.toString() +"]green[]";
+        } else if (colorToCollect == MaterialColors.blue) {
+            colName = "[#" + MaterialColors.blue.toString() +"]blue[]";
+        } else {
+            colName = "[#" + MaterialColors.orange.toString() +"]orange[]";
+        }
         setDescription("Touch the " + colName + " swirls, avoid other colors or you'll lose points");
         setBackground("ui/title_background");
         setIcon("minigames/PickColor/swirl_icon");

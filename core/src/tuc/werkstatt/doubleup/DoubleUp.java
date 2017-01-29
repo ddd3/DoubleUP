@@ -138,6 +138,7 @@ public class DoubleUp extends Game {
     private void generateFonts() {
         Gdx.app.log("Assets", "Generating bitmap fonts ...");
         font = generateFont("CarterOne.ttf", 60, Color.BLACK, 2f, 4);
+        font.getData().markupEnabled = true;
         titleFont = generateFont("CarterOne.ttf", 82, Color.valueOf("1c6b65ff"), 6f, 5);
     }
 

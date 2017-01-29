@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import tuc.werkstatt.doubleup.DoubleUp;
+import tuc.werkstatt.doubleup.MaterialColors;
 import tuc.werkstatt.doubleup.MiniGame;
 
 public final class CrazySmiley extends MiniGame {
@@ -124,7 +125,8 @@ public final class CrazySmiley extends MiniGame {
     public CrazySmiley (DoubleUp game) {
         super(game);
         setTitle("Crazy Smiley");
-        setDescription("Touch the yellow smiley, but avoid red ones or you will lose points");
+        final String redCol = MaterialColors.red.toString();
+        setDescription("Touch the [YELLOW]yellow[] smiley, but avoid [#" + redCol + "]red[] ones or you will lose points");
         setBackground("ui/title_background");
         setIcon("minigames/CrazySmiley/yellow");
 
