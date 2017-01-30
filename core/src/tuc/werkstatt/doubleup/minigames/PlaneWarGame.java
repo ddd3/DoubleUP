@@ -82,7 +82,7 @@ public final class PlaneWarGame extends MiniGame {
 
     @Override
     public void show() {
-        game.loadMusic("music/examples/game_music.mp3");
+        game.loadMusic("music/game_start_loop.ogg");
         bulletSound = getSound("sounds/bullet.mp3");
         explodeSound= getSound("sounds/enemy3_down.mp3");
         gameoverSound= getSound("sounds/game_over.mp3");
