@@ -8,13 +8,16 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.tools.bmfont.BitmapFontWriter;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -67,10 +70,11 @@ public class DoubleUp extends Game {
          if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
              Gdx.app.setLogLevel(Application.LOG_DEBUG);
              generateTextureAtlas();
+             generateFonts();
         } else {
             Gdx.app.setLogLevel(Application.LOG_NONE);
         }
-        generateFonts();
+        loadBitmapFonts();
         loadAssets();
         atlas = assets.get("images/" + atlasFileName + ".atlas", TextureAtlas.class);
         batch = new SpriteBatch();
@@ -119,28 +123,70 @@ public class DoubleUp extends Game {
         }
     }
 
-    private BitmapFont generateFont(String fontName, int fontSize, Color borderColor, float borderWidth, int shadowOffset) {
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
-                Gdx.files.internal("fonts/" + fontName));
+    private void generateFont(String fontName, int fontSize, Color fontColor, float borderWidth,
+                                    Color borderColor, int shadowOffset, Color shadowColor)
+    {
+        final int pixelSize = 2048;
+        BitmapFontWriter.FontInfo info = new BitmapFontWriter.FontInfo();
+        info.padding = new BitmapFontWriter.Padding(2, 2, 2, 2);
+        info.size = fontSize;
+        info.outline = (int)Math.ceil(borderWidth);
+        info.aa = 4;
+        info.smooth = true;
+
         FreeTypeFontParameter parameter = new FreeTypeFontParameter();
         parameter.size = fontSize;
         parameter.magFilter = Texture.TextureFilter.Linear;
         parameter.minFilter = Texture.TextureFilter.Linear;
+        parameter.color = fontColor;
         parameter.borderColor = borderColor;
         parameter.borderWidth = borderWidth;
-        parameter.shadowColor = borderColor;
+        parameter.shadowColor = shadowColor;
         parameter.shadowOffsetX = shadowOffset;
         parameter.shadowOffsetY = shadowOffset;
-        BitmapFont font = generator.generateFont(parameter);
+        parameter.packer = new PixmapPacker(pixelSize, pixelSize, Pixmap.Format.RGBA8888, 2,
+                false, new PixmapPacker.SkylineStrategy());
+
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.absolute("fonts/" + fontName));
+        generator.scaleForPixelHeight(fontSize);
+        FreeTypeFontGenerator.FreeTypeBitmapFontData data = generator.generateData(parameter);
+
+        BitmapFontWriter.writeFont(data, new String[] {fontName + "_" + fontSize + ".png"},
+                Gdx.files.absolute("fonts/" + fontName + "_" + fontSize + ".fnt"), info, pixelSize, pixelSize);
+        BitmapFontWriter.writePixmaps(parameter.packer.getPages(), Gdx.files.absolute("fonts"), fontName + "_" + fontSize);
+
         generator.dispose();
-        return font;
+    }
+
+    private void generateFont(String fontName, int fontSize) {
+        generateFont(fontName, fontSize, Color.WHITE);
+    }
+
+    private void generateFont(String fontName, int fontSize, Color fontColor) {
+        generateFont(fontName, fontSize, fontColor, 0f, Color.BLACK);
+    }
+
+    private void generateFont(String fontName, int fontSize, Color fontColor, float borderSize, Color borderColor) {
+        generateFont(fontName, fontSize, fontColor, borderSize, borderColor, 0, Color.BLACK);
     }
 
     private void generateFonts() {
         Gdx.app.log("Assets", "Generating bitmap fonts ...");
-        font = generateFont("CarterOne.ttf", 60, Color.BLACK, 2f, 4);
+        if (!Gdx.files.internal("fonts/CarterOne.ttf_60.fnt").exists()) {
+            generateFont("CarterOne.ttf", 60, Color.WHITE, 2f, Color.BLACK, 4, Color.BLACK);
+        }
+        if (!Gdx.files.internal("fonts/CarterOne.ttf_82.fnt").exists()) {
+            generateFont("CarterOne.ttf", 82, Color.WHITE, 6f, Color.valueOf("1c6b65ff"), 5, Color.valueOf("1c6b65ff"));
+        }
+    }
+
+    private void loadBitmapFonts() {
+        Gdx.app.log("Assets", "Loading bitmap fonts ...");
+        font = new BitmapFont(Gdx.files.internal("fonts/CarterOne.ttf_60.fnt"));
         font.getData().markupEnabled = true;
-        titleFont = generateFont("CarterOne.ttf", 82, Color.valueOf("1c6b65ff"), 6f, 5);
+        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        titleFont = new BitmapFont(Gdx.files.internal("fonts/CarterOne.ttf_82.fnt"));
+        titleFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
     }
 
     private void loadAssets() {
