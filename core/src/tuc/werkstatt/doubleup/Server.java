@@ -255,7 +255,7 @@ public class Server {
             });
             */
             progressMsg.players = players;
-            netServer.sendToAllUDP(progressMsg);
+            netServer.sendToAllTCP(progressMsg);
         }
     }
 

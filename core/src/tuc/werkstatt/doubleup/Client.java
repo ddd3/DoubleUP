@@ -235,7 +235,7 @@ public class Client {
         }
         progressMsg.clientID = netClient.getID();
         progressMsg.progress = progress;
-        netClient.sendUDP(progressMsg);
+        netClient.sendTCP(progressMsg);
     }
 
     public void sendClientOptionsMessage(int icon) {
