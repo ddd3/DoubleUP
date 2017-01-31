@@ -1,7 +1,6 @@
 package tuc.werkstatt.doubleup;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.esotericsoftware.kryonet.Connection;
@@ -30,6 +29,7 @@ public class Server {
     private GameOptionsMessage optionsMessage;
     private Player[] players;
     private Array<String> availableIcons;
+    private Array<String> randomMinigames;
 
     public Server(final DoubleUp game) {
 		this.game = game;
@@ -212,9 +212,11 @@ public class Server {
             nextGameID = Arrays.asList(game.minigames).indexOf(game.getTestingMiniGame());
         } else {
             if (GameOptions.sequence == GameOptions.Sequence.Random && game.minigames.length > 1) {
-                do {
-                    nextGameID = MathUtils.random(game.minigames.length - 1);
-                } while(nextGameID == currMiniGameID);
+                if (randomMinigames == null || randomMinigames.size == 0) {
+                    randomMinigames = new Array<String>(game.minigames);
+                    randomMinigames.shuffle();
+                }
+                nextGameID = Arrays.asList(game.minigames).indexOf(randomMinigames.pop());
             } else {
                 nextGameID = currMiniGameRound % game.minigames.length;
             }
