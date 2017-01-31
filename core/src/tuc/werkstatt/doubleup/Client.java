@@ -157,9 +157,12 @@ public class Client {
 
     private void onExitMessage(ExitMessage msg) {
         Gdx.app.log("Client", "ExitMessage received");
-        //TODO ExitMessage msg = (ExitMessage)object;
-        //TODO msg.overallclientWinnerID
-        Gdx.app.exit();
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                game.setScreen(new Start(game));
+            }
+        });
     }
 
     private void onGameFinishedMessage(GameFinishedMessage msg) {
@@ -170,7 +173,7 @@ public class Client {
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
-                        currMiniGame.exit();
+                        currMiniGame.finished();
                     }
                 });
             }

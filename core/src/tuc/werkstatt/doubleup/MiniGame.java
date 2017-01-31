@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 public abstract class MiniGame implements Screen {
     public final DoubleUp game;
@@ -23,8 +24,11 @@ public abstract class MiniGame implements Screen {
     private static boolean isInitialized = false;
     private static ShapeRenderer uiShapeRenderer;
     private static Sprite bottomPanelSprite, topPanelSprite, roundIndicatorSprite,
-            currRoundIndicatorSprite, flagSprite, iconBackgroundSprite, introPanelSprite, introGermSprite,
-            count1Sprite, count2Sprite, count3Sprite, countGoSprite, holdSprite, activeCountSprite;
+            currRoundIndicatorSprite, flagSprite;
+    private static Sprite iconBackgroundSprite, introPanelSprite, introGermSprite,
+            count1Sprite, count2Sprite, count3Sprite, countGoSprite, activeCountSprite, holdSprite;
+    private static Sprite scoreBoxSprite, pointBackSprite, point1Sprite, point2Sprite, point3Sprite,
+            plusSprite, medalGoldSprite, medalSilverSprite, medalBronzeSprite;
     private static Sprite[] animalSprites;
     private Sprite backgroundSprite, iconSprite;
 
@@ -32,22 +36,32 @@ public abstract class MiniGame implements Screen {
 
     private static final float indicatorSpacing = 12f;
     private static float indicatorStartPosX;
+    private float scoreScaleFactor;
 
     private Vector3 projectedTouchPos = new Vector3();
     private Vector2 unprojectedTouchPos = new Vector2();
+    private Vector2[] scoreBoxPositions;
 
     private long lastProgressTime;
     private Player[] cachePlayers;
+    private Player[] pointSortedPlayers;
 
-    private enum State { Intro, Count, Game, Hold, Score }
-    private State state = State.Intro;
-    private long introTimeStamp =  TimeUtils.millis();
-    private long countTimeStamp;
+    private enum State { Intro, Count, Game, Hold, Score, Empty }
+    private State state;
+    private ScoreState scoreState;
+    private long introTimeStamp, countTimeStamp, holdTimeStamp, scoreTimeStamp;
     private int countdown = 3;
+    private int scoreStep;
+    private boolean holdFired = false;
+
     private GlyphLayout title;
     private GlyphLayout description;
+    private GlyphLayout[] scoreGlyphs;
     private final float descriptionPadding = 32f;
+
     private boolean isIntroInit = false;
+    private boolean isScoreInit = false;
+    private boolean scoreSortInit = false;
 
     public MiniGame(DoubleUp game) {
         this.game = game;
@@ -56,6 +70,10 @@ public abstract class MiniGame implements Screen {
             initSounds();
             initKeyHandling();
             isInitialized = true;
+        }
+        state = State.Intro;
+        if (game.isTestingEnvironment()) {
+            state = State.Hold;
         }
         Network.state = Network.State.Minigame;
         game.client.setCurrMinigame(this);
@@ -71,6 +89,7 @@ public abstract class MiniGame implements Screen {
         uiShapeRenderer = new ShapeRenderer();
         uiShapeRenderer.setProjectionMatrix(game.uiCamera.combined);
         game.uiBatch.setProjectionMatrix(game.uiCamera.combined);
+        animalSprites = Arrays.copyOf(GameOptions.animalSprites, GameOptions.animalSprites.length);
 
         topPanelSprite = getSprite("ui/top_panel");
         topPanelSprite.setPosition(0, game.targetResHeight - game.targetTopBarHeight);
@@ -87,13 +106,6 @@ public abstract class MiniGame implements Screen {
         currRoundIndicatorSprite.setSize(scaledIndicatorSize, scaledIndicatorSize);
         flagSprite = getSprite("ui/flag");
         flagSprite.setPosition(1140f - flagSprite.getWidth() / 2, game.targetResHeight - flagSprite.getHeight() - 3f);
-
-        animalSprites = Arrays.copyOf(GameOptions.animalSprites, GameOptions.animalSprites.length);
-        for (Sprite sp : animalSprites) {
-            sp.setColor(Color.WHITE);
-            sp.setSize(96, 96);
-            sp.setY(game.targetResHeight - 68f - sp.getHeight() / 2f);
-        }
 
         // intro overlay
         introPanelSprite = getSprite("ui/doodle_select_panel");
@@ -124,6 +136,23 @@ public abstract class MiniGame implements Screen {
         holdSprite = getSprite("ui/hold");
         holdSprite.setPosition(game.targetResWidth / 2f - holdSprite.getWidth() / 2f,
                 game.targetResHeight - countPosFromTop - holdSprite.getHeight() / 2f);
+
+        // hold overlay
+        final float holdPosFromTop = countPosFromTop;
+        holdSprite = getSprite("ui/hold");
+        holdSprite.setPosition(game.targetResWidth / 2f - holdSprite.getWidth() / 2f,
+                game.targetResHeight - holdPosFromTop - holdSprite.getHeight() / 2f);
+
+        // score overlay
+        scoreBoxSprite = getSprite("ui/doodle_box");
+        pointBackSprite = getSprite("ui/points");
+        point1Sprite = getSprite("ui/points1");
+        point2Sprite = getSprite("ui/points2");
+        point3Sprite = getSprite("ui/points3");
+        plusSprite = getSprite("ui/plus");
+        medalGoldSprite = getSprite("ui/medal_gold");
+        medalSilverSprite = getSprite("ui/medal_silver");
+        medalBronzeSprite = getSprite("ui/medal_bronze");
     }
 
     private void initSounds() {
@@ -183,25 +212,28 @@ public abstract class MiniGame implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         game.uiView.apply();
+
         if (state == State.Intro) {
             drawUserInterface();
-            drawIntroInterface();
-            if (TimeUtils.timeSinceMillis(introTimeStamp) > 4000) {
-                state = State.Count;
-            }
+            introOverlay();
         } else if (state == State.Count) {
             drawUserInterface();
-            updateAndDrawCountOverlay();
+            countOverlay();
         } else if (state == State.Game) {
             drawUserInterface();
             updateTouchPosition();
             updateSubMiniGame(deltaTime);
             updateNetwork();
         } else if (state == State.Hold) {
-
+            drawUserInterface();
+            holdOverlay();
         } else if (state == State.Score) {
-
+            drawUserInterface();
+            scoreOverlay();
+        } else if (state == State.Empty) {
+            drawUserInterface();
         }
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.M)) { game.toggleMusicMute(); }
     }
 
@@ -236,13 +268,17 @@ public abstract class MiniGame implements Screen {
         for (Player p : cachePlayers) {
             if (p.ID == game.client.getID()) {
                 currPlayerSprite = animalSprites[p.icon];
-                continue;
+                currPlayerSprite.setSize(96, 96);
+                currPlayerSprite.setPosition(progressBarX - currPlayerSprite.getWidth() / 2f + progressBarWidth / 100f * getProgress(),
+                        game.targetResHeight - 68f - currPlayerSprite.getHeight() / 2f);
+            } else {
+                Sprite sp = animalSprites[p.icon];
+                sp.setSize(96, 96);
+                sp.setPosition(progressBarX - sp.getWidth() / 2f + progressBarWidth / 100f * p.miniGameProgress,
+                        game.targetResHeight - 68f - sp.getHeight() / 2f);
+                sp.draw(game.uiBatch);
             }
-            Sprite sp = animalSprites[p.icon];
-            sp.setX(progressBarX - sp.getWidth() / 2f + progressBarWidth / 100f * p.miniGameProgress);
-            sp.draw(game.uiBatch);
         }
-        currPlayerSprite.setX(progressBarX - currPlayerSprite.getWidth() / 2f + progressBarWidth / 100f * getProgress());
         currPlayerSprite.draw(game.uiBatch);
 
         bottomPanelSprite.draw(game.uiBatch);
@@ -259,7 +295,7 @@ public abstract class MiniGame implements Screen {
         game.uiBatch.end();
     }
 
-    private void drawIntroInterface() {
+    private void introOverlay() {
         if (!isIntroInit) {
             if (title == null) {
                 setTitle("Missing title");
@@ -270,8 +306,12 @@ public abstract class MiniGame implements Screen {
             if (iconSprite == null) {
                 setIcon("minigames/PumpBalloon/balloon");
             }
+            introTimeStamp = TimeUtils.millis();
             isIntroInit = true;
+        } else if (TimeUtils.timeSinceMillis(introTimeStamp) > 4000) {
+            state = State.Count;
         }
+
         game.uiBatch.begin();
         introPanelSprite.draw(game.uiBatch);
         introGermSprite.draw(game.uiBatch);
@@ -285,7 +325,7 @@ public abstract class MiniGame implements Screen {
         game.uiBatch.end();
     }
 
-    private void updateAndDrawCountOverlay() {
+    private void countOverlay() {
         final long stepMillis = 800;
         final float soundVol = 0.55f;
         if (countdown == 3) {
@@ -316,6 +356,283 @@ public abstract class MiniGame implements Screen {
         activeCountSprite.setAlpha(alphaVal);
         activeCountSprite.draw(game.uiBatch);
         game.uiBatch.end();
+    }
+
+    private void holdOverlay() {
+        final long holdTime = 1600;
+        if (!holdFired) {
+            holdSound.play(0.7f);
+            holdTimeStamp = TimeUtils.millis();
+            holdFired = true;
+        } else if (TimeUtils.timeSinceMillis(holdTimeStamp) > holdTime) {
+                state = State.Score;
+        }
+
+        game.uiBatch.begin();
+        final float alphaVal = Math.max(0, 1f - TimeUtils.timeSinceMillis(holdTimeStamp) / (float)holdTime);
+        holdSprite.setAlpha(alphaVal);
+        holdSprite.draw(game.uiBatch);
+        game.uiBatch.end();
+    }
+
+    private enum ScoreState { BoxInAnim, AddInAnim, AddMoveAnim,
+        ScoreUpAnim, SortAnim, MedalOutAnim, MedalInAnim }
+    private void scoreOverlay() {
+        final float scoreSpacing = 32f;
+        final int[] stepTimings = { 750, 750, 750, 750, 2500, 500, 500 };
+        if (!isScoreInit) {
+            cachePlayers = game.client.getPlayers();
+            scaleScoreElements(scoreSpacing);
+            setScoreBoxPosition();
+            updateScoreGlyphs();
+            scoreStep = 0;
+            scoreState = ScoreState.values()[scoreStep];
+            scoreTimeStamp = TimeUtils.millis();
+            isScoreInit = true;
+        } else if (TimeUtils.timeSinceMillis(scoreTimeStamp) >= stepTimings[scoreStep]) {
+            scoreStep++;
+            if (scoreStep >= stepTimings.length) {
+                state = State.Empty;
+                if (Network.isHosting) {
+                    game.server.sendGameNextMessage();
+                }
+                return;
+            }
+            scoreState = ScoreState.values()[scoreStep];
+            scoreTimeStamp = TimeUtils.millis();
+        }
+
+        game.uiBatch.begin();
+        if (scoreState == ScoreState.BoxInAnim) {
+            final float factor = Math.max(0, 1f - TimeUtils.timeSinceMillis(scoreTimeStamp) / (float)stepTimings[scoreStep]);
+            final float boxX = scoreBoxPositions[0].x;
+            final float boxMovement = boxX - (boxX + scoreBoxSprite.getWidth()) * factor;
+            final float starX = boxX + scoreBoxSprite.getWidth() + scoreSpacing;
+            final float starMovement = starX + (game.targetResWidth - starX) * factor;
+            final float iconPadding =  16f;
+            final float iconSize = scoreBoxSprite.getWidth() - iconPadding * 2f;
+            for (int i = 0; i < cachePlayers.length; ++i) {
+                final float y = scoreBoxPositions[i].y;
+                scoreBoxSprite.setPosition(boxMovement, y);
+                scoreBoxSprite.draw(game.uiBatch);
+                Sprite iconSprite = animalSprites[cachePlayers[i].icon];
+                iconSprite.setSize(iconSize, iconSize);
+                iconSprite.setPosition(boxMovement + iconPadding, y + iconPadding);
+                iconSprite.draw(game.uiBatch);
+                pointBackSprite.setPosition(starMovement, y);
+                pointBackSprite.draw(game.uiBatch);
+            }
+        } else if (scoreState == ScoreState.AddInAnim) {
+            for (int i = 0; i < cachePlayers.length; ++i) {
+                final float x = scoreBoxPositions[i].x;
+                final float y = scoreBoxPositions[i].y;
+                scoreBoxSprite.setPosition(x, y);
+                scoreBoxSprite.draw(game.uiBatch);
+                final float iconPadding =  16f;
+                final float iconSize = scoreBoxSprite.getWidth() - iconPadding * 2f;
+                Sprite iconSprite = animalSprites[cachePlayers[i].icon];
+                iconSprite.setSize(iconSize, iconSize);
+                iconSprite.setPosition(x + iconPadding, y + iconPadding);
+                iconSprite.draw(game.uiBatch);
+                pointBackSprite.setPosition(scoreBoxSprite.getX() + scoreBoxSprite.getWidth() + scoreSpacing, y);
+                pointBackSprite.draw(game.uiBatch);
+
+                if (i >= 3) {
+                    continue;
+                }
+                final float factor = Math.min(1, TimeUtils.timeSinceMillis(scoreTimeStamp) / (float)stepTimings[scoreStep]);
+                final float rotation = 360f - 360f * factor;
+                plusSprite.setScale(factor);
+                plusSprite.setRotation(rotation);
+                plusSprite.setAlpha(factor);
+                plusSprite.setPosition(pointBackSprite.getX() + pointBackSprite.getWidth() + scoreSpacing,
+                        pointBackSprite.getY() + (pointBackSprite.getHeight() - plusSprite.getHeight()) / 2f);
+                plusSprite.draw(game.uiBatch);
+                Sprite currPoint;
+                if (i == 0) {
+                    currPoint = cachePlayers.length >= 3 ? point3Sprite : cachePlayers.length == 2 ? point2Sprite : point1Sprite;
+                } else if (i == 1) {
+                    currPoint = cachePlayers.length >= 3 ? point2Sprite : point1Sprite;
+                } else {
+                    currPoint = point1Sprite;
+                }
+                currPoint.setScale(factor);
+                currPoint.setRotation(rotation);
+                currPoint.setAlpha(factor);
+                currPoint.setPosition(plusSprite.getX() + plusSprite.getWidth() + scoreSpacing,
+                        plusSprite.getY() + (plusSprite.getHeight() - currPoint.getHeight()) / 2f);
+                currPoint.draw(game.uiBatch);
+            }
+        } else if (scoreState == ScoreState.AddMoveAnim) {
+            for (int i = 0; i < cachePlayers.length; ++i) {
+                final float x = scoreBoxPositions[i].x;
+                final float y = scoreBoxPositions[i].y;
+                scoreBoxSprite.setPosition(x, y);
+                scoreBoxSprite.draw(game.uiBatch);
+                final float iconPadding =  16f;
+                final float iconSize = scoreBoxSprite.getWidth() - iconPadding * 2f;
+                Sprite iconSprite = animalSprites[cachePlayers[i].icon];
+                iconSprite.setSize(iconSize, iconSize);
+                iconSprite.setPosition(x + iconPadding, y + iconPadding);
+                iconSprite.draw(game.uiBatch);
+                pointBackSprite.setPosition(scoreBoxSprite.getX() + scoreBoxSprite.getWidth() + scoreSpacing, y);
+                pointBackSprite.draw(game.uiBatch);
+
+                if (i >= 3) {
+                    continue;
+                }
+                final float factor = Math.max(0, 1f - TimeUtils.timeSinceMillis(scoreTimeStamp) / (float)stepTimings[scoreStep]);
+                final float starMiddle = pointBackSprite.getX() + pointBackSprite.getWidth() / 2f;
+                final float plusX = pointBackSprite.getX() + pointBackSprite.getWidth() + scoreSpacing;
+                final float plusMovement = starMiddle + (plusX - starMiddle) * factor;
+                plusSprite.setAlpha(factor);
+                plusSprite.setRotation(0);
+                plusSprite.setPosition(plusMovement, pointBackSprite.getY() + (pointBackSprite.getHeight() - plusSprite.getHeight()) / 2f);
+                plusSprite.draw(game.uiBatch);
+                Sprite currPoint;
+                if (i == 0) {
+                    currPoint = cachePlayers.length >= 3 ? point3Sprite : cachePlayers.length == 2 ? point2Sprite : point1Sprite;
+                } else if (i == 1) {
+                    currPoint = cachePlayers.length >= 3 ? point2Sprite : point1Sprite;
+                } else {
+                    currPoint = point1Sprite;
+                }
+                final float pointX = pointBackSprite.getX() + pointBackSprite.getWidth() + plusSprite.getWidth() + 2f * scoreSpacing;
+                final float pointMovement = starMiddle + (pointX - starMiddle) * factor;
+                currPoint.setAlpha(factor);
+                currPoint.setRotation(0);
+                currPoint.setPosition(pointMovement, plusSprite.getY() + (plusSprite.getHeight() - currPoint.getHeight()) / 2f);
+                currPoint.draw(game.uiBatch);
+            }
+        } else if (scoreState == ScoreState.ScoreUpAnim) {
+            for (int i = 0; i < cachePlayers.length; ++i) {
+                final float x = scoreBoxPositions[i].x;
+                final float y = scoreBoxPositions[i].y;
+                scoreBoxSprite.setPosition(x, y);
+                scoreBoxSprite.draw(game.uiBatch);
+                final float iconPadding =  16f;
+                final float iconSize = scoreBoxSprite.getWidth() - iconPadding * 2f;
+                Sprite iconSprite = animalSprites[cachePlayers[i].icon];
+                iconSprite.setSize(iconSize, iconSize);
+                iconSprite.setPosition(x + iconPadding, y + iconPadding);
+                iconSprite.draw(game.uiBatch);
+                pointBackSprite.setPosition(scoreBoxSprite.getX() + scoreBoxSprite.getWidth() + scoreSpacing, y);
+                pointBackSprite.draw(game.uiBatch);
+
+                if (i >= 3) {
+                    continue;
+                }
+                final float factor = Math.min(1, TimeUtils.timeSinceMillis(scoreTimeStamp) / (float)stepTimings[scoreStep]);
+                pointBackSprite.setAlpha(1f - factor);
+                pointBackSprite.setScale(1f + factor);
+                pointBackSprite.draw(game.uiBatch);
+                pointBackSprite.setAlpha(1f);
+                pointBackSprite.setScale(1f);
+            }
+        } else if (scoreState == ScoreState.SortAnim) {
+            if (!scoreSortInit) {
+                pointSortedPlayers = Arrays.copyOf(cachePlayers, cachePlayers.length);
+                Arrays.sort(pointSortedPlayers, new Comparator<Player>() {
+                    @Override
+                    public int compare(Player p1, Player p2) {
+                        if (p1.points < p2.points) { return -1; }
+                        else if (p1.points > p2.points) { return 1; }
+                        else { return 0; }
+                    }
+                });
+                scoreSortInit = true;
+            }
+            final float factor = Math.min(1, TimeUtils.timeSinceMillis(scoreTimeStamp) / (float)stepTimings[scoreStep]);
+            for (int i = 0; i < pointSortedPlayers.length; ++i) {
+                float oldY = 0;
+                for (int j = 0; j < cachePlayers.length; ++j) {
+                    if (pointSortedPlayers[i].ID == cachePlayers[j].ID) {
+                        oldY = scoreBoxPositions[j].y;
+                    }
+                }
+                final float y = scoreBoxPositions[i].y + (scoreBoxPositions[i].y - oldY) * factor;
+                scoreBoxSprite.setY(y);
+                scoreBoxSprite.draw(game.uiBatch);
+                final float iconPadding = 16f;
+                final float iconSize = scoreBoxSprite.getWidth() - iconPadding * 2f;
+                Sprite iconSprite = animalSprites[pointSortedPlayers[i].icon];
+                iconSprite.setSize(iconSize, iconSize);
+                iconSprite.setPosition(scoreBoxSprite.getX() + iconPadding, y + iconPadding);
+                iconSprite.draw(game.uiBatch);
+                pointBackSprite.setY(y);
+                pointBackSprite.draw(game.uiBatch);
+            }
+        } else if (scoreState == ScoreState.MedalOutAnim) {
+
+        } else if (scoreState == ScoreState.MedalInAnim) {
+
+        }
+        game.uiBatch.end();
+        /*
+        for (int i = 0; i < cachePlayers.length; ++i) {
+            final float x = scoreBoxPositions[i].x;
+            final float y = scoreBoxPositions[i].y;
+            scoreBoxSprite.setPosition(x, y);
+            scoreBoxSprite.draw(game.uiBatch);
+            final float iconPadding =  16f;
+            final float iconSize = scoreBoxSprite.getWidth() - iconPadding * 2f;
+            Sprite iconSprite = animalSprites[cachePlayers[i].icon];
+            iconSprite.setSize(iconSize, iconSize);
+            iconSprite.setPosition(x + iconPadding, y + iconPadding);
+            iconSprite.draw(game.uiBatch);
+            pointBackSprite.setPosition(scoreBoxSprite.getX() + scoreBoxSprite.getWidth() + scoreSpacing, y);
+            pointBackSprite.draw(game.uiBatch);
+            plusSprite.setPosition(pointBackSprite.getX() + pointBackSprite.getWidth() + scoreSpacing,
+                    pointBackSprite.getY() + (pointBackSprite.getHeight() - plusSprite.getHeight()) / 2f);
+            plusSprite.draw(game.uiBatch);
+            point3Sprite.setPosition(plusSprite.getX() + plusSprite.getWidth() + scoreSpacing,
+                    plusSprite.getY() + (plusSprite.getHeight() - point3Sprite.getHeight()) / 2f);
+            point3Sprite.draw(game.uiBatch);
+            medalGoldSprite.setPosition(x - medalGoldSprite.getWidth() - scoreSpacing,
+                    y + (scoreBoxSprite.getHeight() - medalGoldSprite.getHeight()) / 2f);
+            medalGoldSprite.draw(game.uiBatch);
+            GlyphLayout layout = scoreGlyphs[i];
+            game.scoreFont.draw(game.uiBatch, layout, pointBackSprite.getX() + (pointBackSprite.getWidth() - layout.width) / 2f - 4f * scoreScaleFactor,
+                    pointBackSprite.getY() + (pointBackSprite.getHeight() + layout.height) / 2f - layout.height / 5f * scoreScaleFactor);
+        }
+        */
+    }
+
+    private void scaleScoreElements(float scoreSpacing) {
+        final float scoreMaxHeight = game.targetResHeight - game.targetTopBarHeight - game.targetBottomBarHeight - scoreSpacing * 2f;
+        final float originalSize = pointBackSprite.getHeight();
+        final float boxSize = Math.min(originalSize, (scoreMaxHeight - (cachePlayers.length + 1) * scoreSpacing) / cachePlayers.length);
+        scoreScaleFactor = boxSize / originalSize;
+
+        scoreBoxSprite.setSize(boxSize, boxSize);
+        pointBackSprite.setSize(boxSize, boxSize);
+        point1Sprite.setSize(point1Sprite.getWidth() * scoreScaleFactor, point1Sprite.getHeight() * scoreScaleFactor);
+        point2Sprite.setSize(point2Sprite.getWidth() * scoreScaleFactor, point2Sprite.getHeight() * scoreScaleFactor);
+        point3Sprite.setSize(point3Sprite.getWidth() * scoreScaleFactor, point3Sprite.getHeight() * scoreScaleFactor);
+        plusSprite.setSize(plusSprite.getWidth() * scoreScaleFactor, plusSprite.getHeight() * scoreScaleFactor);
+        medalBronzeSprite.setSize(medalBronzeSprite.getWidth() * scoreScaleFactor, medalBronzeSprite.getHeight() * scoreScaleFactor);
+        medalSilverSprite.setSize(medalSilverSprite.getWidth() * scoreScaleFactor, medalSilverSprite.getHeight() * scoreScaleFactor);
+        medalGoldSprite.setSize(medalGoldSprite.getWidth() * scoreScaleFactor, medalGoldSprite.getHeight() * scoreScaleFactor);
+    }
+
+    private void setScoreBoxPosition() {
+        final float spacing = 32f;
+        final float lineWidth = medalGoldSprite.getWidth() + scoreBoxSprite.getWidth() +
+                pointBackSprite.getWidth() + plusSprite.getWidth() + point3Sprite.getWidth() + 6 * spacing;
+        final float posX = (game.targetResWidth - lineWidth) / 2f + 2 * spacing + medalGoldSprite.getWidth();
+        float posY = game.targetResHeight / 2f + cachePlayers.length / 2f * (spacing + scoreBoxSprite.getHeight()) + spacing / 2f;
+        scoreBoxPositions = new Vector2[cachePlayers.length];
+        for (int i = 0; i < cachePlayers.length; ++i) {
+            posY -= spacing + scoreBoxSprite.getHeight();
+            scoreBoxPositions[i] = new Vector2(posX, posY);
+        }
+    }
+
+    private void updateScoreGlyphs() {
+        scoreGlyphs = new GlyphLayout[cachePlayers.length];
+        for (int i = 0; i < cachePlayers.length; ++i) {
+            scoreGlyphs[i] = new GlyphLayout(game.scoreFont, "" + cachePlayers[i].points);
+        }
     }
 
     private void updateTouchPosition() {
@@ -357,8 +674,7 @@ public abstract class MiniGame implements Screen {
     @Override
     public void resume() {}
 
-    public final void exit() {
-        dispose();
-        game.setScreen(null);
+    public final void finished() {
+        state = State.Hold;
     }
 }

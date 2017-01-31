@@ -4,13 +4,6 @@ size: 2048,2048
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-ui/bottom_circle
-  rotate: false
-  xy: 1924, 6
-  size: 71, 71
-  orig: 71, 71
-  offset: 0, 0
-  index: -1
 ui/check
   rotate: false
   xy: 1799, 167
@@ -44,13 +37,6 @@ ui/doodle_select_text
   xy: 120, 10
   size: 605, 113
   orig: 605, 113
-  offset: 0, 0
-  index: -1
-ui/flag
-  rotate: true
-  xy: 1924, 79
-  size: 86, 89
-  orig: 86, 89
   offset: 0, 0
   index: -1
 ui/hold
@@ -158,6 +144,13 @@ ui/icon_rabbit_contour
   orig: 64, 64
   offset: 0, 0
   index: -1
+ui/points2
+  rotate: false
+  xy: 1799, 11
+  size: 193, 154
+  orig: 193, 154
+  offset: 0, 0
+  index: -1
 ui/slider_bar
   rotate: false
   xy: 2, 2
@@ -166,8 +159,8 @@ ui/slider_bar
   offset: 0, 0
   index: -1
 ui/slider_button
-  rotate: false
-  xy: 1997, 26
+  rotate: true
+  xy: 1994, 116
   size: 49, 51
   orig: 49, 51
   offset: 0, 0
@@ -200,211 +193,274 @@ ui/title_logo
   orig: 1035, 527
   offset: 0, 0
   index: -1
-ui/toggle_green
-  rotate: true
-  xy: 1799, 31
-  size: 134, 61
-  orig: 134, 61
-  offset: 0, 0
-  index: -1
-ui/toggle_red
-  rotate: true
-  xy: 1862, 31
-  size: 134, 60
-  orig: 134, 60
-  offset: 0, 0
-  index: -1
 
 textures2.png
-size: 2048,1024
+size: 2048,2048
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+ui/bottom_circle
+  rotate: false
+  xy: 1810, 1617
+  size: 71, 71
+  orig: 71, 71
+  offset: 0, 0
+  index: -1
 ui/bottom_filled
   rotate: false
-  xy: 1721, 100
+  xy: 1389, 1491
   size: 71, 71
   orig: 71, 71
   offset: 0, 0
   index: -1
 ui/bottom_panel
-  rotate: false
-  xy: 2, 292
+  rotate: true
+  xy: 2, 228
   size: 1200, 138
   orig: 1200, 138
   offset: 0, 0
   index: -1
 ui/check_text
-  rotate: false
-  xy: 974, 502
+  rotate: true
+  xy: 457, 508
   size: 515, 62
   orig: 515, 62
   offset: 0, 0
   index: -1
 ui/checkbox
   rotate: false
-  xy: 575, 5
+  xy: 282, 229
   size: 65, 65
   orig: 65, 65
   offset: 0, 0
   index: -1
 ui/checkbox_empty
   rotate: false
-  xy: 1859, 392
+  xy: 1948, 1819
   size: 65, 65
   orig: 65, 65
   offset: 0, 0
   index: -1
 ui/count2
-  rotate: false
-  xy: 1807, 59
+  rotate: true
+  xy: 2, 2
   size: 224, 329
   orig: 224, 329
   offset: 0, 0
   index: -1
 ui/count3
-  rotate: true
-  xy: 1466, 173
+  rotate: false
+  xy: 580, 684
   size: 215, 339
   orig: 215, 339
   offset: 0, 0
   index: -1
 ui/countGo
   rotate: false
-  xy: 974, 566
+  xy: 974, 1564
   size: 469, 270
   orig: 469, 270
   offset: 0, 0
   index: -1
 ui/doodle_box
   rotate: false
-  xy: 1337, 54
+  xy: 1661, 1690
   size: 125, 125
   orig: 125, 125
   offset: 0, 0
   index: -1
 ui/doodle_box_selected_background
   rotate: false
-  xy: 1594, 46
+  xy: 1788, 1690
   size: 125, 125
   orig: 125, 125
   offset: 0, 0
   index: -1
+ui/flag
+  rotate: false
+  xy: 925, 703
+  size: 86, 89
+  orig: 86, 89
+  offset: 0, 0
+  index: -1
 ui/game_rules_panel
   rotate: false
-  xy: 2, 432
+  xy: 2, 1430
   size: 970, 582
   orig: 970, 582
   offset: 0, 0
   index: -1
 ui/game_rules_text
-  rotate: false
-  xy: 676, 47
+  rotate: true
+  xy: 352, 504
   size: 519, 103
   orig: 519, 103
   offset: 0, 0
   index: -1
 ui/green_germs
   rotate: false
-  xy: 974, 838
+  xy: 974, 1836
   size: 594, 176
   orig: 594, 176
   offset: 0, 0
   index: -1
 ui/help_button
-  rotate: true
-  xy: 1204, 53
+  rotate: false
+  xy: 797, 817
   size: 126, 131
   orig: 126, 131
   offset: 0, 0
   index: -1
 ui/highscores_button
   rotate: false
-  xy: 1491, 459
+  xy: 282, 1025
   size: 489, 160
   orig: 489, 160
   offset: 0, 0
   index: -1
 ui/host_panel
   rotate: false
-  xy: 1570, 888
+  xy: 1570, 1886
   size: 421, 126
   orig: 421, 126
   offset: 0, 0
   index: -1
 ui/icon_snail_contour
   rotate: false
-  xy: 1926, 393
+  xy: 1462, 1520
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 ui/icon_turtle_contour
   rotate: false
-  xy: 1721, 34
+  xy: 1538, 1558
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 ui/join_button
   rotate: false
-  xy: 1445, 621
+  xy: 282, 1187
   size: 489, 161
   orig: 489, 161
   offset: 0, 0
   index: -1
 ui/loading
   rotate: false
-  xy: 1204, 181
+  xy: 773, 1088
   size: 260, 260
   orig: 260, 260
   offset: 0, 0
   index: -1
 ui/loading_text
   rotate: false
-  xy: 2, 72
+  xy: 282, 1350
   size: 672, 78
   orig: 672, 78
   offset: 0, 0
   index: -1
-ui/rules_random_text
+ui/medal_bronze
   rotate: false
-  xy: 2, 2
+  xy: 1445, 1680
+  size: 88, 154
+  orig: 88, 154
+  offset: 0, 0
+  index: -1
+ui/medal_gold
+  rotate: false
+  xy: 925, 794
+  size: 88, 154
+  orig: 88, 154
+  offset: 0, 0
+  index: -1
+ui/medal_silver
+  rotate: false
+  xy: 282, 296
+  size: 88, 154
+  orig: 88, 154
+  offset: 0, 0
+  index: -1
+ui/plus
+  rotate: true
+  xy: 1445, 1586
+  size: 92, 91
+  orig: 92, 91
+  offset: 0, 0
+  index: -1
+ui/points
+  rotate: false
+  xy: 580, 474
+  size: 209, 208
+  orig: 209, 208
+  offset: 0, 0
+  index: -1
+ui/points1
+  rotate: true
+  xy: 797, 687
+  size: 128, 126
+  orig: 128, 126
+  offset: 0, 0
+  index: -1
+ui/points3
+  rotate: false
+  xy: 797, 950
+  size: 234, 136
+  orig: 234, 136
+  offset: 0, 0
+  index: -1
+ui/rules_random_text
+  rotate: true
+  xy: 282, 452
   size: 571, 68
   orig: 571, 68
   offset: 0, 0
   index: -1
 ui/rules_ready_text
   rotate: false
-  xy: 1481, 390
+  xy: 1570, 1817
   size: 376, 67
   orig: 376, 67
   offset: 0, 0
   index: -1
 ui/rules_rounds_text
-  rotate: false
-  xy: 974, 443
+  rotate: true
+  xy: 521, 518
   size: 505, 57
   orig: 505, 57
   offset: 0, 0
   index: -1
 ui/settings_button
-  rotate: true
-  xy: 1464, 47
+  rotate: false
+  xy: 1535, 1687
   size: 124, 128
   orig: 124, 128
   offset: 0, 0
   index: -1
 ui/settings_slideout
   rotate: true
-  xy: 1570, 784
+  xy: 974, 1460
   size: 102, 413
   orig: 102, 413
   offset: 0, 0
   index: -1
-ui/top_panel
+ui/toggle_green
   rotate: false
-  xy: 2, 152
+  xy: 1538, 1624
+  size: 134, 61
+  orig: 134, 61
+  offset: 0, 0
+  index: -1
+ui/toggle_red
+  rotate: false
+  xy: 1674, 1628
+  size: 134, 60
+  orig: 134, 60
+  offset: 0, 0
+  index: -1
+ui/top_panel
+  rotate: true
+  xy: 142, 228
   size: 1200, 138
   orig: 1200, 138
   offset: 0, 0

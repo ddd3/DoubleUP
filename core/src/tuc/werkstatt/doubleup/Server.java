@@ -8,6 +8,7 @@ import com.esotericsoftware.kryonet.Listener;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Comparator;
 
 import tuc.werkstatt.doubleup.Network.ClientFinishedMessage;
 import tuc.werkstatt.doubleup.Network.ClientOptionsMessage;
@@ -30,6 +31,7 @@ public class Server {
     private Player[] players;
     private Array<String> availableIcons;
     private Array<String> randomMinigames;
+    private boolean miniGameAlreadyFinished = false;
 
     public Server(final DoubleUp game) {
 		this.game = game;
@@ -149,25 +151,47 @@ public class Server {
         }
     }
 
-    private void givePointsToPlayer(int id, int points) {
+    private void givePointsToPlayers(int id) {
         synchronized (lock) {
             for (Player p : players) {
                 if (p.ID == id) {
-                    p.points += points;
-                    break;
+                    p.miniGameProgress = 100;
                 }
+            }
+            Arrays.sort(players, new Comparator<Player>() {
+                @Override
+                public int compare(Player p1, Player p2) {
+                    if (p1.miniGameProgress < p2.miniGameProgress) {
+                        return -1;
+                    } else if (p1.miniGameProgress > p2.miniGameProgress) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                }
+            });
+            if (players.length == 1) {
+                players[0].points += 1;
+            } else if (players.length == 2) {
+                players[0].points += 2;
+                players[1].points += 1;
+            } else {
+                players[0].points += 3;
+                players[1].points += 2;
+                players[2].points += 1;
             }
         }
     }
 
     private void onClientFinishedMessage(ClientFinishedMessage msg) {
-        if (msg.gameID != currMiniGameID) { return; }
+        if (msg.gameID != currMiniGameID || miniGameAlreadyFinished) { return; }
+        miniGameAlreadyFinished = true;
         Gdx.app.log("Server", "ClientFinishedMessage received from client " + msg.clientID);
         sendGameFinishedMessage(msg.clientID);
-        givePointsToPlayer(msg.clientID, 1);
+        givePointsToPlayers(msg.clientID);
 
         if (currMiniGameRound < GameOptions.maxMiniGameRounds) {
-            sendGameNextMessage();
+            sendProgressMessage();
         } else {
             sendExitMessageAndStop();
         }
@@ -206,7 +230,7 @@ public class Server {
         }
     }
 
-    private void sendGameNextMessage() {
+    public void sendGameNextMessage() {
         int nextGameID;
         if (game.isTestingEnvironment()) {
             nextGameID = Arrays.asList(game.minigames).indexOf(game.getTestingMiniGame());
@@ -227,6 +251,7 @@ public class Server {
         nextMsg.gameID = nextGameID;
         nextMsg.currRound = currMiniGameRound;
         netServer.sendToAllTCP(nextMsg);
+        miniGameAlreadyFinished = false;
         Gdx.app.log("Server", "GameNextMessage (" + game.minigames[nextGameID] + ") sent to all clients");
 
         synchronized (lock) {

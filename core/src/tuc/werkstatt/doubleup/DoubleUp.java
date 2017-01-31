@@ -41,6 +41,7 @@ public class DoubleUp extends Game {
     public AssetManager assets;
     public BitmapFont font;
     public BitmapFont titleFont;
+    public BitmapFont scoreFont;
     private Music music;
     private String currMusicFileName = "";
     private boolean isMusicMuted = false;
@@ -127,12 +128,10 @@ public class DoubleUp extends Game {
                                     Color borderColor, int shadowOffset, Color shadowColor)
     {
         final int pixelSize = 2048;
+        final int padding = 4;
         BitmapFontWriter.FontInfo info = new BitmapFontWriter.FontInfo();
-        info.padding = new BitmapFontWriter.Padding(2, 2, 2, 2);
+        info.padding = new BitmapFontWriter.Padding(padding, padding, padding, padding);
         info.size = fontSize;
-        info.outline = (int)Math.ceil(borderWidth);
-        info.aa = 4;
-        info.smooth = true;
 
         FreeTypeFontParameter parameter = new FreeTypeFontParameter();
         parameter.size = fontSize;
@@ -144,7 +143,7 @@ public class DoubleUp extends Game {
         parameter.shadowColor = shadowColor;
         parameter.shadowOffsetX = shadowOffset;
         parameter.shadowOffsetY = shadowOffset;
-        parameter.packer = new PixmapPacker(pixelSize, pixelSize, Pixmap.Format.RGBA8888, 2,
+        parameter.packer = new PixmapPacker(pixelSize, pixelSize, Pixmap.Format.RGBA8888, padding,
                 false, new PixmapPacker.SkylineStrategy());
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.absolute("fonts/" + fontName));
@@ -178,6 +177,9 @@ public class DoubleUp extends Game {
         if (!Gdx.files.internal("fonts/CarterOne.ttf_82.fnt").exists()) {
             generateFont("CarterOne.ttf", 82, Color.WHITE, 6f, Color.valueOf("1c6b65ff"), 5, Color.valueOf("1c6b65ff"));
         }
+        if (!Gdx.files.internal("fonts/CarterOne.ttf_75.fnt").exists()) {
+            generateFont("CarterOne.ttf", 75, Color.valueOf("fcf2d2ff"), 1f, Color.valueOf("fcf2d2ff"));
+        }
     }
 
     private void loadBitmapFonts() {
@@ -187,6 +189,8 @@ public class DoubleUp extends Game {
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         titleFont = new BitmapFont(Gdx.files.internal("fonts/CarterOne.ttf_82.fnt"));
         titleFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        scoreFont = new BitmapFont(Gdx.files.internal("fonts/CarterOne.ttf_75.fnt"));
+        scoreFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
     }
 
     private void loadAssets() {
@@ -291,6 +295,7 @@ public class DoubleUp extends Game {
         if (music != null) { music.stop(); }
         font.dispose();
         titleFont.dispose();
+        scoreFont.dispose();
         batch.dispose();
         uiBatch.dispose();
         assets.dispose();
