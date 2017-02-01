@@ -380,7 +380,7 @@ public abstract class MiniGame implements Screen {
         ScoreUpAnim, SortAnim, MedalOutAnim, MedalInAnim }
     private void scoreOverlay() {
         final float scoreSpacing = 32f;
-        final int[] stepTimings = { 750, 750, 750, 750, 2500, 500, 500 };
+        final int[] stepTimings = { 750, 750, 750, 750, 750, 750, 750 };
         if (!isScoreInit) {
             cachePlayers = game.client.getPlayers();
             scaleScoreElements(scoreSpacing);
