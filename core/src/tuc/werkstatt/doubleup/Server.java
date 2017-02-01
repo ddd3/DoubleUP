@@ -161,13 +161,9 @@ public class Server {
             Arrays.sort(players, new Comparator<Player>() {
                 @Override
                 public int compare(Player p1, Player p2) {
-                    if (p1.miniGameProgress < p2.miniGameProgress) {
-                        return -1;
-                    } else if (p1.miniGameProgress > p2.miniGameProgress) {
-                        return 1;
-                    } else {
-                        return 0;
-                    }
+                    if (p1.miniGameProgress < p2.miniGameProgress) { return 1; }
+                    else if (p1.miniGameProgress > p2.miniGameProgress) { return -1; }
+                    else { return 0; }
                 }
             });
             if (players.length == 1) {
@@ -179,6 +175,9 @@ public class Server {
                 players[0].points += 3;
                 players[1].points += 2;
                 players[2].points += 1;
+            }
+            for (Player p : players) {
+                System.out.printf("ID%d: %d, %.2f%%\n", p.ID, p.points, p.miniGameProgress);
             }
         }
     }
@@ -273,14 +272,6 @@ public class Server {
     private void sendProgressMessage() {
         synchronized (lock) {
             progressMsg.gameID = currMiniGameID;
-            /* // not necessary with player icons, simply draw the device's player on top
-            Arrays.sort(players, new Comparator<Player>() {
-                @Override
-                public int compare(Player p1, Player p2) {
-                    return p1.miniGameProgress < p2.miniGameProgress ? 1 : -1;
-                }
-            });
-            */
             progressMsg.players = players;
             netServer.sendToAllTCP(progressMsg);
         }

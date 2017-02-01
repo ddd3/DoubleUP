@@ -535,8 +535,8 @@ public abstract class MiniGame implements Screen {
                 Arrays.sort(pointSortedPlayers, new Comparator<Player>() {
                     @Override
                     public int compare(Player p1, Player p2) {
-                        if (p1.points < p2.points) { return -1; }
-                        else if (p1.points > p2.points) { return 1; }
+                        if (p1.points < p2.points) { return 1; }
+                        else if (p1.points > p2.points) { return -1; }
                         else { return 0; }
                     }
                 });
@@ -550,7 +550,7 @@ public abstract class MiniGame implements Screen {
                         oldY = scoreBoxPositions[j].y;
                     }
                 }
-                final float y = scoreBoxPositions[i].y + (scoreBoxPositions[i].y - oldY) * factor;
+                final float y = oldY + (scoreBoxPositions[i].y - oldY) * factor;
                 scoreBoxSprite.setY(y);
                 scoreBoxSprite.draw(game.uiBatch);
                 final float iconPadding = 16f;
