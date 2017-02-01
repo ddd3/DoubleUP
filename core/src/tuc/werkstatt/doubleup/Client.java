@@ -225,7 +225,6 @@ public class Client {
             msg.clientID = netClient.getID();
         }
         netClient.sendTCP(msg);
-        game.setScreen(null);
     }
 
     public void sendClientProgressMessage(final float progress) {

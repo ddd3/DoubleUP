@@ -62,6 +62,7 @@ public abstract class MiniGame implements Screen {
     private boolean isIntroInit = false;
     private boolean isScoreInit = false;
     private boolean scoreSortInit = false;
+    private boolean finishMessageAlreadySent = false;
 
     public MiniGame(DoubleUp game) {
         this.game = game;
@@ -651,7 +652,10 @@ public abstract class MiniGame implements Screen {
 
     private void updateNetwork() {
         if (Network.isHosting) { game.server.update(); }
-        if (isFinished()) { game.client.sendClientFinishedMessage(); }
+        if (isFinished() && !finishMessageAlreadySent) {
+            game.client.sendClientFinishedMessage();
+            finishMessageAlreadySent = true;
+        }
         if (TimeUtils.timeSinceMillis(lastProgressTime) > 500) {
             game.client.sendClientProgressMessage(getProgress());
             lastProgressTime = TimeUtils.millis();
