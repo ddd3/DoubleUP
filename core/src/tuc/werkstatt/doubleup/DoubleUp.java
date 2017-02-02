@@ -191,6 +191,24 @@ public class DoubleUp extends Game {
         titleFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         scoreFont = new BitmapFont(Gdx.files.internal("fonts/CarterOne.ttf_75.fnt"));
         scoreFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
+        //fixFonts(scoreFont);
+    }
+
+    // workaround for buggy (bleeding artifacts) linear filtering in libgdx
+    private void fixFonts(BitmapFont font) {
+        for (BitmapFont.Glyph[] page : font.getData().glyphs) {
+            if (page == null) {
+                continue;
+            }
+            for (BitmapFont.Glyph glyph : page) {
+                if (glyph == null) {
+                    continue;
+                }
+                glyph.u2 -= 0.001f;
+                glyph.v2 -= 0.001f;
+            }
+        }
     }
 
     private void loadAssets() {
@@ -216,7 +234,7 @@ public class DoubleUp extends Game {
         music.setLooping(true);
         currMusicFileName = name;
         if (!isMusicMuted) {
-            music.setVolume(0.65f);
+            music.setVolume(0.5f);
             music.play();
         }
     }

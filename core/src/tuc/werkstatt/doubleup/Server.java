@@ -112,10 +112,6 @@ public class Server {
                 }
             }
         }
-        if (netServer.getConnections().length <= 0) {
-            Gdx.app.log("Server", "Last client disconnected, shutting down");
-            Gdx.app.exit();
-        }
     }
 
     public boolean areAllPlayersReady() {
@@ -192,7 +188,7 @@ public class Server {
         if (currMiniGameRound < GameOptions.maxMiniGameRounds) {
             sendProgressMessage();
         } else {
-            sendExitMessageAndStop();
+            sendExitMessage();
         }
     }
 
@@ -287,14 +283,13 @@ public class Server {
         }
     }
 
-    private void sendExitMessageAndStop() {
+    private void sendExitMessage() {
         // TODO: multiple winners should be possible
         // TODO: implement endscreen
         ExitMessage exMsg = new ExitMessage();
         exMsg.overallclientWinnerID = -1;
         netServer.sendToAllTCP(exMsg);
         Gdx.app.log("Server", "ExitMessage sent to all clients");
-        netServer.stop();
     }
 
     public void dispose() {
