@@ -839,7 +839,7 @@ public abstract class MiniGame implements Screen {
     private void updateTouchPosition() {
         if (Gdx.input.isTouched()) {
             projectedTouchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            game.camera.unproject(projectedTouchPos);
+            game.gameView.unproject(projectedTouchPos);
             unprojectedTouchPos.set(projectedTouchPos.x, projectedTouchPos.y);
         }
     }
