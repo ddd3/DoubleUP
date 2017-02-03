@@ -50,7 +50,7 @@ public abstract class MiniGame implements Screen {
     private boolean cachedPlayersSwapped = false;
     private boolean newPointGlyphsGenerated = false;
 
-    private enum State { Intro, Count, Game, Hold, Score, Empty }
+    private enum State { Intro, Count, Game, Hold, Score }
     private State state;
     private ScoreState scoreState;
     private long introTimeStamp, countTimeStamp, holdTimeStamp, scoreTimeStamp;
@@ -80,6 +80,7 @@ public abstract class MiniGame implements Screen {
         game.client.setCurrMinigame(this);
         lastProgressTime = TimeUtils.millis();
         cachePlayers = game.client.getPlayers();
+        game.screenTransitionTimestamp = TimeUtils.millis();
     }
 
     public static void reinit() {
@@ -173,6 +174,10 @@ public abstract class MiniGame implements Screen {
                     Gdx.app.log("MiniGame", "Back button pressed, returning to StartScreen");
                     game.setScreen(new Start(game));
                 }
+                if (keycode == Input.Keys.Q || keycode == Input.Keys.ESCAPE) {
+                    Gdx.app.log("MiniGame", "Escape button pressed, returning to StartScreen");
+                    game.setScreen(new Start(game));
+                }
                 return false;
             }
         });
@@ -233,14 +238,13 @@ public abstract class MiniGame implements Screen {
         } else if (state == State.Score) {
             drawUserInterface();
             scoreOverlay();
-        } else if (state == State.Empty) {
-            drawUserInterface();
         }
+        game.drawTransitionBuffer();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.M)) { game.toggleMusicMute(); }
     }
 
-    private void drawUserInterface() {
+    public void drawUserInterface() {
         if (backgroundSprite != null) {
             game.uiBatch.begin();
             backgroundSprite.draw(game.uiBatch);
@@ -410,7 +414,7 @@ public abstract class MiniGame implements Screen {
         }
     }
 
-    private void scoreOverlay() {
+    public void scoreOverlay() {
         final float scoreSpacing = 32f;
         if (!isScoreInit) {
             cachePlayers = game.client.getPlayers();
@@ -432,17 +436,20 @@ public abstract class MiniGame implements Screen {
             scoreTimeStamp = TimeUtils.millis();
             slideSoftSound.play();
             isScoreInit = true;
-        } else if (TimeUtils.timeSinceMillis(scoreTimeStamp) >= animations.get(scoreAnimStep).duration) {
+        } else if (scoreAnimStep < animations.size && TimeUtils.timeSinceMillis(scoreTimeStamp) >= animations.get(scoreAnimStep).duration) {
             scoreAnimStep++;
             if (scoreAnimStep == animations.size) {
-                state = State.Empty;
                 if (Network.isHosting) {
-                    game.server.sendGameNextMessage();
+                    if (game.client.getCurrMiniGameRound() == game.client.getMaxMiniGameRounds()) {
+                        game.server.sendExitMessage();
+                    } else {
+                        game.server.sendGameNextMessage();
+                    }
                 }
-                return;
+            } else {
+                scoreState = animations.get(scoreAnimStep).state;
+                scoreTimeStamp = TimeUtils.millis();
             }
-            scoreState = animations.get(scoreAnimStep).state;
-            scoreTimeStamp = TimeUtils.millis();
         }
 
         game.uiBatch.begin();
@@ -853,6 +860,11 @@ public abstract class MiniGame implements Screen {
 
     @Override
     public void resume() {}
+
+    @Override
+    public void hide() {
+        game.renderToTransitionBuffer(this);
+    }
 
     public final void finished() {
         state = State.Hold;

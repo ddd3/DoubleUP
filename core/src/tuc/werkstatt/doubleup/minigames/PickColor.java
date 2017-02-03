@@ -149,7 +149,9 @@ public final class PickColor extends MiniGame {
     }
 
     @Override
-    public void hide() {}
+    public void hide() {
+        super.hide();
+    }
 
     @Override
     public void dispose() {}

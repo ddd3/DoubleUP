@@ -200,7 +200,7 @@ public final class PlaneWarGame extends MiniGame {
 
     @Override
     public void hide() {
-
+        super.hide();
     }
 
     @Override

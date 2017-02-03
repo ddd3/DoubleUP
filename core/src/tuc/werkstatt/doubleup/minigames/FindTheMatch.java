@@ -184,7 +184,9 @@ public final class FindTheMatch extends MiniGame {
     public void update(float deltaTime) {   }
 
     @Override
-    public void hide() {   }
+    public void hide() {
+        super.hide();
+    }
 
     @Override
     public void dispose() {   }

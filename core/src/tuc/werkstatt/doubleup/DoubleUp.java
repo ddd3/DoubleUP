@@ -3,6 +3,7 @@ package tuc.werkstatt.doubleup;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -15,10 +16,13 @@ import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.tools.bmfont.BitmapFontWriter;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -52,6 +56,13 @@ public class DoubleUp extends Game {
     public Viewport uiView;
     public SpriteBatch batch;
     public SpriteBatch uiBatch;
+
+    public enum TransitionState { Active, Inactive }
+    public TransitionState transitionState = TransitionState.Inactive;
+    public final long screenTransitionDuration = 420;
+    public long screenTransitionTimestamp;
+    public FrameBuffer transitionBuffer;
+    public TextureRegion transitionTextureRegion;
 
     // add your individual minigame name (needs to match java file) here
     // index also being used as gameID in messages
@@ -90,6 +101,8 @@ public class DoubleUp extends Game {
         camera.setToOrtho(false, width, height);
         gameView = new StretchViewport(width, height, camera);
         resizeViews();
+
+        transitionBuffer = new FrameBuffer(Pixmap.Format.RGB888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 
         Gdx.input.setCatchBackKey(true);
         // minigame provided by program argument will be quick started and looped for testing purposes
@@ -282,6 +295,41 @@ public class DoubleUp extends Game {
                 Gdx.graphics.getHeight() - screenBottomBarHeight - screenTopBarHeight);
     }
 
+    public void renderToTransitionBuffer(Screen screen) {
+        transitionState = DoubleUp.TransitionState.Active;
+        transitionBuffer.bind();
+        if (screen instanceof Start) {
+            ((Start)screen).draw(0f);
+        } else if (screen instanceof Lobby) {
+            ((Lobby)screen).draw(0f);
+        } else if (screen instanceof GameOptions) {
+            ((GameOptions)screen).draw(0f);
+        } else if (screen instanceof MiniGame) {
+            MiniGame m = (MiniGame)screen;
+            m.drawUserInterface();
+            m.scoreOverlay();
+        } else {
+            ((Results)screen).draw(0f);
+        }
+        transitionBuffer.unbind();
+        transitionTextureRegion = new TextureRegion(transitionBuffer.getColorBufferTexture());
+        transitionTextureRegion.flip(false, true);
+    }
+
+    public void drawTransitionBuffer() {
+        if (transitionState == TransitionState.Active) {
+            final float factor = Math.min(1f, TimeUtils.timeSinceMillis(screenTransitionTimestamp) / (float) screenTransitionDuration);
+            final float transX = 0 - targetResWidth * factor;
+            uiBatch.begin();
+            //uiBatch.setColor(1f, 1f, 1f, 1f - factor);
+            uiBatch.draw(transitionTextureRegion, transX, 0, targetResWidth, targetResHeight);
+            uiBatch.end();
+            if (TimeUtils.timeSinceMillis(screenTransitionTimestamp) >= screenTransitionDuration) {
+                transitionState = TransitionState.Inactive;
+            }
+        }
+    }
+
     public boolean isTestingEnvironment() {
         return testingMiniGame != null && !testingMiniGame.isEmpty();
     }
@@ -314,6 +362,7 @@ public class DoubleUp extends Game {
         font.dispose();
         titleFont.dispose();
         scoreFont.dispose();
+        transitionBuffer.dispose();
         batch.dispose();
         uiBatch.dispose();
         assets.dispose();

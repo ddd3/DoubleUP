@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class Lobby implements Screen {
     private final DoubleUp game;
@@ -14,7 +15,7 @@ public class Lobby implements Screen {
     private Sprite loadingSprite;
     private Sprite checkTextSprite;
     private Sprite loadingTextSprite;
-    private float transitionTimeInSeconds = 1.25f;
+    private float transitionTimeInSeconds = 2f;
     private boolean isReady = false;
 
     public Lobby(DoubleUp game) {
@@ -50,20 +51,30 @@ public class Lobby implements Screen {
         if (!game.isTestingEnvironment()) {
             game.loadMusic("music/best_intro_loop.ogg");
         }
-
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override public boolean keyUp(final int keycode) {
                 if (keycode == Input.Keys.BACK) {
                     Gdx.app.log("Lobby", "Back button pressed, returning to StartScreen");
                     game.setScreen(new Start(game));
                 }
+                if (keycode == Input.Keys.Q || keycode == Input.Keys.ESCAPE) {
+                    Gdx.app.log("Lobby", "Escape button pressed, returning to StartScreen");
+                    game.setScreen(new Start(game));
+                }
                 return false;
             }
         });
+        game.screenTransitionTimestamp = TimeUtils.millis();
     }
 
     @Override
     public void render(float deltaTime) {
+        draw(deltaTime);
+        updateLogic(deltaTime);
+        game.drawTransitionBuffer();
+    }
+
+    public void draw(float deltaTime) {
         game.uiView.apply();
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -79,8 +90,6 @@ public class Lobby implements Screen {
             loadingTextSprite.draw(game.uiBatch);
         }
         game.uiBatch.end();
-
-        updateLogic(deltaTime);
     }
 
     private void updateLogic(float deltaTime) {
@@ -109,7 +118,9 @@ public class Lobby implements Screen {
     public void resume() {}
 
     @Override
-    public void hide() {}
+    public void hide() {
+        game.renderToTransitionBuffer(this);
+    }
 
     @Override
     public void dispose() {}

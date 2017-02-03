@@ -187,8 +187,6 @@ public class Server {
 
         if (currMiniGameRound < GameOptions.maxMiniGameRounds) {
             sendProgressMessage();
-        } else {
-            sendExitMessage();
         }
     }
 
@@ -283,7 +281,7 @@ public class Server {
         }
     }
 
-    private void sendExitMessage() {
+    public void sendExitMessage() {
         // TODO: multiple winners should be possible
         // TODO: implement endscreen
         ExitMessage exMsg = new ExitMessage();

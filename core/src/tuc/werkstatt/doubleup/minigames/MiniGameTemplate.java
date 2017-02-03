@@ -109,6 +109,7 @@ public final class MiniGameTemplate extends MiniGame {
 
     @Override
     public void hide() {
+        super.hide();
         // This method will be called when your game is no longer the main screen, either because
         // the game is over, the player is about to return to the start screen.
         // Especially useful to stop playing music.

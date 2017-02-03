@@ -163,70 +163,78 @@ public class GameOptions implements Screen {
                     Gdx.app.log("GameOptions", "Back button pressed, returning to StartScreen");
                     game.setScreen(new Start(game));
                 }
+                if (keycode == Input.Keys.Q || keycode == Input.Keys.ESCAPE) {
+                    Gdx.app.log("GameOptions", "Escape button pressed, returning to StartScreen");
+                    game.setScreen(new Start(game));
+                }
                 return false;
             }
         });
+        game.screenTransitionTimestamp = TimeUtils.millis();
     }
 
     @Override
     public void render(float deltaTime) {
-        game.uiView.apply();
-        Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        game.uiBatch.setProjectionMatrix(game.uiCamera.combined);
-        game.uiBatch.begin();
-        background.draw(game.uiBatch);
-        doodleSelectPanel.draw(game.uiBatch);
-        doodleGreenGerms.draw(game.uiBatch);
-        doodleSelectText.draw(game.uiBatch);
-        gameRulesPanel.draw(game.uiBatch);
-        gameRulesGreenGerms.draw(game.uiBatch);
-        gameRulesText.draw(game.uiBatch);
-        rulesRoundsText.draw(game.uiBatch);
-        rulesRandomText.draw(game.uiBatch);
-        rulesReadyText.draw(game.uiBatch);
-        if (sequence == Sequence.Random) {
-            checkbox.draw(game.uiBatch);
-        } else {
-            emptyCheckbox.draw(game.uiBatch);
-        }
-        if (Network.isHosting) {
-            sliderBar.draw(game.uiBatch);
-            sliderButton.draw(game.uiBatch);
-            if (game.server.areAllPlayersReady()) {
-                startButton.draw(game.uiBatch);
-            } else {
-                startGrayButton.draw(game.uiBatch);
-            }
-        }
-        game.font.draw(game.uiBatch, roundsTextLayout, sliderRect.x + sliderRect.width - roundsTextLayout.width,
-                rulesRoundsText.getY() + rulesRoundsText.getHeight());
-        game.font.draw(game.uiBatch, readyTextLayout, sliderRect.x + sliderRect.width - readyTextLayout.width,
-                rulesReadyText.getY() + rulesReadyText.getHeight());
-        for (Vector2 pos : boxPositions) {
-            doodleIconBox.setPosition(pos.x, pos.y);
-            doodleIconBox.draw(game.uiBatch);
-        }
-
-        if (cachePlayers != null) {
-            for (Player p : cachePlayers) {
-                if (p.icon == -1) { continue; }
-                doodleIconBoxSelBack.setColor(p.ID == game.client.getID() ? MaterialColors.green : MaterialColors.red);
-                doodleIconBoxSelBack.setPosition(boxPositions[p.icon].x, boxPositions[p.icon].y);
-                doodleIconBoxSelBack.draw(game.uiBatch);
-                final float diff = (doodleIconBoxSelBack.getWidth() - doodleIconBoxSelForg.getWidth()) / 2f;
-                doodleIconBoxSelForg.setPosition(doodleIconBoxSelBack.getX() + diff, doodleIconBoxSelBack.getY() + diff);
-                doodleIconBoxSelForg.draw(game.uiBatch);
-            }
-        }
-        for (Sprite sp : animalSprites) {
-            sp.draw(game.uiBatch);
-        }
-        game.uiBatch.end();
-
+        draw(deltaTime);
+        game.drawTransitionBuffer();
         updateLogic(deltaTime);
     }
+     public void draw(float deltaTime) {
+         game.uiView.apply();
+         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
+         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+         game.uiBatch.setProjectionMatrix(game.uiCamera.combined);
+         game.uiBatch.begin();
+         background.draw(game.uiBatch);
+         doodleSelectPanel.draw(game.uiBatch);
+         doodleGreenGerms.draw(game.uiBatch);
+         doodleSelectText.draw(game.uiBatch);
+         gameRulesPanel.draw(game.uiBatch);
+         gameRulesGreenGerms.draw(game.uiBatch);
+         gameRulesText.draw(game.uiBatch);
+         rulesRoundsText.draw(game.uiBatch);
+         rulesRandomText.draw(game.uiBatch);
+         rulesReadyText.draw(game.uiBatch);
+         if (sequence == Sequence.Random) {
+             checkbox.draw(game.uiBatch);
+         } else {
+             emptyCheckbox.draw(game.uiBatch);
+         }
+         if (Network.isHosting) {
+             sliderBar.draw(game.uiBatch);
+             sliderButton.draw(game.uiBatch);
+             if (game.server.areAllPlayersReady()) {
+                 startButton.draw(game.uiBatch);
+             } else {
+                 startGrayButton.draw(game.uiBatch);
+             }
+         }
+         game.font.draw(game.uiBatch, roundsTextLayout, sliderRect.x + sliderRect.width - roundsTextLayout.width,
+                 rulesRoundsText.getY() + rulesRoundsText.getHeight());
+         game.font.draw(game.uiBatch, readyTextLayout, sliderRect.x + sliderRect.width - readyTextLayout.width,
+                 rulesReadyText.getY() + rulesReadyText.getHeight());
+         for (Vector2 pos : boxPositions) {
+             doodleIconBox.setPosition(pos.x, pos.y);
+             doodleIconBox.draw(game.uiBatch);
+         }
+
+         if (cachePlayers != null) {
+             for (Player p : cachePlayers) {
+                 if (p.icon == -1) { continue; }
+                 doodleIconBoxSelBack.setColor(p.ID == game.client.getID() ? MaterialColors.green : MaterialColors.red);
+                 doodleIconBoxSelBack.setPosition(boxPositions[p.icon].x, boxPositions[p.icon].y);
+                 doodleIconBoxSelBack.draw(game.uiBatch);
+                 final float diff = (doodleIconBoxSelBack.getWidth() - doodleIconBoxSelForg.getWidth()) / 2f;
+                 doodleIconBoxSelForg.setPosition(doodleIconBoxSelBack.getX() + diff, doodleIconBoxSelBack.getY() + diff);
+                 doodleIconBoxSelForg.draw(game.uiBatch);
+             }
+         }
+         for (Sprite sp : animalSprites) {
+             sp.draw(game.uiBatch);
+         }
+         game.uiBatch.end();
+     }
 
     private void updateLogic(float deltaTime) {
         if (game.isTestingEnvironment()) {
@@ -307,7 +315,9 @@ public class GameOptions implements Screen {
     public void resume() {}
 
     @Override
-    public void hide() {}
+    public void hide() {
+        game.renderToTransitionBuffer(this);
+    }
 
     @Override
     public void dispose() {}
