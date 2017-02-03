@@ -57,12 +57,11 @@ public class DoubleUp extends Game {
     public SpriteBatch batch;
     public SpriteBatch uiBatch;
 
-    public enum TransitionState { Active, Inactive }
-    public TransitionState transitionState = TransitionState.Inactive;
-    public final long screenTransitionDuration = 420;
+    private enum TransitionState { Active, Inactive }
+    private TransitionState transitionState = TransitionState.Inactive;
     public long screenTransitionTimestamp;
-    public FrameBuffer transitionBuffer;
-    public TextureRegion transitionTextureRegion;
+    private FrameBuffer transitionBuffer;
+    private TextureRegion transitionTextureRegion;
 
     // add your individual minigame name (needs to match java file) here
     // index also being used as gameID in messages
@@ -318,6 +317,7 @@ public class DoubleUp extends Game {
 
     public void drawTransitionBuffer() {
         if (transitionState == TransitionState.Active) {
+            final long screenTransitionDuration = 420;
             final float factor = Math.min(1f, TimeUtils.timeSinceMillis(screenTransitionTimestamp) / (float) screenTransitionDuration);
             final float transX = 0 - targetResWidth * factor;
             uiBatch.begin();

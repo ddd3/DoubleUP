@@ -137,7 +137,6 @@ public class Start implements Screen {
             } else if (sprites.get("settings_button").getBoundingRectangle().contains(touchPos.x, touchPos.y)) {
                 isSlidedOut = !isSlidedOut;
             } else if (sprites.get("join_button").getBoundingRectangle().contains(touchPos.x, touchPos.y)) {
-                Gdx.app.log("TESTING", "fired");
                 game.setScreen(new Lobby(game));
             }
         }
