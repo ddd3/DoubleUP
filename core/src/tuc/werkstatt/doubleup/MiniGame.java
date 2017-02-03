@@ -303,6 +303,10 @@ public abstract class MiniGame implements Screen {
     }
 
     private void introOverlay() {
+        final long fadeDuration = 420;
+        final long displayDuration = 4000;
+        float slideMovement = 0f;
+        final float originalY = (game.targetResHeight - introPanelSprite.getHeight()) / 2f + 100f;
         if (!isIntroInit) {
             if (title == null) {
                 setTitle("Missing title");
@@ -315,9 +319,22 @@ public abstract class MiniGame implements Screen {
             }
             introTimeStamp = TimeUtils.millis();
             isIntroInit = true;
-        } else if (TimeUtils.timeSinceMillis(introTimeStamp) > 4000) {
+        } else if (TimeUtils.timeSinceMillis(introTimeStamp) > displayDuration + fadeDuration) {
             state = State.Count;
+            return;
+        } else if (TimeUtils.timeSinceMillis(introTimeStamp) > displayDuration) {
+            final float fadeTime = TimeUtils.timeSinceMillis(introTimeStamp) - displayDuration;
+            final float factor = Math.min(1f, fadeTime / (float) fadeDuration);
+            slideMovement = (game.targetResHeight - introPanelSprite.getX()) * factor;
         }
+
+        introPanelSprite.setPosition((game.targetResWidth - introPanelSprite.getWidth()) / 2f, originalY + slideMovement);
+        introGermSprite.setPosition(introPanelSprite.getX() + (introPanelSprite.getWidth() - introGermSprite.getWidth()) / 2f,
+                introPanelSprite.getY() + introPanelSprite.getHeight() - introGermSprite.getHeight() / 2f);
+        iconBackgroundSprite.setPosition(introPanelSprite.getX() + (introPanelSprite.getWidth() - iconBackgroundSprite.getWidth()) / 2f,
+                introPanelSprite.getY() + introPanelSprite.getHeight() - iconBackgroundSprite.getHeight() - 120f);
+        iconSprite.setPosition(iconBackgroundSprite.getX() + (iconBackgroundSprite.getWidth() - iconSprite.getWidth()) / 2f,
+                iconBackgroundSprite.getY() + (iconBackgroundSprite.getHeight() - iconSprite.getHeight()) / 2f);
 
         game.uiBatch.begin();
         introPanelSprite.draw(game.uiBatch);
