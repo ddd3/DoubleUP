@@ -451,7 +451,7 @@ public abstract class MiniGame implements Screen {
             scoreAnimStep = 0;
             scoreState = animations.get(0).state;
             scoreTimeStamp = TimeUtils.millis();
-            slideSoftSound.play();
+            slideSoftSound.play(0.7f);
             isScoreInit = true;
         } else if (scoreAnimStep < animations.size && TimeUtils.timeSinceMillis(scoreTimeStamp) >= animations.get(scoreAnimStep).duration) {
             scoreAnimStep++;
@@ -482,7 +482,7 @@ public abstract class MiniGame implements Screen {
                         newPoints[i] = cachePlayers[i].points;
                     }
                     updateScoreGlyphs(newPoints);
-                    scoreUpSound.play(0.6f);
+                    scoreUpSound.play(0.4f);
                     newPointGlyphsGenerated = true;
                 }
                 drawScoreUpAnimation(scoreSpacing);
