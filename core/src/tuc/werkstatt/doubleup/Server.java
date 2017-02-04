@@ -184,10 +184,7 @@ public class Server {
         Gdx.app.log("Server", "ClientFinishedMessage received from client " + msg.clientID);
         sendGameFinishedMessage(msg.clientID);
         givePointsToPlayers(msg.clientID);
-
-        if (currMiniGameRound < GameOptions.maxMiniGameRounds) {
-            sendProgressMessage();
-        }
+        sendProgressMessage();
     }
 
     private void onClientProgressMessage(ClientProgressMessage msg) {
