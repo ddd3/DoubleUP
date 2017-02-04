@@ -126,7 +126,7 @@ public final class CrazySmiley extends MiniGame {
         super(game);
         setTitle("Crazy Smiley");
         final String redCol = MaterialColors.red.toString();
-        setDescription("Touch the [YELLOW]yellow[] smiley, but avoid [#" + redCol + "]red[] ones or you will lose points");
+        setDescription("Touch the [#ECC81B]yellow[] smiley, but avoid [#" + redCol + "]red[] ones or you will lose points");
         setBackground("ui/title_background");
         setIcon("minigames/CrazySmiley/yellow");
 

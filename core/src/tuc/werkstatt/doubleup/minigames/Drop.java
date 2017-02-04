@@ -35,9 +35,9 @@ public final class Drop extends MiniGame {
 
         // TODO: are these resources free to use in non-commercial projects and licenced accordingly?
         dropSprite = getSprite("minigames/Drop/droplet");
-        dropSprite.setSize(64, 64);
+        dropSprite.setSize(52, 52);
         bucketSprite = getSprite("minigames/Drop/bucket");
-        bucketSprite.setSize(128, 128);
+        bucketSprite.setSize(180, 180);
         // bottom left corner of the bucket is 20 pixels above the bottom screen edge
         bucketSprite.setPosition((game.width - bucketSprite.getWidth()) / 2, 20);
 

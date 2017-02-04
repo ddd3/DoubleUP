@@ -507,22 +507,22 @@ minigames/Drop/droplet
   index: -1
 
 textures5.png
-size: 2048,2048
+size: 1024,512
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 minigames/CrazySmiley/red
   rotate: false
   xy: 2, 2
-  size: 297, 299
-  orig: 297, 299
+  size: 490, 490
+  orig: 490, 490
   offset: 0, 0
   index: -1
 minigames/CrazySmiley/yellow
   rotate: false
-  xy: 2, 303
-  size: 1024, 1024
-  orig: 1024, 1024
+  xy: 494, 2
+  size: 490, 490
+  orig: 490, 490
   offset: 0, 0
   index: -1
 
