@@ -216,69 +216,76 @@ minigames/PumpBalloon/balloon
   index: -1
 
 textures9.png
-size: 2048,256
+size: 1024,512
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 minigames/ShootingGallery/curtain
-  rotate: true
-  xy: 2, 107
+  rotate: false
+  xy: 2, 84
   size: 131, 426
   orig: 131, 426
   offset: 0, 0
   index: -1
 minigames/ShootingGallery/curtain_right
-  rotate: true
-  xy: 430, 107
+  rotate: false
+  xy: 135, 84
   size: 131, 426
   orig: 131, 426
   offset: 0, 0
   index: -1
 minigames/ShootingGallery/curtain_straight
   rotate: false
-  xy: 2, 25
+  xy: 2, 2
   size: 256, 80
   orig: 256, 80
   offset: 0, 0
   index: -1
 minigames/ShootingGallery/duck_target_brown
   rotate: false
-  xy: 1343, 143
+  xy: 526, 285
   size: 99, 95
   orig: 99, 95
   offset: 0, 0
   index: -1
 minigames/ShootingGallery/duck_target_yellow
   rotate: false
-  xy: 1444, 143
+  xy: 786, 415
   size: 99, 95
   orig: 99, 95
   offset: 0, 0
   index: -1
 minigames/ShootingGallery/gold_bullet
   rotate: true
-  xy: 2, 2
+  xy: 268, 97
   size: 21, 44
   orig: 21, 44
   offset: 0, 0
   index: -1
+minigames/ShootingGallery/reload
+  rotate: false
+  xy: 268, 254
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
 minigames/ShootingGallery/target_colored
   rotate: false
-  xy: 1083, 110
+  xy: 526, 382
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 minigames/ShootingGallery/target_red2
   rotate: false
-  xy: 1213, 110
+  xy: 656, 382
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 minigames/ShootingGallery/water2
   rotate: true
-  xy: 858, 106
+  xy: 268, 120
   size: 132, 223
   orig: 132, 223
   offset: 0, 0

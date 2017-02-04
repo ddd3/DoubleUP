@@ -17,39 +17,44 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import tuc.werkstatt.doubleup.DoubleUp;
+import tuc.werkstatt.doubleup.MaterialColors;
 import tuc.werkstatt.doubleup.MiniGame;
 
 public final class ShootingGallery extends MiniGame {
 
 
-    private Sound hitRight;
+    private Sound hitTarget;
+    private Sound hitDuck;
+    private Sound shot;
+    private Sound reloading;
+    private Sound noAmmo;
 
     private final float maxPoints = 50;
     private float currPoints = 0;
     private final int maxTargetColor = 3;
-    private final int maxTargetRed = 5;
+    private final int maxTargetRed = 10;
     private final int maxBrownDuck = 2;
     private final int maxYellowDuck = 4;
     private final float ballSpawnMinDelay = 1f;
-    private final float birdieSpawnMinDelay = 2f;
+    private final float birdieSpawnMinDelay = 1.5f;
     private final float duckBrownSpawnMinDelay = 2.5f;
     private final float duckYellowSpawnMinDelay = 5f;
-    private final int maxAmmo = 5;
-    private int currentAmmo = 0;
+    private int currentAmmo = 6;
     private float currSpawnDelay1 = 0f;
     private float currSpawnDelay2 = 0f;
     private float currSpawnDelay3 = 0f;
     private float currSpawnDelay4 = 0f;
+    private Sprite bullet;
     private Sprite curtainRight;
     private Sprite curtainLeft;
     private Sprite water;
+    private Sprite reload;
     private Sprite curtainStraight;
-    private Sprite bullet;
     private Array<Ball> ball;
     private Array<Balld> balld;
     private Array<DuckBrown> brownDuck;
     private Array<DuckYellow> yellowDuck;
- //   private Array<Bullet> goldBullet;
+
 
 
     private class Ball {
@@ -70,7 +75,7 @@ public final class ShootingGallery extends MiniGame {
 
         private void spawn() {
             float x = 0;
-            float y = 800;
+            float y = 1050;
 
             sprite.setPosition(x, y);
 
@@ -102,7 +107,7 @@ public final class ShootingGallery extends MiniGame {
 
         private void spawn2() {
             float x = 0;
-            float y = 550;
+            float y = 750;
 
             sprite.setPosition(x, y);
 
@@ -133,7 +138,7 @@ public final class ShootingGallery extends MiniGame {
 
         private void spawnDuckBrown() {
             float x = 0;
-            float y = 200;
+            float y = 300;
 
             sprite.setPosition(x, y);
             vel.set(400,0);
@@ -162,7 +167,7 @@ public final class ShootingGallery extends MiniGame {
 
         private void spawnDuckYellow() {
             float x = 0;
-            float y = 350;
+            float y = 500;
 
             sprite.setPosition(x, y);
             vel.set(800,0);
@@ -196,8 +201,15 @@ public final class ShootingGallery extends MiniGame {
         curtainRight.setSize(100, game.height);
         curtainRight.setOriginCenter();
         water = getSprite("minigames/ShootingGallery/water2");
-        water.setSize(game.width, 500);
+        water.setSize(game.width, 700);
         water.setOriginCenter();
+           bullet = getSprite("minigames/ShootingGallery/gold_bullet");
+           bullet.setSize(75, 75);
+           bullet.setOriginCenter();
+           reload = getSprite("minigames/ShootingGallery/reload");
+           reload.setSize(200, 200);
+           reload.setOriginCenter();
+
 
 
         ball = new Array<Ball>(maxTargetColor);
@@ -220,12 +232,19 @@ public final class ShootingGallery extends MiniGame {
         }
 
 
+
+
     }
 
     @Override
     public void show() {
         game.loadMusic("music/game_start_loop.ogg");
-        hitRight= getSound("sounds/Bow_Fire.mp3");
+        hitTarget= getSound("sounds/metall.wav");
+        hitDuck= getSound("sounds/quack.wav");
+        reloading= getSound("sounds/war_reloading.ogg");
+        noAmmo= getSound("sounds/metallicclick.wav");
+        shot= getSound("sounds/Skorpion.mp3");
+
 
     }
 
@@ -274,12 +293,23 @@ public final class ShootingGallery extends MiniGame {
 
 
 
+
+
+
+
         curtainStraight.setPosition(0,game.height-250);
         curtainStraight.draw(game.batch);
         curtainLeft.setPosition(0,0);
         curtainLeft.draw(game.batch);
         curtainRight.setPosition(game.width-100,0);
         curtainRight.draw(game.batch);
+        bullet.setPosition(100,50);
+        bullet.draw(game.batch);
+        reload.setPosition(900,25);
+        reload.draw(game.batch);
+        game.font.setColor(MaterialColors.text);
+        game.font.draw(game.batch, "Current Ammo: " + currentAmmo +"x", 185, 120);
+        game.font.setColor(MaterialColors.text);
 
         game.batch.end();
 
@@ -287,7 +317,7 @@ public final class ShootingGallery extends MiniGame {
 
     @Override
     public void update(float deltaTime) {
-        if (Gdx.input.justTouched()) {
+        if (Gdx.input.justTouched() && currentAmmo>0) {
             Vector2 pos = getTouchPos();
 
             for (Ball b : ball) {
@@ -298,11 +328,13 @@ public final class ShootingGallery extends MiniGame {
                         b.sprite.getX() + b.sprite.getWidth() / 2, b.sprite.getY() + b.sprite.getHeight() / 2);
                 if (distance < b.sprite.getWidth() / 2) {
 
-                    hitRight.play();
+                    hitTarget.play();
                     currPoints = currPoints + 1f;
                     b.kill();
 
                 }
+
+
 
                           }
 
@@ -310,11 +342,14 @@ public final class ShootingGallery extends MiniGame {
                 if (!b.alive2) {
                     continue;
                 }
+
                 final float distance = Vector2.dst(pos.x, pos.y,
                         b.sprite.getX() + b.sprite.getWidth() / 2, b.sprite.getY() + b.sprite.getHeight() / 2);
 
 
                 if (distance < b.sprite.getWidth() / 2) {
+
+                    hitTarget.play();
                     currPoints = currPoints + 0.5f;
                     b.kill2();
                 }
@@ -330,10 +365,11 @@ public final class ShootingGallery extends MiniGame {
                     continue;
                 }
                 final float distance = Vector2.dst(pos.x, pos.y,
-                        b.sprite.getX() + b.sprite.getWidth() / 2, b.sprite.getY() + b.sprite.getHeight());
+                        b.sprite.getX() + b.sprite.getWidth() / 2, b.sprite.getY() + b.sprite.getHeight() / 2);
 
 
                 if (distance < b.sprite.getWidth() / 2) {
+                    hitDuck.play();
                     currPoints = currPoints + 3f;
                     b.killDuckBrown();
                 }
@@ -345,15 +381,42 @@ public final class ShootingGallery extends MiniGame {
                     continue;
                 }
                 final float distance = Vector2.dst(pos.x, pos.y,
-                        b.sprite.getX() + b.sprite.getWidth() / 2, b.sprite.getY() + b.sprite.getHeight());
+                        b.sprite.getX() + b.sprite.getWidth() / 2, b.sprite.getY() + b.sprite.getHeight() / 2);
 
 
                 if (distance < b.sprite.getWidth() / 2) {
+                    hitDuck.play();
                     currPoints = currPoints + 5f;
                     b.killDuckYellow();
                 }
 
             }
+
+            Vector2 posReload = getTouchPos();
+            final float distance = Vector2.dst(posReload.x, posReload.y,
+                    reload.getX() + reload.getWidth() / 2, reload.getY() + reload.getHeight() / 2);
+            if ((distance < reload.getWidth() / 2) == false) {
+                shot.play();
+                currentAmmo = currentAmmo - 1;
+
+
+            }
+
+        }
+
+        if (Gdx.input.justTouched()) {
+            Vector2 posReload = getTouchPos();
+
+            final float distance = Vector2.dst(posReload.x, posReload.y,
+                    reload.getX() + reload.getWidth() / 2, reload.getY() + reload.getHeight() / 2);
+            if ((distance < reload.getWidth() / 2) && currentAmmo < 6) {
+                reloading.play();
+                currentAmmo = 6;
+            }
+        }
+
+        if (Gdx.input.justTouched() && currentAmmo == 0) {
+            noAmmo.play();
         }
 
         for (Ball b : ball) {
