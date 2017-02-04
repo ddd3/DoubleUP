@@ -467,26 +467,6 @@ ui/top_panel
   index: -1
 
 textures3.png
-size: 2048,2048
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-minigames/PlaneWarGame/plane_icon
-  rotate: false
-  xy: 2, 2
-  size: 99, 128
-  orig: 99, 128
-  offset: 0, 0
-  index: -1
-minigames/PlaneWarGame/shoot
-  rotate: false
-  xy: 2, 132
-  size: 1024, 1024
-  orig: 1024, 1024
-  offset: 0, 0
-  index: -1
-
-textures4.png
 size: 1024,512
 format: RGBA8888
 filter: Linear,Linear
@@ -506,7 +486,7 @@ minigames/PickColor/swirl_icon
   offset: 0, 0
   index: -1
 
-textures5.png
+textures4.png
 size: 256,128
 format: RGBA8888
 filter: Linear,Linear
@@ -526,7 +506,7 @@ minigames/Drop/droplet
   offset: 0, 0
   index: -1
 
-textures6.png
+textures5.png
 size: 2048,2048
 format: RGBA8888
 filter: Linear,Linear
@@ -546,7 +526,7 @@ minigames/CrazySmiley/yellow
   offset: 0, 0
   index: -1
 
-textures7.png
+textures6.png
 size: 2048,2048
 format: RGBA8888
 filter: Linear,Linear
@@ -601,7 +581,7 @@ minigames/FindTheMatch/vehicles
   offset: 0, 0
   index: -1
 
-textures8.png
+textures7.png
 size: 1024,256
 format: RGBA8888
 filter: Linear,Linear
@@ -649,7 +629,7 @@ minigames/FindTheMatch/animals/Turtle_128x128
   offset: 0, 0
   index: -1
 
-textures9.png
+textures8.png
 size: 1024,512
 format: RGBA8888
 filter: Linear,Linear
@@ -669,7 +649,7 @@ minigames/FindTheMatch/vacation/umbrella_256x256
   offset: 0, 0
   index: -1
 
-textures10.png
+textures9.png
 size: 1024,1024
 format: RGBA8888
 filter: Linear,Linear
@@ -686,6 +666,89 @@ minigames/ClickTarget/target
   xy: 2, 2
   size: 298, 298
   orig: 298, 298
+  offset: 0, 0
+  index: -1
+
+textures10.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+minigames/SpaceShooter/bomb
+  rotate: true
+  xy: 84, 8
+  size: 32, 44
+  orig: 32, 44
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/enemy1
+  rotate: false
+  xy: 206, 42
+  size: 93, 84
+  orig: 93, 84
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/enemy2
+  rotate: false
+  xy: 107, 42
+  size: 97, 84
+  orig: 97, 84
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/enemy3
+  rotate: false
+  xy: 2, 42
+  size: 103, 84
+  orig: 103, 84
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/laser
+  rotate: true
+  xy: 130, 31
+  size: 9, 54
+  orig: 9, 54
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/laser_hit
+  rotate: true
+  xy: 463, 78
+  size: 48, 46
+  orig: 48, 46
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/missile
+  rotate: true
+  xy: 2, 2
+  size: 38, 80
+  orig: 38, 80
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/ship
+  rotate: false
+  xy: 301, 51
+  size: 99, 75
+  orig: 99, 75
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/smoke1
+  rotate: false
+  xy: 402, 20
+  size: 56, 49
+  orig: 56, 49
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/smoke2
+  rotate: false
+  xy: 402, 71
+  size: 59, 55
+  orig: 59, 55
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/smoke3
+  rotate: true
+  xy: 460, 17
+  size: 52, 50
+  orig: 52, 50
   offset: 0, 0
   index: -1
 
