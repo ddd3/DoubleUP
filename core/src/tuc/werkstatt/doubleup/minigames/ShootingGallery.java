@@ -1,11 +1,3 @@
-/* TODO:
-/ Bessere Notationen (Notationen sind teils veraltet vom anderen Minispiel), Komentare, Javadocs.
-/ Größe der Smileys in Ordnung?
-/ Sounds passabel? Lautstärke?
-/ Musik einbauen? gleiche Musik über alle Minispiele ohne Neustart?
-/ Text Unten zu lang alternativ Beschreibung okay?!? SpawnDelay weiteranpassen?
-/ Lizensen bzgl Musik und Images hinzufügen als Kommentar
-*/
 
 package tuc.werkstatt.doubleup.minigames;
 
@@ -21,13 +13,21 @@ import tuc.werkstatt.doubleup.MiniGame;
 
 public final class ShootingGallery extends MiniGame {
 
-
+// All Sprites / Textures, used for targets und decoartion from http://opengameart.org/content/shooting-gallery
+// except for one: Reloading button: http://www.iconarchive.com/show/colorful-long-shadow-icons-by-graphicloads/Arrow-reload-icon.html
     private Sound hitTarget;
+    //https://www.freesound.org/people/Neotone/sounds/75352/
     private Sound hitDuck;
+    //https://www.freesound.org/people/Reitanna/sounds/242664/
     private Sound shot;
+    //http://soundbible.com/1785-Skorpion.html
     private Sound reloading;
+    //http://opengameart.org/content/voiceover-pack-40-lines
     private Sound noAmmo;
+    //https://www.freesound.org/people/j1987/sounds/107806/
 
+
+    // definition of maxAmounts, points, spawndelays, Sprites and Arrays.
     private final float maxPoints = 50;
     private float currPoints = 0;
     private final int maxTargetColor = 3;
@@ -51,22 +51,23 @@ public final class ShootingGallery extends MiniGame {
     private Sprite water;
     private Sprite reload;
     private Sprite curtainStraight;
-    private Array<Ball> ball;
-    private Array<Balld> balld;
+    private Array<ColorTarget> colorTarget;
+    private Array<RedTarget> redTarget;
     private Array<DuckBrown> brownDuck;
     private Array<DuckYellow> yellowDuck;
 
 
-
-    private class Ball {
+//Class for Sprite ColorTarget / Colored Targets.
+    // setting picture, velocity (Vector2), size, spawn, kill, and alive, and x / y.
+    private class ColorTarget {
         static final float size = 200;
         Sprite sprite;
         Vector2 vel = new Vector2();
-        boolean alive = false;
+        boolean aliveColor = false;
 
 
 
-        private Ball() {
+        private ColorTarget() {
 
             sprite = getSprite("minigames/ShootingGallery/target_colored");
             sprite.setSize(size, size);
@@ -74,7 +75,7 @@ public final class ShootingGallery extends MiniGame {
 
         }
 
-        private void spawn() {
+        private void spawnColor() {
             float x = 0;
             float y = 1050;
 
@@ -82,31 +83,33 @@ public final class ShootingGallery extends MiniGame {
 
             vel.set(500,0);
 
-            alive = true;
+            aliveColor = true;
         }
 
-        private void kill() {
-            alive = false;
+        private void killColor() {
+            aliveColor = false;
         }
 
 
     }
 
-    private class Balld {
+    //Class for Sprite RedTarget / Red Targets.
+    // setting picture, velocity (Vector2), size, spawn, kill, and alive, and x / y.
+    private class RedTarget {
         static final float size = 200;
         Vector2 vel = new Vector2();
-        boolean alive2 = false;
+        boolean aliveRed = false;
         Sprite sprite;
 
 
-        private Balld() {
+        private RedTarget() {
 
             sprite = getSprite("minigames/ShootingGallery/target_red2");
             sprite.setSize(size, size);
             sprite.setOriginCenter();
         }
 
-        private void spawn2() {
+        private void spawnRed() {
             float x = 0;
             float y = 750;
 
@@ -114,16 +117,18 @@ public final class ShootingGallery extends MiniGame {
 
             vel.set(250,0);
 
-            alive2 = true;
+            aliveRed = true;
         }
 
-        private void kill2() {
-            alive2 = false;
+        private void killRed() {
+            aliveRed = false;
 
         }
 
        }
 
+    //Class for Sprite DuckBrown / Brown Ducks.
+    // setting picture, velocity (Vector2), size, spawn, kill, and alive, and x / y.
     private class DuckBrown {
         static final float size = 150;
         boolean aliveBrownDuck = false;
@@ -152,7 +157,8 @@ public final class ShootingGallery extends MiniGame {
         }
     }
 
-
+    //Class for Sprite DuckYellow / Yellow Ducks.
+    // setting picture, velocity (Vector2), size, spawn, kill, and alive, and x / y.
     private class DuckYellow {
         static final float size = 150;
         boolean aliveYellowDuck = false;
@@ -180,7 +186,7 @@ public final class ShootingGallery extends MiniGame {
 
         }
     }
-
+// Choosing the Pictures and define the size. Introduction.
        public ShootingGallery(DoubleUp game) {
            super(game);
            setTitle("Shooting Gallery");
@@ -212,13 +218,15 @@ public final class ShootingGallery extends MiniGame {
            reload.setSize(200, 200);
            reload.setOriginCenter();
 
-           ball = new Array<Ball>(maxTargetColor);
+           //Define the Arrays-add.
+
+           colorTarget = new Array<ColorTarget>(maxTargetColor);
            for (int i = 0; i < maxTargetColor; ++i) {
-               ball.add(new Ball());
+               colorTarget.add(new ColorTarget());
            }
-           balld = new Array<Balld>(maxTargetRed);
+           redTarget = new Array<RedTarget>(maxTargetRed);
            for (int j = 0; j < maxTargetRed; ++j) {
-               balld.add(new Balld());
+               redTarget.add(new RedTarget());
            }
 
            brownDuck = new Array<DuckBrown>(maxBrownDuck);
@@ -232,6 +240,7 @@ public final class ShootingGallery extends MiniGame {
            }
        }
 
+    //Loading the Sound and Music.
     @Override
     public void show() {
         game.loadMusic("music/game_start_loop.ogg");
@@ -250,6 +259,8 @@ public final class ShootingGallery extends MiniGame {
     @Override
     public boolean isFinished() { return currPoints >= maxPoints; }
 
+
+    // Drawing everything.
     @Override
     public void draw(float deltaTime) {
         game.batch.setProjectionMatrix(game.camera.combined);
@@ -258,32 +269,32 @@ public final class ShootingGallery extends MiniGame {
         water.setPosition(0,0);
         water.draw(game.batch);
 
-        int numActive = 0;
-        for (Ball b : ball) {
-            if (b.alive) {
+
+        for (ColorTarget b : colorTarget) {
+            if (b.aliveColor) {
                 b.sprite.draw(game.batch);
-                numActive++;
+
             }
         }
 
-        for (Balld b : balld) {
-            if (b.alive2) {
+        for (RedTarget b : redTarget) {
+            if (b.aliveRed) {
                 b.sprite.draw(game.batch);
-                numActive++;
+
             }
         }
 
         for (DuckBrown b : brownDuck) {
             if (b.aliveBrownDuck) {
                 b.sprite.draw(game.batch);
-                numActive++;
+
             }
         }
 
         for (DuckYellow b : yellowDuck) {
             if (b.aliveYellowDuck) {
                 b.sprite.draw(game.batch);
-                numActive++;
+
             }
         }
 
@@ -294,6 +305,7 @@ public final class ShootingGallery extends MiniGame {
         curtainRight.setPosition(game.width-100,0);
         curtainRight.draw(game.batch);
 
+//Drawing multiplie Ammunation graphic.
         final float startX = 100f;
         final float bulletSpacing = 10f;
         for (int i = 1; i <= maxAmmo; ++i) {
@@ -313,13 +325,15 @@ public final class ShootingGallery extends MiniGame {
         game.batch.end();
     }
 
+    // Logic for Touch on Screen.
     @Override
     public void update(float deltaTime) {
+        // only allow a shot (and therefore play shot sound) if Ammo > 0.
         if (Gdx.input.justTouched() && currentAmmo>0) {
             Vector2 pos = getTouchPos();
 
-            for (Ball b : ball) {
-                if (!b.alive) {
+            for (ColorTarget b : colorTarget) {
+                if (!b.aliveColor) {
                     continue;
                 }
                 final float distance = Vector2.dst(pos.x, pos.y,
@@ -328,7 +342,7 @@ public final class ShootingGallery extends MiniGame {
 
                     hitTarget.play();
                     currPoints = currPoints + 1.5f;
-                    b.kill();
+                    b.killColor();
 
                 }
 
@@ -336,8 +350,8 @@ public final class ShootingGallery extends MiniGame {
 
                           }
 
-            for (Balld b : balld) {
-                if (!b.alive2) {
+            for (RedTarget b : redTarget) {
+                if (!b.aliveRed) {
                     continue;
                 }
 
@@ -349,7 +363,7 @@ public final class ShootingGallery extends MiniGame {
 
                     hitTarget.play();
                     currPoints = currPoints + 1f;
-                    b.kill2();
+                    b.killRed();
                 }
 
 
@@ -389,7 +403,7 @@ public final class ShootingGallery extends MiniGame {
                 }
 
             }
-
+// Shot counts only as a Shot if the reload-button was not hit!
             Vector2 posReload = getTouchPos();
             final float distance = Vector2.dst(posReload.x, posReload.y,
                     reload.getX() + reload.getWidth() / 2, reload.getY() + reload.getHeight() / 2);
@@ -401,7 +415,7 @@ public final class ShootingGallery extends MiniGame {
             }
 
         }
-
+// logic for reload-touch, only if currentAmmo<maxAmmo to avoid constant reloading sound.
         if (Gdx.input.justTouched()) {
             Vector2 posReload = getTouchPos();
 
@@ -413,16 +427,19 @@ public final class ShootingGallery extends MiniGame {
             }
         }
 
+// No Ammo = Sound, that there is no Ammo.
         if (Gdx.input.justTouched() && currentAmmo == 0) {
             noAmmo.play();
         }
 
-        for (Ball b : ball) {
-            if (b.alive) {
+        //Respawn Targets and Ducks. Also: Spawn and resolving the delay.
+
+        for (ColorTarget b : colorTarget) {
+            if (b.aliveColor) {
                 final float x = b.sprite.getX() + b.vel.x * deltaTime;
                 final float y = b.sprite.getY() + b.vel.y * deltaTime;
                 if (x < 0 - b.sprite.getWidth() || x > game.width || y < 0 - b.sprite.getHeight()|| y > game.height)  {
-                    b.kill();
+                    b.killColor();
                 } else {
                     b.sprite.setPosition(x, y);
 
@@ -430,12 +447,12 @@ public final class ShootingGallery extends MiniGame {
             }
         }
 
-        for (Balld b : balld) {
-            if (b.alive2) {
+        for (RedTarget b : redTarget) {
+            if (b.aliveRed) {
                 final float x = b.sprite.getX() + b.vel.x * deltaTime;
                 final float y = b.sprite.getY() + b.vel.y * deltaTime;
                 if (x < 0 - b.sprite.getWidth() || x > game.width || y < 0 - b.sprite.getHeight() || y > game.height) {
-                    b.kill2();
+                    b.killRed();
                 } else {
                     b.sprite.setPosition(x, y);
 
@@ -471,17 +488,17 @@ public final class ShootingGallery extends MiniGame {
 
         if((currSpawnDelay1 -= deltaTime) < 0) {
             currSpawnDelay1 = ballSpawnMinDelay;
-            for (Ball b : ball) {
-                if (!b.alive) {
-                    b.spawn();
+            for (ColorTarget b : colorTarget) {
+                if (!b.aliveColor) {
+                    b.spawnColor();
                     break;
                 }
             }}
         if((currSpawnDelay2 -= deltaTime) < 0) {
             currSpawnDelay2 = birdieSpawnMinDelay;
-            for (Balld b : balld) {
-                if (!b.alive2) {
-                    b.spawn2();
+            for (RedTarget b : redTarget) {
+                if (!b.aliveRed) {
+                    b.spawnRed();
                     break;
                 }
             }

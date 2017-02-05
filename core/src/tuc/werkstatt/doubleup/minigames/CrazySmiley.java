@@ -1,11 +1,3 @@
-/* TODO:
-/ Bessere Notationen (Notationen sind teils veraltet vom anderen Minispiel), Komentare, Javadocs.
-/ Größe der Smileys in Ordnung?
-/ Sounds passabel? Lautstärke?
-/ Musik einbauen? gleiche Musik über alle Minispiele ohne Neustart?
-/ Text Unten zu lang alternativ Beschreibung okay?!? SpawnDelay weiteranpassen?
-/ Lizensen bzgl Musik und Images hinzufügen als Kommentar
-*/
 
 package tuc.werkstatt.doubleup.minigames;
 
@@ -15,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.sun.org.apache.xerces.internal.impl.dv.xs.YearDV;
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression;
 
 import tuc.werkstatt.doubleup.DoubleUp;
 import tuc.werkstatt.doubleup.MaterialColors;
@@ -23,27 +17,33 @@ import tuc.werkstatt.doubleup.MiniGame;
 public final class CrazySmiley extends MiniGame {
 
     private Sound hitYellow;
+    // https://www.freesound.org/people/Robinhood76/sounds/108251/
     private Sound hitRed;
+    // https://www.freesound.org/people/fins/sounds/171497/
 
+    // definition of maxAmounts, points, spawndelays, Arrays.
     private final int maxPoints = 7;
     private int currPoints = 0;
-    private final int maxBall1 = 1;
-    private final int maxBall2 = 9;
-    private final float ballSpawnMinDelay = 0.001f;
+    private final int maxYellow = 1;
+    private final int maxRed = 9;
+    private final float SpawnMinDelay = 0.001f;
     private float currSpawnDelay = 0f;
 
-    private Array<Ball> ball;
-    private Array<Balld> balld;
+    private Array<YellowSmiley> yellow;
+    private Array<RedSmiley> red;
 
-    private class Ball {
+
+    //Class for Sprite YellowSmiley .
+    // setting picture, velocity (Vector2), size, spawn, kill, and alive, and x / y.
+    private class YellowSmiley {
         static final float size = 256;
         Sprite sprite;
         Vector2 vel = new Vector2();
-        boolean alive = false;
+        boolean aliveYellow = false;
 
 
 
-        private Ball() {
+        private YellowSmiley() {
 
             sprite = getSprite("minigames/CrazySmiley/yellow");
             sprite.setSize(size, size);
@@ -51,7 +51,7 @@ public final class CrazySmiley extends MiniGame {
 
         }
 
-        private void spawn() {
+        private void spawnYellow() {
             float x = MathUtils.random(0 - size / 2, game.width - size / 2);
             float y = game.height + size;
 
@@ -66,34 +66,36 @@ public final class CrazySmiley extends MiniGame {
             {
                 vel.set(0, -(y / 5f) * (currPoints + 1));}
 
-            alive = true;
+            aliveYellow = true;
         }
 
-        private void kill() {
-            alive = false;
+        private void killYellow() {
+            aliveYellow = false;
         }
 
-        private void killFail() {
-            alive = false;
+        private void killFailYellow() {
+            aliveYellow = false;
         }
 
     }
 
-    private class Balld {
+    //Class for Sprite RedSmiley .
+    // setting picture, velocity (Vector2), size, spawn, kill, and alive, and x / y.
+    private class RedSmiley {
         static final float size = 180;
         Vector2 vel = new Vector2();
-        boolean alive2 = false;
+        boolean aliveRed = false;
         Sprite sprite;
 
 
-        private Balld() {
+        private RedSmiley() {
 
             sprite = getSprite("minigames/CrazySmiley/red");
             sprite.setSize(size, size);
             sprite.setOriginCenter();
         }
 
-        private void spawn2() {
+        private void spawnRed() {
             float x = MathUtils.random(0 - size / 2, game.width - size / 2);
             float y = game.height + size;
 
@@ -108,20 +110,20 @@ public final class CrazySmiley extends MiniGame {
             {
                 vel.set(0, -(y / 5f) * (currPoints + 1));}
 
-            alive2 = true;
+            aliveRed = true;
         }
 
-        private void kill2() {
-            alive2 = false;
+        private void killRed() {
+            aliveRed = false;
 
         }
 
-        private void killFail2() {
-            alive2 = false;
+        private void killFailRed() {
+            aliveRed = false;
         }
     }
 
-
+    // Choosing the Pictures and define the size. Introduction.
     public CrazySmiley (DoubleUp game) {
         super(game);
         setTitle("Crazy Smiley");
@@ -130,16 +132,19 @@ public final class CrazySmiley extends MiniGame {
         setBackground("ui/title_background");
         setIcon("minigames/CrazySmiley/yellow");
 
-        ball = new Array<Ball>(maxBall1);
-        for (int i = 0; i < maxBall1; ++i) {
-            ball.add(new Ball());
+        //Define the Arrays-add.
+
+        yellow = new Array<YellowSmiley>(maxYellow);
+        for (int i = 0; i < maxYellow; ++i) {
+            yellow.add(new YellowSmiley());
         }
-            balld = new Array<Balld>(maxBall2);
-            for (int j = 0; j < maxBall2; ++j) {
-                balld.add(new Balld());
+            red = new Array<RedSmiley>(maxRed);
+            for (int j = 0; j < maxRed; ++j) {
+                red.add(new RedSmiley());
             }
     }
 
+    //Loading the Sound and Music.
     @Override
     public void show() {
         game.loadMusic("music/game_start_loop.ogg");
@@ -153,36 +158,38 @@ public final class CrazySmiley extends MiniGame {
     @Override
     public boolean isFinished() { return currPoints >= maxPoints; }
 
+    // Drawing everything.
     @Override
     public void draw(float deltaTime) {
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
 
-        int numActive = 0;
-        for (Ball b : ball) {
-            if (b.alive) {
+
+        for (YellowSmiley b : yellow) {
+            if (b.aliveYellow) {
                 b.sprite.draw(game.batch);
-                numActive++;
+
             }
         }
 
-        for (Balld b : balld) {
-            if (b.alive2) {
+        for (RedSmiley b : red) {
+            if (b.aliveRed) {
                 b.sprite.draw(game.batch);
-                numActive++;
+
             }
         }
 
         game.batch.end();
     }
 
+    // Logic for Touch on Screen.
     @Override
     public void update(float deltaTime) {
         if (Gdx.input.justTouched()) {
             Vector2 pos = getTouchPos();
 
-            for (Ball b : ball) {
-                if (!b.alive) {
+            for (YellowSmiley b : yellow) {
+                if (!b.aliveYellow) {
                     continue;
                 }
                 final float distance = Vector2.dst(pos.x, pos.y,
@@ -191,13 +198,13 @@ public final class CrazySmiley extends MiniGame {
 
                     hitYellow.play(0.65f);
                     ++currPoints;
-                    b.kill();
+                    b.killYellow();
 
                 }
                 else {
 
 
-                    b.killFail();
+                    b.killFailYellow();
 
                 }
 
@@ -205,8 +212,8 @@ public final class CrazySmiley extends MiniGame {
 
             }
 
-            for (Balld b : balld) {
-                if (!b.alive2) {
+            for (RedSmiley b : red) {
+                if (!b.aliveRed) {
                     continue;
                 }
                 final float distance = Vector2.dst(pos.x, pos.y,
@@ -218,12 +225,12 @@ public final class CrazySmiley extends MiniGame {
                     if (currPoints > 0) {
                         --currPoints;
                     }
-                    b.kill2();
+                    b.killRed();
                 }
                 else {
 
 
-                    b.killFail2();
+                    b.killFailRed();
 
                 }
 
@@ -233,12 +240,14 @@ public final class CrazySmiley extends MiniGame {
             }
         }
 
-        for (Ball b : ball) {
-            if (b.alive) {
+
+        //Respawn Smileys. Also: Spawn and resolving the delay.
+        for (YellowSmiley b : yellow) {
+            if (b.aliveYellow) {
                 final float x = b.sprite.getX() + b.vel.x * deltaTime;
                 final float y = b.sprite.getY() + b.vel.y * deltaTime;
                 if (x < 0 - b.sprite.getWidth() || x > game.width || y < 0 - b.sprite.getHeight()) {
-                    b.kill();
+                    b.killYellow();
                 } else {
                     b.sprite.setPosition(x, y);
 
@@ -246,12 +255,12 @@ public final class CrazySmiley extends MiniGame {
             }
         }
 
-        for (Balld b : balld) {
-            if (b.alive2) {
+        for (RedSmiley b : red) {
+            if (b.aliveRed) {
                 final float x = b.sprite.getX() + b.vel.x * deltaTime;
                 final float y = b.sprite.getY() + b.vel.y * deltaTime;
                 if (x < 0 - b.sprite.getWidth() || x > game.width || y < 0 - b.sprite.getHeight()) {
-                    b.kill2();
+                    b.killRed();
                 } else {
                     b.sprite.setPosition(x, y);
 
@@ -260,17 +269,17 @@ public final class CrazySmiley extends MiniGame {
         }
 
         if((currSpawnDelay -= deltaTime) < 0) {
-            currSpawnDelay = ballSpawnMinDelay;
-            for (Ball b : ball) {
-                if (!b.alive) {
-                    b.spawn();
+            currSpawnDelay = SpawnMinDelay;
+            for (YellowSmiley b : yellow) {
+                if (!b.aliveYellow) {
+                    b.spawnYellow();
                     break;
                 }
             }
 
-            for (Balld b : balld) {
-                if (!b.alive2) {
-                    b.spawn2();
+            for (RedSmiley b : red) {
+                if (!b.aliveRed) {
+                    b.spawnRed();
                     break;
                 }
             }

@@ -23,14 +23,14 @@ import tuc.werkstatt.doubleup.MiniGame;
 
 public final class TouchTheLight extends MiniGame {
 
-    private final int maxPoints = 30;
+    private final int maxPoints = 20;
     private int currPoints = 0;
     private final int maxLight = 1;
-    private final int maxCurse = 1;
-    private final int maxVenom = 1;
+    private final int maxCurse = 3;
+    private final int maxVenom = 3;
     private final float lightSpawnMinDelay = 0.001f;
-    private final float curseSpawnMinDelay = MathUtils.random(3f, 5f);
-    private final float venomSpawnMinDelay = MathUtils.random(3f, 5f);
+    private final float curseSpawnMinDelay = MathUtils.random(0f, 1f);
+    private final float venomSpawnMinDelay = MathUtils.random(0f, 1f);
     private float lightSpawnDelay = 0f;
     private float curseSpawnDelay = 2f;
     private float venomSpawnDelay = 3f;
@@ -69,7 +69,7 @@ public final class TouchTheLight extends MiniGame {
     }
 
     private class Curse {
-        static final float size = 512;
+        static final float size = 128;
         Vector2 vel = new Vector2();
         boolean aliveCurse = false;
         Sprite sprite;
@@ -117,7 +117,7 @@ public final class TouchTheLight extends MiniGame {
     }
 
     private class Venom {
-        static final float size = 512;
+        static final float size = 128;
         Vector2 vel = new Vector2();
         boolean aliveVenom = false;
         Sprite sprite;
