@@ -1,7 +1,6 @@
 package tuc.werkstatt.doubleup.minigames;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
@@ -10,52 +9,105 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
-import java.util.Iterator;
-
 import tuc.werkstatt.doubleup.DoubleUp;
 import tuc.werkstatt.doubleup.MiniGame;
 
 public final class Drop extends MiniGame {
-
-    private Sprite dropSprite;
-    private Sprite bucketSprite;
-
-    private final int maxPoints = 25;
+    private Array<Sprite> iceSprites;
+    private Array<Sprite> fruitSprites;
+    private Sprite crateSprite;
+    private Rectangle crateRect;
+    private Array<Item> items;
+    private final int maxPoints = 12;
     private int currPoints = 0;
-    private Sound dropSound;
-    private Array<Vector2> raindrops;
     private long lastDropTime;
+    private final float itemSize = 192;
+    private final float crateSize = 256;
+    private Sound plusSound, minusSound;
+
+    private class Item {
+        Sprite sp;
+        float x, y, vy, rot, rotSpeed;
+        boolean alive, isFruit;
+
+        Item() {
+            spawn();
+        }
+
+        void spawn() {
+            isFruit = MathUtils.randomBoolean(0.39f);
+            sp = isFruit ? fruitSprites.random() : iceSprites.random();
+            x = MathUtils.random(0, game.width - sp.getWidth());
+            y = game.height;
+            vy = MathUtils.random(-game.height * 0.4f, -game.height * 0.82f);
+            rot = MathUtils.random(360f);
+            rotSpeed = MathUtils.random(-120f, 120f);
+            alive = true;
+        }
+
+        void updateAndDraw(float deltaTime) {
+            if (!alive) { return; }
+            y += vy * deltaTime;
+            rot += rotSpeed * deltaTime;
+            if (y < -sp.getHeight()) {
+                alive = false;
+                return;
+            }
+            sp.setRotation(rot);
+            sp.setPosition(x, y);
+            if (sp.getBoundingRectangle().overlaps(crateRect)) {
+                if (isFruit) {
+                    currPoints++;
+                    plusSound.play(0.7f);
+                } else {
+                    currPoints = Math.max(0, currPoints - 2);
+                    minusSound.play(0.5f);
+                }
+                alive = false;
+                return;
+            }
+            sp.draw(game.batch);
+        }
+    }
 
     public Drop(DoubleUp game) {
         super(game);
-        setTitle("Catch Drops");
-        setDescription("Catch falling raindrops with a bucket to earn points");
+        setTitle("Catch Fruits");
+        setDescription("Catch falling fruits to earn points, but avoid the ice pops");
         setBackground("ui/title_background");
-        setIcon("minigames/Drop/bucket");
+        setIcon("minigames/Drop/fruit3");
 
-        // TODO: are these resources free to use in non-commercial projects and licenced accordingly?
-        dropSprite = getSprite("minigames/Drop/droplet");
-        dropSprite.setSize(52, 52);
-        bucketSprite = getSprite("minigames/Drop/bucket");
-        bucketSprite.setSize(180, 180);
-        // bottom left corner of the bucket is 20 pixels above the bottom screen edge
-        bucketSprite.setPosition((game.width - bucketSprite.getWidth()) / 2, 20);
+        final int numItems = 5;
+        iceSprites = new Array<Sprite>(true, numItems);
+        fruitSprites = new Array<Sprite>(true, numItems);
+        for (int i = 1; i <= numItems; ++i) {
+            Sprite sp = getSprite("minigames/Drop/ice" + i);
+            final float sizeFactor = itemSize / Math.max(sp.getWidth(), sp.getHeight());
+            sp.setSize(sp.getWidth() * sizeFactor, sp.getHeight() * sizeFactor);
+            sp.setOriginCenter();
+            iceSprites.add(sp);
+        }
+        for (int i = 1; i <= numItems; ++i) {
+            Sprite sp = getSprite("minigames/Drop/fruit" + i);
+            final float sizeFactor = itemSize / Math.max(sp.getWidth(), sp.getHeight());
+            sp.setSize(sp.getWidth() * sizeFactor, sp.getHeight() * sizeFactor);
+            sp.setOriginCenter();
+            fruitSprites.add(sp);
+        }
+        crateSprite = getSprite("minigames/Drop/crate");
+        crateSprite.setSize(crateSize, crateSize);
+        crateSprite.setPosition((game.width - crateSize) / 2f, 20f);
+        crateRect = new Rectangle((game.width - crateSize * 0.75f) / 2f, 20f, crateSize * 0.75f, crateSize / 2f);
 
-        // create the raindrops array and spawn the first raindrop
-        raindrops = new Array<Vector2>();
-        spawnRaindrop();
-    }
-
-    private void spawnRaindrop() {
-        Vector2 raindrop = new Vector2(MathUtils.random(0, game.width - bucketSprite.getWidth()), game.height);
-        raindrops.add(raindrop);
-        lastDropTime = TimeUtils.nanoTime();
+        items = new Array<Item>(false, 14);
+        lastDropTime = TimeUtils.millis();
     }
 
     @Override
     public void show() {
         game.loadMusic("music/game_start_loop.ogg");
-        dropSound = getSound("sounds/drop.wav");
+        plusSound = getSound("sounds/swirl_plus.wav");
+        minusSound = getSound("sounds/swirl_minus.wav");
     }
 
     @Override
@@ -66,55 +118,40 @@ public final class Drop extends MiniGame {
 
     @Override
     public void draw(float deltaTime) {
-        // tell the SpriteBatch to render in the
-        // coordinate system specified by the camera.
-        // begin a new batch and draw the bucket and
-        // all drops
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
-        for(Vector2 raindrop: raindrops) {
-            dropSprite.setPosition(raindrop.x, raindrop.y);
-            dropSprite.draw(game.batch);
+        for (Item i : items) {
+            i.updateAndDraw(deltaTime);
         }
-        bucketSprite.draw(game.batch);
+        crateSprite.draw(game.batch);
         game.batch.end();
     }
 
     public void update(float deltaTime) {
-        // process user input
-        if(Gdx.input.isTouched()) {
-            bucketSprite.setX(getTouchPos().x - bucketSprite.getWidth() / 2);
+        if (Gdx.input.isTouched()) {
+            Vector2 pos = getTouchPos();
+            pos.x = MathUtils.clamp(pos.x, crateSize / 2f, game.width - crateSize / 2f);
+            crateSprite.setX(pos.x - crateSprite.getWidth() / 2f);
+            crateRect.setX(pos.x - crateRect.getWidth() / 2f);
         }
-
-        if(Gdx.input.isKeyPressed(Keys.LEFT)) bucketSprite.translateX(-200 * deltaTime);
-        if(Gdx.input.isKeyPressed(Keys.RIGHT)) bucketSprite.translateX(200 * deltaTime);
-
-        // make sure the bucket stays within the screen bounds
-        if(bucketSprite.getX() < 0) bucketSprite.setX(0);
-        if(bucketSprite.getX() > game.width - bucketSprite.getWidth()) {
-            bucketSprite.setX(game.width - bucketSprite.getWidth());
-        }
-
-        // check if we need to create a new raindrop
-        if(TimeUtils.nanoTime() - lastDropTime > 200000000) spawnRaindrop();
-
-        // move the raindrops, remove any that are beneath the bottom edge of
-        // the screen or that hit the bucket. In the later case we play back
-        // a sound effect as well.
-        Iterator<Vector2> iter = raindrops.iterator();
-        while(iter.hasNext()) {
-            Vector2 raindrop = iter.next();
-            raindrop.y -= 1500 * deltaTime;
-            if(raindrop.y + dropSprite.getHeight() < 0) {
-                iter.remove();
-                continue;
+        // spawn new items
+        if (TimeUtils.timeSinceMillis(lastDropTime) > 300) {
+            Item item = null;
+            for (Item i : items) {
+                if (i.alive) {
+                    continue;
+                } else {
+                    item = i;
+                    break;
+                }
             }
-            Rectangle.tmp.set(raindrop.x, raindrop.y, dropSprite.getWidth(), dropSprite.getHeight());
-            if (bucketSprite.getBoundingRectangle().overlaps(Rectangle.tmp)) {
-                dropSound.play();
-                iter.remove();
-                currPoints++;
+            if (item == null) {
+                item = new Item();
+                items.add(item);
+            } else {
+                item.spawn();
             }
+            lastDropTime = TimeUtils.millis();
         }
     }
 
