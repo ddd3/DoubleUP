@@ -17,7 +17,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import tuc.werkstatt.doubleup.DoubleUp;
-import tuc.werkstatt.doubleup.MaterialColors;
 import tuc.werkstatt.doubleup.MiniGame;
 
 public final class ShootingGallery extends MiniGame {
@@ -39,12 +38,14 @@ public final class ShootingGallery extends MiniGame {
     private final float birdieSpawnMinDelay = MathUtils.random(0.80f , 1.60f);
     private final float duckBrownSpawnMinDelay = MathUtils.random(2.5f , 5f);
     private final float duckYellowSpawnMinDelay = MathUtils.random(5f , 10f);
-    private int currentAmmo = 6;
+    private final int maxAmmo = 6;
+    private int currentAmmo = maxAmmo;
     private float currSpawnDelay1 = 0f;
     private float currSpawnDelay2 = 0f;
     private float currSpawnDelay3 = 0f;
     private float currSpawnDelay4 = 0f;
     private Sprite bullet;
+    private Sprite bulletEmpty;
     private Sprite curtainRight;
     private Sprite curtainLeft;
     private Sprite water;
@@ -181,58 +182,55 @@ public final class ShootingGallery extends MiniGame {
     }
 
        public ShootingGallery(DoubleUp game) {
-        super(game);
-        setTitle("Shooting Gallery");
-        setDescription("Touch Targets and Reload! " +
-                "Scores: Yellow: 5, Brown Duck: 3, Colored Target: 1.5 and Red Target: 1");
+           super(game);
+           setTitle("Shooting Gallery");
+           setDescription("Touch Targets and Reload! " +
+                   "Scores: Yellow: 5, Brown Duck: 3, Colored Target: 1.5 and Red Target: 1");
 
-        setBackground("ui/title_background");
-        setIcon("minigames/ShootingGallery/duck_target_yellow");
+           setBackground("ui/title_background");
+           setIcon("minigames/ShootingGallery/duck_target_yellow");
 
-        curtainStraight = getSprite("minigames/ShootingGallery/curtain_straight");
-        curtainStraight.setSize(game.width, 250);
-        curtainStraight.setOriginCenter();
-        curtainLeft = getSprite("minigames/ShootingGallery/curtain");
-        curtainLeft.setSize(100, game.height);
-        curtainLeft.setOriginCenter();
-        curtainRight = getSprite("minigames/ShootingGallery/curtain_right");
-        curtainRight.setSize(100, game.height);
-        curtainRight.setOriginCenter();
-        water = getSprite("minigames/ShootingGallery/water2");
-        water.setSize(game.width, 700);
-        water.setOriginCenter();
+           curtainStraight = getSprite("minigames/ShootingGallery/curtain_straight");
+           curtainStraight.setSize(game.width, 250);
+           curtainStraight.setOriginCenter();
+           curtainLeft = getSprite("minigames/ShootingGallery/curtain");
+           curtainLeft.setSize(100, game.height);
+           curtainLeft.setOriginCenter();
+           curtainRight = getSprite("minigames/ShootingGallery/curtain_right");
+           curtainRight.setSize(100, game.height);
+           curtainRight.setOriginCenter();
+           water = getSprite("minigames/ShootingGallery/water2");
+           water.setSize(game.width, 700);
+           water.setOriginCenter();
            bullet = getSprite("minigames/ShootingGallery/gold_bullet");
-           bullet.setSize(75, 75);
+           bullet.setSize(41, 75);
+           bulletEmpty = getSprite("minigames/ShootingGallery/gold_bullet_empty");
+           bulletEmpty.setSize(bullet.getWidth(), bullet.getHeight());
            bullet.setOriginCenter();
+           bulletEmpty.setOriginCenter();
            reload = getSprite("minigames/ShootingGallery/reload");
            reload.setSize(200, 200);
            reload.setOriginCenter();
 
+           ball = new Array<Ball>(maxTargetColor);
+           for (int i = 0; i < maxTargetColor; ++i) {
+               ball.add(new Ball());
+           }
+           balld = new Array<Balld>(maxTargetRed);
+           for (int j = 0; j < maxTargetRed; ++j) {
+               balld.add(new Balld());
+           }
 
+           brownDuck = new Array<DuckBrown>(maxBrownDuck);
+           for (int k = 0; k < maxBrownDuck; ++k) {
+               brownDuck.add(new DuckBrown());
+           }
 
-        ball = new Array<Ball>(maxTargetColor);
-        for (int i = 0; i < maxTargetColor; ++i) {
-            ball.add(new Ball());
-        }
-        balld = new Array<Balld>(maxTargetRed);
-        for (int j = 0; j < maxTargetRed; ++j) {
-            balld.add(new Balld());
-        }
-
-        brownDuck = new Array<DuckBrown>(maxBrownDuck);
-        for (int k = 0; k < maxBrownDuck; ++k) {
-            brownDuck.add(new DuckBrown());
-        }
-
-        yellowDuck = new Array<DuckYellow>(maxYellowDuck);
-        for (int l = 0; l < maxYellowDuck; ++l) {
-            yellowDuck.add(new DuckYellow());
-        }
-
-
-
-
-    }
+           yellowDuck = new Array<DuckYellow>(maxYellowDuck);
+           for (int l = 0; l < maxYellowDuck; ++l) {
+               yellowDuck.add(new DuckYellow());
+           }
+       }
 
     @Override
     public void show() {
@@ -289,28 +287,30 @@ public final class ShootingGallery extends MiniGame {
             }
         }
 
-
-
-
-
-
-
         curtainStraight.setPosition(0,game.height-250);
         curtainStraight.draw(game.batch);
         curtainLeft.setPosition(0,0);
         curtainLeft.draw(game.batch);
         curtainRight.setPosition(game.width-100,0);
         curtainRight.draw(game.batch);
-        bullet.setPosition(100,50);
-        bullet.draw(game.batch);
+
+        final float startX = 100f;
+        final float bulletSpacing = 10f;
+        for (int i = 1; i <= maxAmmo; ++i) {
+            Sprite sp;
+            if (i <= currentAmmo) {
+                sp = bullet;
+            } else {
+                sp = bulletEmpty;
+            }
+            final float x = startX + i * (sp.getWidth() + bulletSpacing);
+            sp.setPosition(x, 50);
+            sp.draw(game.batch);
+        }
+
         reload.setPosition(900,25);
         reload.draw(game.batch);
-        game.font.setColor(MaterialColors.text);
-        game.font.draw(game.batch, "Current Ammo: " + currentAmmo +"x", 185, 120);
-        game.font.setColor(MaterialColors.text);
-
         game.batch.end();
-
     }
 
     @Override
@@ -407,9 +407,9 @@ public final class ShootingGallery extends MiniGame {
 
             final float distance = Vector2.dst(posReload.x, posReload.y,
                     reload.getX() + reload.getWidth() / 2, reload.getY() + reload.getHeight() / 2);
-            if ((distance < reload.getWidth() / 2) && currentAmmo < 6) {
+            if ((distance < reload.getWidth() / 2) && currentAmmo < maxAmmo) {
                 reloading.play();
-                currentAmmo = 6;
+                currentAmmo = maxAmmo;
             }
         }
 

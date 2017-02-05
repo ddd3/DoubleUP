@@ -882,6 +882,13 @@ minigames/ShootingGallery/gold_bullet
   orig: 21, 44
   offset: 0, 0
   index: -1
+minigames/ShootingGallery/gold_bullet_empty
+  rotate: false
+  xy: 493, 208
+  size: 21, 44
+  orig: 21, 44
+  offset: 0, 0
+  index: -1
 minigames/ShootingGallery/reload
   rotate: false
   xy: 268, 254
