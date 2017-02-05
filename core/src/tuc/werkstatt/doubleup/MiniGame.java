@@ -417,16 +417,16 @@ public abstract class MiniGame implements Screen {
         if (animations == null) {
             animations = new Array<ScoreAnimation>(true, 12);
             animations.addAll(
-                    new ScoreAnimation(ScoreState.BoxInAnim, 550),
-                    new ScoreAnimation(ScoreState.BoxWait, 750),
-                    new ScoreAnimation(ScoreState.AddInAnim, 550),
-                    new ScoreAnimation(ScoreState.AddWait, 1000),
+                    new ScoreAnimation(ScoreState.BoxInAnim, 500),
+                    new ScoreAnimation(ScoreState.BoxWait, 500),
+                    new ScoreAnimation(ScoreState.AddInAnim, 600),
+                    new ScoreAnimation(ScoreState.AddWait, 750),
                     new ScoreAnimation(ScoreState.AddMoveAnim, 400),
                     new ScoreAnimation(ScoreState.ScoreUpAnim, 250),
-                    new ScoreAnimation(ScoreState.BoxWait, 1000),
+                    new ScoreAnimation(ScoreState.BoxWait, 500),
                     new ScoreAnimation(ScoreState.SortAnim, 750),
-                    new ScoreAnimation(ScoreState.MedalInAnim, 450),
-                    new ScoreAnimation(ScoreState.End, 2500)
+                    new ScoreAnimation(ScoreState.MedalInAnim, 350),
+                    new ScoreAnimation(ScoreState.End, 1200)
             );
         }
     }
