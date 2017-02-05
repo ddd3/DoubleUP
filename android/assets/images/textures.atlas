@@ -621,125 +621,113 @@ size: 2048,2048
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+minigames/FindTheMatch/Butterfly_128x128
+  rotate: false
+  xy: 1028, 1286
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+minigames/FindTheMatch/Dolphin_128x128
+  rotate: false
+  xy: 1286, 1544
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+minigames/FindTheMatch/Elephant_128x128
+  rotate: false
+  xy: 2, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+minigames/FindTheMatch/Hippopotamus_128x128
+  rotate: false
+  xy: 260, 260
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+minigames/FindTheMatch/Panda_128x128
+  rotate: false
+  xy: 518, 518
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+minigames/FindTheMatch/Turtle_128x128
+  rotate: false
+  xy: 1028, 1156
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
 minigames/FindTheMatch/card-back
   rotate: false
-  xy: 2, 36
+  xy: 2, 390
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 minigames/FindTheMatch/card-back-mark
   rotate: false
-  xy: 2, 36
+  xy: 2, 390
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 minigames/FindTheMatch/card-front
   rotate: false
-  xy: 1028, 1062
+  xy: 1028, 1416
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 minigames/FindTheMatch/gradient_oben
   rotate: false
-  xy: 2, 2
+  xy: 1158, 1382
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 minigames/FindTheMatch/gradient_unten
   rotate: false
-  xy: 260, 260
+  xy: 1286, 1510
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 minigames/FindTheMatch/grey
   rotate: false
-  xy: 1028, 1028
+  xy: 1416, 1640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
+minigames/FindTheMatch/surfboard_256x256
+  rotate: false
+  xy: 2, 132
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+minigames/FindTheMatch/umbrella_256x256
+  rotate: false
+  xy: 260, 390
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
 minigames/FindTheMatch/vehicles
   rotate: false
-  xy: 2, 294
+  xy: 2, 648
   size: 1024, 1024
   orig: 1024, 1024
   offset: 0, 0
   index: -1
 
 textures8.png
-size: 1024,256
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-minigames/FindTheMatch/animals/Butterfly_128x128
-  rotate: false
-  xy: 2, 2
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-minigames/FindTheMatch/animals/Dolphin_128x128
-  rotate: false
-  xy: 132, 2
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-minigames/FindTheMatch/animals/Elephant_128x128
-  rotate: false
-  xy: 262, 2
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-minigames/FindTheMatch/animals/Hippopotamus_128x128
-  rotate: false
-  xy: 392, 2
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-minigames/FindTheMatch/animals/Panda_128x128
-  rotate: false
-  xy: 522, 2
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-minigames/FindTheMatch/animals/Turtle_128x128
-  rotate: false
-  xy: 652, 2
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-
-textures9.png
-size: 1024,512
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-minigames/FindTheMatch/vacation/surfboard_256x256
-  rotate: false
-  xy: 2, 2
-  size: 256, 256
-  orig: 256, 256
-  offset: 0, 0
-  index: -1
-minigames/FindTheMatch/vacation/umbrella_256x256
-  rotate: false
-  xy: 260, 2
-  size: 256, 256
-  orig: 256, 256
-  offset: 0, 0
-  index: -1
-
-textures10.png
 size: 512,128
 format: RGBA8888
 filter: Linear,Linear
@@ -822,7 +810,7 @@ minigames/SpaceShooter/smoke3
   offset: 0, 0
   index: -1
 
-textures11.png
+textures9.png
 size: 1024,512
 format: RGBA8888
 filter: Linear,Linear
@@ -835,7 +823,7 @@ minigames/PumpBalloon/balloon
   offset: 0, 0
   index: -1
 
-textures12.png
+textures10.png
 size: 1024,512
 format: RGBA8888
 filter: Linear,Linear
@@ -918,7 +906,7 @@ minigames/ShootingGallery/water2
   offset: 0, 0
   index: -1
 
-textures13.png
+textures11.png
 size: 512,256
 format: RGBA8888
 filter: Linear,Linear

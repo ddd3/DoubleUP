@@ -19,7 +19,7 @@ public final class FindTheMatch extends MiniGame {
     public TextureRegion[] icons;
     public Texture grey;
     protected BitmapFont font;
-    public Texture gradientTop, gradientBottom;
+    public Texture gradientTop, gradientBottom, vehiclesTexture;
     public Sound sndFlipCard, sndDing;
     private GameModel model = null;
     private int numRows = 4;
@@ -48,19 +48,19 @@ public final class FindTheMatch extends MiniGame {
         cardBack.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         cardBackMark.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
-        Texture vehiclesTexture = new Texture(getFileHandle("vehicles.png"));
+        vehiclesTexture = new Texture(getFileHandle("vehicles.png"));
         vehiclesTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         TextureRegion[][] veh = TextureRegion.split(vehiclesTexture, 256, 256);
 
         icons = new TextureRegion[24];
-        icons[0] = new TextureRegion(loadTexture("animals/Butterfly_128x128.png"));
-        icons[1] = new TextureRegion(loadTexture("animals/Dolphin_128x128.png"));
-        icons[2] = new TextureRegion(loadTexture("animals/Elephant_128x128.png"));
-        icons[3] = new TextureRegion(loadTexture("animals/Hippopotamus_128x128.png"));
-        icons[4] = new TextureRegion(loadTexture("animals/Panda_128x128.png"));
-        icons[5] = new TextureRegion(loadTexture("animals/Turtle_128x128.png"));
-        icons[6] = new TextureRegion(loadTexture("vacation/surfboard_256x256.png"));
-        icons[7] = new TextureRegion(loadTexture("vacation/umbrella_256x256.png"));
+        icons[0] = new TextureRegion(loadTexture("Butterfly_128x128.png"));
+        icons[1] = new TextureRegion(loadTexture("Dolphin_128x128.png"));
+        icons[2] = new TextureRegion(loadTexture("Elephant_128x128.png"));
+        icons[3] = new TextureRegion(loadTexture("Hippopotamus_128x128.png"));
+        icons[4] = new TextureRegion(loadTexture("Panda_128x128.png"));
+        icons[5] = new TextureRegion(loadTexture("Turtle_128x128.png"));
+        icons[6] = new TextureRegion(loadTexture("surfboard_256x256.png"));
+        icons[7] = new TextureRegion(loadTexture("umbrella_256x256.png"));
 
         int count = 0;
         for (int i = 0; i < veh.length; i++) {
@@ -71,8 +71,8 @@ public final class FindTheMatch extends MiniGame {
             }
         }
 
-        sndFlipCard = Gdx.audio.newSound(getFileHandle("flipcard.ogg"));
-        sndDing = Gdx.audio.newSound(getFileHandle("ding.ogg"));
+        sndFlipCard = getSound("sounds/flipcard.ogg");
+        sndDing = getSound("sounds/ding.ogg");
     }
 
     private FileHandle getFileHandle(String file) {
@@ -189,7 +189,18 @@ public final class FindTheMatch extends MiniGame {
     }
 
     @Override
-    public void dispose() {   }
+    public void dispose() {
+        for (TextureRegion region : icons) {
+            region.getTexture().dispose();
+        }
+        card.dispose();
+        cardBack.dispose();
+        cardBackMark.dispose();
+        grey.dispose();
+        gradientTop.dispose();
+        gradientBottom.dispose();
+        vehiclesTexture.dispose();
+    }
 
     private void compute(float offset, float cardHeight) {
         if (Gdx.input.justTouched()) {
