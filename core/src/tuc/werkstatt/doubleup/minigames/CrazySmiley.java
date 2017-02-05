@@ -25,7 +25,7 @@ public final class CrazySmiley extends MiniGame {
     private Sound hitYellow;
     private Sound hitRed;
 
-    private final int maxPoints = 5;
+    private final int maxPoints = 7;
     private int currPoints = 0;
     private final int maxBall1 = 1;
     private final int maxBall2 = 9;
@@ -189,7 +189,7 @@ public final class CrazySmiley extends MiniGame {
                         b.sprite.getX() + b.sprite.getWidth() / 2, b.sprite.getY() + b.sprite.getHeight() / 2);
                 if (distance < b.sprite.getWidth() / 2) {
 
-                    hitYellow.play();
+                    hitYellow.play(0.65f);
                     ++currPoints;
                     b.kill();
 
@@ -214,7 +214,7 @@ public final class CrazySmiley extends MiniGame {
 
 
                 if (distance < b.sprite.getWidth() / 2) {
-                    hitRed.play();
+                    hitRed.play(0.65f);
                     if (currPoints > 0) {
                         --currPoints;
                     }
