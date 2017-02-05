@@ -93,9 +93,9 @@ public class Credits implements Screen {
         credits.add(new Credit("minigames/Drop/fruit3", "\nADDITIONAL  ARTWORK\n\nError Sound\n" +
                 "Fins, freesound.org\n\nCartoon Laughter\nRobinhood76, freesound.org\n\nSkorpion Sound\n" +
                 "Kibblesbob, soundbible.com", stepTime));
-        credits.add(new Credit("minigames/Drop/fruit4", "\nADDITIONAL  ARTWORK\n\nMetallic Tonk Sound\n" +
+        credits.add(new Credit("minigames/Drop/fruit4", "ADDITIONAL  ARTWORK\n\nMetallic Tonk Sound\n" +
                 "Neotone, freesound.org\n\nMetallic Click Sound\nj1987, freesound.org\n\nArrow Reload Icon\n" +
-                "GraphicLoads, iconarchive.com", stepTime));
+                "GraphicLoads, iconarchive.com\n\nApplause Sound\napricot.blender.org", stepTime));
         credits.add(new Credit("minigames/Drop/fruit5", "\nADDITIONAL  ARTWORK\n\nAnimal Icons\n" +
                 "VisualPharm, visualpharm.com\n\nVecation Icon Pack\nVisualPharm, visualpharm.com\n\n" +
                 "Vehicle graphics\nCem, cemagraphics.deviantart.com", stepTime));
