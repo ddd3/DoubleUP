@@ -230,7 +230,7 @@ public class DoubleUp extends Game {
         assets.finishLoading();
     }
 
-    public void loadMusic(String name) {
+    public void loadMusic(String name, boolean looping) {
         if (name.equals(currMusicFileName)) {
             return;
         }
@@ -243,12 +243,29 @@ public class DoubleUp extends Game {
         assets.load(name, Music.class);
         assets.finishLoadingAsset(name);
         music = assets.get(name);
-        music.setLooping(true);
+        music.setLooping(looping);
         currMusicFileName = name;
         if (!isMusicMuted) {
             music.setVolume(0.5f);
             music.play();
         }
+    }
+    public void adjustMusicVolume(float volume) {
+        if (music != null && music.isPlaying()) {
+            music.setVolume(volume);
+        }
+    }
+
+    public float getMusicVolume() {
+        if (music != null && music.isPlaying()) {
+            return music.getVolume();
+        } else {
+            return 0f;
+        }
+    }
+
+    public void loadMusic(String name) {
+        loadMusic(name, true);
     }
 
     public void stopMusic() {
@@ -304,9 +321,11 @@ public class DoubleUp extends Game {
         } else if (screen instanceof GameOptions) {
             ((GameOptions)screen).draw(0f);
         } else if (screen instanceof MiniGame) {
-            MiniGame m = (MiniGame)screen;
+            MiniGame m = (MiniGame) screen;
             m.drawUserInterface();
             m.scoreOverlay();
+        } else if (screen instanceof Credits) {
+            ((Credits)screen).draw(0f);
         } else {
             ((Results)screen).draw(0f);
         }

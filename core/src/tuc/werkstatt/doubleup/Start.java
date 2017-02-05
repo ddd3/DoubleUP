@@ -136,6 +136,8 @@ public class Start implements Screen {
                 Network.isHosting = !Network.isHosting;
             } else if (sprites.get("settings_button").getBoundingRectangle().contains(touchPos.x, touchPos.y)) {
                 isSlidedOut = !isSlidedOut;
+            } else if (sprites.get("help_button").getBoundingRectangle().contains(touchPos.x, touchPos.y)) {
+                game.setScreen(new Credits(game));
             } else if (sprites.get("join_button").getBoundingRectangle().contains(touchPos.x, touchPos.y)) {
                 game.setScreen(new Lobby(game));
             }

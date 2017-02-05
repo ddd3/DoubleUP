@@ -160,7 +160,7 @@ public class Client {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                game.setScreen(new Start(game));
+                game.setScreen(new Credits(game));
             }
         });
     }

@@ -34,7 +34,7 @@ public abstract class MiniGame implements Screen {
     private Sprite backgroundSprite, iconSprite;
 
     private static Sound count1Sound, count2Sound, count3Sound, countGoSound, holdSound,
-            scoreUpSound, slideSoftSound;
+            scoreUpSound, slideSoftSound, applauseSound;
 
     private static final float indicatorSpacing = 12f;
     private static float indicatorStartPosX;
@@ -165,6 +165,7 @@ public abstract class MiniGame implements Screen {
         holdSound = getSound("sounds/hold.ogg");
         scoreUpSound = getSound("sounds/scoreup.ogg");
         slideSoftSound = getSound("sounds/slide_soft.ogg");
+        applauseSound = getSound("sounds/applause.wav");
     }
 
     private void initKeyHandling() {
@@ -406,7 +407,7 @@ public abstract class MiniGame implements Screen {
 
     private class ScoreAnimation {
         final ScoreState state;
-        final int duration;
+        int duration;
         ScoreAnimation(ScoreState state, int duration) {
             this.duration = duration;
             this.state = state;
@@ -431,6 +432,8 @@ public abstract class MiniGame implements Screen {
         }
     }
 
+    private boolean shouldApplause = false;
+    private float origVolume = 0f;
     public void scoreOverlay() {
         final float scoreSpacing = 32f;
         if (!isScoreInit) {
@@ -464,6 +467,10 @@ public abstract class MiniGame implements Screen {
                     }
                 }
             } else {
+                if (scoreAnimStep == animations.size - 1 && game.client.getCurrMiniGameRound() == game.client.getMaxMiniGameRounds()) {
+                    animations.get(scoreAnimStep).duration = animations.get(scoreAnimStep).duration * 7;
+                    shouldApplause = true;
+                }
                 scoreState = animations.get(scoreAnimStep).state;
                 scoreTimeStamp = TimeUtils.millis();
             }
@@ -502,6 +509,15 @@ public abstract class MiniGame implements Screen {
                 break;
             case BoxWait: drawBoxesStill(scoreSpacing); break;
             case End:
+                if (shouldApplause) {
+                    applauseSound.play();
+                    origVolume = game.getMusicVolume();
+                    shouldApplause = false;
+                }
+                if (origVolume != 0f && scoreAnimStep < animations.size) {
+                    final float nextVol = game.getMusicVolume() - origVolume / (animations.get(scoreAnimStep).duration / (1000 / 60f));
+                    game.adjustMusicVolume(nextVol);
+                }
                 drawBoxesStill(scoreSpacing);
                 drawMedals(scoreSpacing, 1f);
                 break;
