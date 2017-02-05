@@ -32,13 +32,13 @@ public final class ShootingGallery extends MiniGame {
     private final float maxPoints = 50;
     private float currPoints = 0;
     private final int maxTargetColor = 3;
-    private final int maxTargetRed = 10;
+    private final int maxTargetRed = 5;
     private final int maxBrownDuck = 2;
-    private final int maxYellowDuck = 4;
-    private final float ballSpawnMinDelay = 1f;
-    private final float birdieSpawnMinDelay = 1.5f;
-    private final float duckBrownSpawnMinDelay = 2.5f;
-    private final float duckYellowSpawnMinDelay = 5f;
+    private final int maxYellowDuck = 1;
+    private final float ballSpawnMinDelay = MathUtils.random(0.40f , 0.80f);
+    private final float birdieSpawnMinDelay = MathUtils.random(0.80f , 1.60f);
+    private final float duckBrownSpawnMinDelay = MathUtils.random(2.5f , 5f);
+    private final float duckYellowSpawnMinDelay = MathUtils.random(5f , 10f);
     private int currentAmmo = 6;
     private float currSpawnDelay1 = 0f;
     private float currSpawnDelay2 = 0f;
@@ -79,7 +79,7 @@ public final class ShootingGallery extends MiniGame {
 
             sprite.setPosition(x, y);
 
-            vel.set(300,0);
+            vel.set(500,0);
 
             alive = true;
         }
@@ -111,7 +111,7 @@ public final class ShootingGallery extends MiniGame {
 
             sprite.setPosition(x, y);
 
-            vel.set(150,0);
+            vel.set(250,0);
 
             alive2 = true;
         }
@@ -141,7 +141,7 @@ public final class ShootingGallery extends MiniGame {
             float y = 300;
 
             sprite.setPosition(x, y);
-            vel.set(400,0);
+            vel.set(450,0);
             aliveBrownDuck = true;
         }
 
@@ -170,7 +170,7 @@ public final class ShootingGallery extends MiniGame {
             float y = 500;
 
             sprite.setPosition(x, y);
-            vel.set(800,0);
+            vel.set(900,0);
             aliveYellowDuck = true;
         }
 
@@ -183,10 +183,8 @@ public final class ShootingGallery extends MiniGame {
        public ShootingGallery(DoubleUp game) {
         super(game);
         setTitle("Shooting Gallery");
-        setDescription("Touch Targets and Ducks! " +
-                "Yellow Duck 5, Brown Duck 3, " +
-                "Colored Target 1, Red Target 0,5 Points, " +
-                "And You Have to Reload!");
+        setDescription("Touch Targets and Reload! " +
+                "Scores: Yellow: 5, Brown Duck: 3, Colored Target: 1.5 and Red Target: 1");
 
         setBackground("ui/title_background");
         setIcon("minigames/ShootingGallery/duck_target_yellow");
@@ -329,7 +327,7 @@ public final class ShootingGallery extends MiniGame {
                 if (distance < b.sprite.getWidth() / 2) {
 
                     hitTarget.play();
-                    currPoints = currPoints + 1f;
+                    currPoints = currPoints + 1.5f;
                     b.kill();
 
                 }
@@ -350,7 +348,7 @@ public final class ShootingGallery extends MiniGame {
                 if (distance < b.sprite.getWidth() / 2) {
 
                     hitTarget.play();
-                    currPoints = currPoints + 0.5f;
+                    currPoints = currPoints + 1f;
                     b.kill2();
                 }
 

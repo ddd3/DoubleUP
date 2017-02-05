@@ -65,8 +65,8 @@ public class DoubleUp extends Game {
 
     // add your individual minigame name (needs to match java file) here
     // index also being used as gameID in messages
-    final String[] minigames = { "ShootingGallery", "CrazySmiley", "PickColor", "PumpBalloon",
-            "FindTheMatch", "Drop", "SpaceShooter", "TurnGems"};
+    final String[] minigames = {"TouchTheLight", "TurnGems",   "Drop" , "PickColor", "PumpBalloon",
+            "ShootingGallery",     "FindTheMatch",  "SpaceShooter", "CrazySmiley" };
 
     MiniGame currMiniGame = null;
     private String testingMiniGame = null;

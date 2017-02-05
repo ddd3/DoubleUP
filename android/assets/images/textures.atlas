@@ -1,5 +1,414 @@
 
 textures.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+minigames/CrazySmiley/red
+  rotate: false
+  xy: 2, 2
+  size: 490, 490
+  orig: 490, 490
+  offset: 0, 0
+  index: -1
+minigames/CrazySmiley/yellow
+  rotate: false
+  xy: 494, 2
+  size: 490, 490
+  orig: 490, 490
+  offset: 0, 0
+  index: -1
+
+textures2.png
+size: 256,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+minigames/Drop/bucket
+  rotate: false
+  xy: 2, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+minigames/Drop/droplet
+  rotate: false
+  xy: 68, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+
+textures3.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+minigames/FindTheMatch/card-back
+  rotate: false
+  xy: 2, 36
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+minigames/FindTheMatch/card-back-mark
+  rotate: false
+  xy: 2, 36
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+minigames/FindTheMatch/card-front
+  rotate: false
+  xy: 1028, 1062
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+minigames/FindTheMatch/gradient_oben
+  rotate: false
+  xy: 2, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+minigames/FindTheMatch/gradient_unten
+  rotate: false
+  xy: 260, 260
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+minigames/FindTheMatch/grey
+  rotate: false
+  xy: 1028, 1028
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+minigames/FindTheMatch/vehicles
+  rotate: false
+  xy: 2, 294
+  size: 1024, 1024
+  orig: 1024, 1024
+  offset: 0, 0
+  index: -1
+
+textures4.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+minigames/FindTheMatch/animals/Butterfly_128x128
+  rotate: false
+  xy: 2, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+minigames/FindTheMatch/animals/Dolphin_128x128
+  rotate: false
+  xy: 132, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+minigames/FindTheMatch/animals/Elephant_128x128
+  rotate: false
+  xy: 262, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+minigames/FindTheMatch/animals/Hippopotamus_128x128
+  rotate: false
+  xy: 392, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+minigames/FindTheMatch/animals/Panda_128x128
+  rotate: false
+  xy: 522, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+minigames/FindTheMatch/animals/Turtle_128x128
+  rotate: false
+  xy: 652, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+
+textures5.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+minigames/FindTheMatch/vacation/surfboard_256x256
+  rotate: false
+  xy: 2, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+minigames/FindTheMatch/vacation/umbrella_256x256
+  rotate: false
+  xy: 260, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+
+textures6.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+minigames/PickColor/swirl
+  rotate: false
+  xy: 434, 193
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+minigames/PickColor/swirl_icon
+  rotate: false
+  xy: 2, 2
+  size: 430, 447
+  orig: 430, 447
+  offset: 0, 0
+  index: -1
+
+textures7.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+minigames/PumpBalloon/balloon
+  rotate: true
+  xy: 2, 2
+  size: 430, 512
+  orig: 430, 512
+  offset: 0, 0
+  index: -1
+
+textures8.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+minigames/ShootingGallery/curtain
+  rotate: false
+  xy: 2, 84
+  size: 131, 426
+  orig: 131, 426
+  offset: 0, 0
+  index: -1
+minigames/ShootingGallery/curtain_right
+  rotate: false
+  xy: 135, 84
+  size: 131, 426
+  orig: 131, 426
+  offset: 0, 0
+  index: -1
+minigames/ShootingGallery/curtain_straight
+  rotate: false
+  xy: 2, 2
+  size: 256, 80
+  orig: 256, 80
+  offset: 0, 0
+  index: -1
+minigames/ShootingGallery/duck_target_brown
+  rotate: false
+  xy: 526, 285
+  size: 99, 95
+  orig: 99, 95
+  offset: 0, 0
+  index: -1
+minigames/ShootingGallery/duck_target_yellow
+  rotate: false
+  xy: 786, 415
+  size: 99, 95
+  orig: 99, 95
+  offset: 0, 0
+  index: -1
+minigames/ShootingGallery/gold_bullet
+  rotate: true
+  xy: 268, 97
+  size: 21, 44
+  orig: 21, 44
+  offset: 0, 0
+  index: -1
+minigames/ShootingGallery/reload
+  rotate: false
+  xy: 268, 254
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+minigames/ShootingGallery/target_colored
+  rotate: false
+  xy: 526, 382
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+minigames/ShootingGallery/target_red2
+  rotate: false
+  xy: 656, 382
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+minigames/ShootingGallery/water2
+  rotate: true
+  xy: 268, 120
+  size: 132, 223
+  orig: 132, 223
+  offset: 0, 0
+  index: -1
+
+textures9.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+minigames/SpaceShooter/bomb
+  rotate: true
+  xy: 84, 8
+  size: 32, 44
+  orig: 32, 44
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/enemy1
+  rotate: false
+  xy: 206, 42
+  size: 93, 84
+  orig: 93, 84
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/enemy2
+  rotate: false
+  xy: 107, 42
+  size: 97, 84
+  orig: 97, 84
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/enemy3
+  rotate: false
+  xy: 2, 42
+  size: 103, 84
+  orig: 103, 84
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/laser
+  rotate: true
+  xy: 130, 31
+  size: 9, 54
+  orig: 9, 54
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/laser_hit
+  rotate: true
+  xy: 463, 78
+  size: 48, 46
+  orig: 48, 46
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/missile
+  rotate: true
+  xy: 2, 2
+  size: 38, 80
+  orig: 38, 80
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/ship
+  rotate: false
+  xy: 301, 51
+  size: 99, 75
+  orig: 99, 75
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/smoke1
+  rotate: false
+  xy: 402, 20
+  size: 56, 49
+  orig: 56, 49
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/smoke2
+  rotate: false
+  xy: 402, 71
+  size: 59, 55
+  orig: 59, 55
+  offset: 0, 0
+  index: -1
+minigames/SpaceShooter/smoke3
+  rotate: true
+  xy: 460, 17
+  size: 52, 50
+  orig: 52, 50
+  offset: 0, 0
+  index: -1
+
+textures10.png
+size: 256,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+minigames/TouchTheLight/Curse
+  rotate: false
+  xy: 2, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+minigames/TouchTheLight/Light
+  rotate: false
+  xy: 68, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+minigames/TouchTheLight/Venom
+  rotate: false
+  xy: 134, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+
+textures11.png
+size: 512,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+minigames/TurnGems/clock
+  rotate: false
+  xy: 2, 2
+  size: 71, 71
+  orig: 71, 71
+  offset: 0, 0
+  index: -1
+minigames/TurnGems/green
+  rotate: false
+  xy: 2, 75
+  size: 148, 148
+  orig: 148, 148
+  offset: 0, 0
+  index: -1
+minigames/TurnGems/red
+  rotate: false
+  xy: 152, 75
+  size: 148, 148
+  orig: 148, 148
+  offset: 0, 0
+  index: -1
+
+textures12.png
 size: 2048,2048
 format: RGBA8888
 filter: Linear,Linear
@@ -194,7 +603,7 @@ ui/title_logo
   offset: 0, 0
   index: -1
 
-textures2.png
+textures13.png
 size: 2048,2048
 format: RGBA8888
 filter: Linear,Linear
@@ -463,387 +872,5 @@ ui/top_panel
   xy: 142, 228
   size: 1200, 138
   orig: 1200, 138
-  offset: 0, 0
-  index: -1
-
-textures3.png
-size: 1024,512
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-minigames/PickColor/swirl
-  rotate: false
-  xy: 434, 193
-  size: 256, 256
-  orig: 256, 256
-  offset: 0, 0
-  index: -1
-minigames/PickColor/swirl_icon
-  rotate: false
-  xy: 2, 2
-  size: 430, 447
-  orig: 430, 447
-  offset: 0, 0
-  index: -1
-
-textures4.png
-size: 256,128
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-minigames/Drop/bucket
-  rotate: false
-  xy: 2, 2
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-minigames/Drop/droplet
-  rotate: false
-  xy: 68, 2
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-
-textures5.png
-size: 1024,512
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-minigames/CrazySmiley/red
-  rotate: false
-  xy: 2, 2
-  size: 490, 490
-  orig: 490, 490
-  offset: 0, 0
-  index: -1
-minigames/CrazySmiley/yellow
-  rotate: false
-  xy: 494, 2
-  size: 490, 490
-  orig: 490, 490
-  offset: 0, 0
-  index: -1
-
-textures6.png
-size: 2048,2048
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-minigames/FindTheMatch/card-back
-  rotate: false
-  xy: 2, 36
-  size: 256, 256
-  orig: 256, 256
-  offset: 0, 0
-  index: -1
-minigames/FindTheMatch/card-back-mark
-  rotate: false
-  xy: 2, 36
-  size: 256, 256
-  orig: 256, 256
-  offset: 0, 0
-  index: -1
-minigames/FindTheMatch/card-front
-  rotate: false
-  xy: 1028, 1062
-  size: 256, 256
-  orig: 256, 256
-  offset: 0, 0
-  index: -1
-minigames/FindTheMatch/gradient_oben
-  rotate: false
-  xy: 2, 2
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-minigames/FindTheMatch/gradient_unten
-  rotate: false
-  xy: 260, 260
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-minigames/FindTheMatch/grey
-  rotate: false
-  xy: 1028, 1028
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-minigames/FindTheMatch/vehicles
-  rotate: false
-  xy: 2, 294
-  size: 1024, 1024
-  orig: 1024, 1024
-  offset: 0, 0
-  index: -1
-
-textures7.png
-size: 1024,256
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-minigames/FindTheMatch/animals/Butterfly_128x128
-  rotate: false
-  xy: 2, 2
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-minigames/FindTheMatch/animals/Dolphin_128x128
-  rotate: false
-  xy: 132, 2
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-minigames/FindTheMatch/animals/Elephant_128x128
-  rotate: false
-  xy: 262, 2
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-minigames/FindTheMatch/animals/Hippopotamus_128x128
-  rotate: false
-  xy: 392, 2
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-minigames/FindTheMatch/animals/Panda_128x128
-  rotate: false
-  xy: 522, 2
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-minigames/FindTheMatch/animals/Turtle_128x128
-  rotate: false
-  xy: 652, 2
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-
-textures8.png
-size: 1024,512
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-minigames/FindTheMatch/vacation/surfboard_256x256
-  rotate: false
-  xy: 2, 2
-  size: 256, 256
-  orig: 256, 256
-  offset: 0, 0
-  index: -1
-minigames/FindTheMatch/vacation/umbrella_256x256
-  rotate: false
-  xy: 260, 2
-  size: 256, 256
-  orig: 256, 256
-  offset: 0, 0
-  index: -1
-
-textures9.png
-size: 512,128
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-minigames/SpaceShooter/bomb
-  rotate: true
-  xy: 84, 8
-  size: 32, 44
-  orig: 32, 44
-  offset: 0, 0
-  index: -1
-minigames/SpaceShooter/enemy1
-  rotate: false
-  xy: 206, 42
-  size: 93, 84
-  orig: 93, 84
-  offset: 0, 0
-  index: -1
-minigames/SpaceShooter/enemy2
-  rotate: false
-  xy: 107, 42
-  size: 97, 84
-  orig: 97, 84
-  offset: 0, 0
-  index: -1
-minigames/SpaceShooter/enemy3
-  rotate: false
-  xy: 2, 42
-  size: 103, 84
-  orig: 103, 84
-  offset: 0, 0
-  index: -1
-minigames/SpaceShooter/laser
-  rotate: true
-  xy: 130, 31
-  size: 9, 54
-  orig: 9, 54
-  offset: 0, 0
-  index: -1
-minigames/SpaceShooter/laser_hit
-  rotate: true
-  xy: 463, 78
-  size: 48, 46
-  orig: 48, 46
-  offset: 0, 0
-  index: -1
-minigames/SpaceShooter/missile
-  rotate: true
-  xy: 2, 2
-  size: 38, 80
-  orig: 38, 80
-  offset: 0, 0
-  index: -1
-minigames/SpaceShooter/ship
-  rotate: false
-  xy: 301, 51
-  size: 99, 75
-  orig: 99, 75
-  offset: 0, 0
-  index: -1
-minigames/SpaceShooter/smoke1
-  rotate: false
-  xy: 402, 20
-  size: 56, 49
-  orig: 56, 49
-  offset: 0, 0
-  index: -1
-minigames/SpaceShooter/smoke2
-  rotate: false
-  xy: 402, 71
-  size: 59, 55
-  orig: 59, 55
-  offset: 0, 0
-  index: -1
-minigames/SpaceShooter/smoke3
-  rotate: true
-  xy: 460, 17
-  size: 52, 50
-  orig: 52, 50
-  offset: 0, 0
-  index: -1
-
-textures10.png
-size: 1024,512
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-minigames/PumpBalloon/balloon
-  rotate: true
-  xy: 2, 2
-  size: 430, 512
-  orig: 430, 512
-  offset: 0, 0
-  index: -1
-
-textures11.png
-size: 1024,512
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-minigames/ShootingGallery/curtain
-  rotate: false
-  xy: 2, 84
-  size: 131, 426
-  orig: 131, 426
-  offset: 0, 0
-  index: -1
-minigames/ShootingGallery/curtain_right
-  rotate: false
-  xy: 135, 84
-  size: 131, 426
-  orig: 131, 426
-  offset: 0, 0
-  index: -1
-minigames/ShootingGallery/curtain_straight
-  rotate: false
-  xy: 2, 2
-  size: 256, 80
-  orig: 256, 80
-  offset: 0, 0
-  index: -1
-minigames/ShootingGallery/duck_target_brown
-  rotate: false
-  xy: 526, 285
-  size: 99, 95
-  orig: 99, 95
-  offset: 0, 0
-  index: -1
-minigames/ShootingGallery/duck_target_yellow
-  rotate: false
-  xy: 786, 415
-  size: 99, 95
-  orig: 99, 95
-  offset: 0, 0
-  index: -1
-minigames/ShootingGallery/gold_bullet
-  rotate: true
-  xy: 268, 97
-  size: 21, 44
-  orig: 21, 44
-  offset: 0, 0
-  index: -1
-minigames/ShootingGallery/reload
-  rotate: false
-  xy: 268, 254
-  size: 256, 256
-  orig: 256, 256
-  offset: 0, 0
-  index: -1
-minigames/ShootingGallery/target_colored
-  rotate: false
-  xy: 526, 382
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-minigames/ShootingGallery/target_red2
-  rotate: false
-  xy: 656, 382
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-minigames/ShootingGallery/water2
-  rotate: true
-  xy: 268, 120
-  size: 132, 223
-  orig: 132, 223
-  offset: 0, 0
-  index: -1
-
-textures12.png
-size: 512,256
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-minigames/TurnGems/clock
-  rotate: false
-  xy: 2, 2
-  size: 71, 71
-  orig: 71, 71
-  offset: 0, 0
-  index: -1
-minigames/TurnGems/green
-  rotate: false
-  xy: 2, 75
-  size: 148, 148
-  orig: 148, 148
-  offset: 0, 0
-  index: -1
-minigames/TurnGems/red
-  rotate: false
-  xy: 152, 75
-  size: 148, 148
-  orig: 148, 148
   offset: 0, 0
   index: -1
