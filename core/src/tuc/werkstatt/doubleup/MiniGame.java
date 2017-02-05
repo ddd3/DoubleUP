@@ -414,6 +414,7 @@ public abstract class MiniGame implements Screen {
         }
     }
     private static Array<ScoreAnimation> animations = null;
+    private final int origEndTime = 1200;
     private void initScoreAnimations() {
         if (animations == null) {
             animations = new Array<ScoreAnimation>(true, 12);
@@ -427,7 +428,7 @@ public abstract class MiniGame implements Screen {
                     new ScoreAnimation(ScoreState.BoxWait, 500),
                     new ScoreAnimation(ScoreState.SortAnim, 750),
                     new ScoreAnimation(ScoreState.MedalInAnim, 350),
-                    new ScoreAnimation(ScoreState.End, 1200)
+                    new ScoreAnimation(ScoreState.End, origEndTime)
             );
         }
     }
@@ -468,8 +469,10 @@ public abstract class MiniGame implements Screen {
                 }
             } else {
                 if (scoreAnimStep == animations.size - 1 && game.client.getCurrMiniGameRound() == game.client.getMaxMiniGameRounds()) {
-                    animations.get(scoreAnimStep).duration = animations.get(scoreAnimStep).duration * 7;
+                    animations.get(scoreAnimStep).duration = origEndTime * 7;
                     shouldApplause = true;
+                } else if (scoreAnimStep == animations.size - 1) {
+                    animations.get(scoreAnimStep).duration = origEndTime;
                 }
                 scoreState = animations.get(scoreAnimStep).state;
                 scoreTimeStamp = TimeUtils.millis();
