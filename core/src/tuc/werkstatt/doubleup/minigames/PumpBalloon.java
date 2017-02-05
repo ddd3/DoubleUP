@@ -12,7 +12,7 @@ public final class PumpBalloon extends MiniGame {
     private Sprite balloonSprite;
     private final float initialHeight = game.height / 9f;
     private Sound pumpSound;
-    //private Sound popSound;
+    private Sound popSound;
     private long lastSoundPlayed = System.currentTimeMillis();
     private float balloonPulsing = 0f;
     private float balloonRotating = 0f;
@@ -37,7 +37,7 @@ public final class PumpBalloon extends MiniGame {
     public void show() {
         game.loadMusic("music/game_start_loop.ogg");
         pumpSound = getSound("sounds/pump.wav");
-        //popSound = getSound("sounds/pop.wav");
+        popSound = getSound("sounds/pop.wav");
     }
 
     @Override
@@ -67,7 +67,7 @@ public final class PumpBalloon extends MiniGame {
 
     @Override
     public void update(float deltaTime) {
-        final float shrinkage = (game.height - initialHeight) / 20f * deltaTime;
+        final float shrinkage = ((game.height - initialHeight) / 20f + getProgress() * 2.75f) * deltaTime;
         float nextWidth = Math.max(initialHeight * balloonAspectRatio, balloonSprite.getWidth() - shrinkage);
         float nextHeight = Math.max(initialHeight, balloonSprite.getHeight() - shrinkage);
         adjustBalloonSize(nextWidth, nextHeight);
@@ -86,11 +86,9 @@ public final class PumpBalloon extends MiniGame {
         balloonPulsing += 180f * 6f * getProgress() / 100f * deltaTime;
         balloonRotating +=  180f * 9f * getProgress() / 100f * deltaTime;
 
-        /*
         if (isFinished()) {
             popSound.play();
         }
-        */
     }
 
     private void adjustBalloonSize(float width, float height) {
