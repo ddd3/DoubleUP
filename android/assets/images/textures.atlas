@@ -820,3 +820,30 @@ minigames/ShootingGallery/water2
   orig: 132, 223
   offset: 0, 0
   index: -1
+
+textures12.png
+size: 512,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+minigames/TurnGems/clock
+  rotate: false
+  xy: 2, 2
+  size: 71, 71
+  orig: 71, 71
+  offset: 0, 0
+  index: -1
+minigames/TurnGems/green
+  rotate: false
+  xy: 2, 75
+  size: 148, 148
+  orig: 148, 148
+  offset: 0, 0
+  index: -1
+minigames/TurnGems/red
+  rotate: false
+  xy: 152, 75
+  size: 148, 148
+  orig: 148, 148
+  offset: 0, 0
+  index: -1

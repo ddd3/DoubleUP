@@ -149,11 +149,13 @@ public class Server {
 
     private void givePointsToPlayers(int id) {
         synchronized (lock) {
+            /* // Disable to allow time-based games
             for (Player p : players) {
                 if (p.ID == id) {
                     p.miniGameProgress = 100;
                 }
             }
+            */
             Arrays.sort(players, new Comparator<Player>() {
                 @Override
                 public int compare(Player p1, Player p2) {
